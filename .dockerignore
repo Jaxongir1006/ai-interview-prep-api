@@ -1,0 +1,16 @@
+.git
+.github
+.claude
+.vscode
+.env
+.env.*
+docs
+tests
+scripts
+*.md
+dev-infra.yaml
+Makefile
+config/local.yaml
+config/local.yaml.example
+config/test.yaml
+.golangci.yml

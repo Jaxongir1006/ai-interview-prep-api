@@ -1,0 +1,54 @@
+service:
+  name: blueprint
+  version: v0.1.0-test
+
+logger:
+  disable: true
+  level: error
+  encoding: pretty
+
+tracing:
+  disable: true
+  exporter_host: localhost
+  exporter_port: 4317
+
+alert:
+  provider: noop
+
+postgres:
+  host: localhost
+  port: 5432
+  user: postgres
+  password: postgres
+  database: test_blueprint # IMPORTANT
+
+kafka_broker:
+  brokers: localhost:9092
+
+http_server:
+  host: localhost
+  port: 9876
+
+# Module specific configs
+
+auth:
+  access_token_ttl: 24h
+  refresh_token_ttl: 168h # 7 days
+  max_active_sessions: 5
+  worker_poll_interval: 100ms
+  hashing_cost: 4 # low cost for fast tests
+
+filevault:
+  max_file_size_mb: 10
+  minio:
+    endpoint: localhost:9000
+    access_key: minioadmin
+    secret_key: minioadmin
+    bucket: blueprint
+
+audit:
+  worker_poll_interval: 100ms
+
+platform:
+  worker_poll_interval: 100ms
+  alert_schema: alert

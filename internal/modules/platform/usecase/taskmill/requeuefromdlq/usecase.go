@@ -1,0 +1,61 @@
+package requeuefromdlq
+
+import (
+	"context"
+
+	"go-enterprise-blueprint/internal/modules/platform/domain"
+	"go-enterprise-blueprint/internal/portal"
+	"go-enterprise-blueprint/internal/portal/audit"
+	portalplatform "go-enterprise-blueprint/internal/portal/platform"
+
+	"github.com/code19m/errx"
+	"github.com/rise-and-shine/pkg/ucdef"
+)
+
+type Request struct {
+	TaskID int64 `json:"task_id" validate:"required"`
+}
+
+type UseCase = ucdef.UserAction[*Request, *struct{}]
+
+func New(domainContainer *domain.Container, portalContainer *portal.Container) UseCase {
+	return &usecase{domainContainer: domainContainer, portalContainer: portalContainer}
+}
+
+type usecase struct {
+	domainContainer *domain.Container
+	portalContainer *portal.Container
+}
+
+func (uc *usecase) OperationID() string { return "requeue-from-dlq" }
+
+func (uc *usecase) Execute(ctx context.Context, in *Request) (*struct{}, error) {
+	// Move DLQ task back to the main queue for retry
+	err := uc.domainContainer.Console().RequeueFromDLQ(ctx, in.TaskID)
+	if err != nil {
+		return nil, errx.Wrap(err)
+	}
+
+	// Start UOW
+	uow, err := uc.domainContainer.UOWFactory().NewUOW(ctx)
+	if err != nil {
+		return nil, errx.Wrap(err)
+	}
+	defer uow.DiscardUnapplied()
+
+	// Record audit log
+	err = uc.portalContainer.Audit().Log(uow.Lend(), audit.Action{
+		Module: portalplatform.ModuleName, OperationID: uc.OperationID(), Payload: in,
+	})
+	if err != nil {
+		return nil, errx.Wrap(err)
+	}
+
+	// Apply UOW
+	err = uow.ApplyChanges()
+	if err != nil {
+		return nil, errx.Wrap(err)
+	}
+
+	return &struct{}{}, nil
+}

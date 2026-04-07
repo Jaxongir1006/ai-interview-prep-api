@@ -1,0 +1,86 @@
+package usecase
+
+import (
+	"go-enterprise-blueprint/internal/modules/platform/usecase/alerterror/cleanuperrors"
+	"go-enterprise-blueprint/internal/modules/platform/usecase/alerterror/geterror"
+	"go-enterprise-blueprint/internal/modules/platform/usecase/alerterror/geterrorstats"
+	"go-enterprise-blueprint/internal/modules/platform/usecase/alerterror/listerrors"
+	tmcleanup "go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/cleanupresults"
+	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/getqueuestats"
+	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/listdlqtasks"
+	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/listqueues"
+	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/listschedules"
+	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/listtaskresults"
+	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/purgedlq"
+	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/purgequeue"
+	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/requeuefromdlq"
+	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/triggerschedule"
+)
+
+type Container struct {
+	listQueues      listqueues.UseCase
+	getQueueStats   getqueuestats.UseCase
+	listDLQTasks    listdlqtasks.UseCase
+	listTaskResults listtaskresults.UseCase
+	listSchedules   listschedules.UseCase
+	requeueFromDLQ  requeuefromdlq.UseCase
+	purgeQueue      purgequeue.UseCase
+	purgeDLQ        purgedlq.UseCase
+	cleanupResults  tmcleanup.UseCase
+	triggerSchedule triggerschedule.UseCase
+
+	listErrors    listerrors.UseCase
+	getError      geterror.UseCase
+	getErrorStats geterrorstats.UseCase
+	cleanupErrors cleanuperrors.UseCase
+}
+
+func NewContainer(
+	listQueues listqueues.UseCase,
+	getQueueStats getqueuestats.UseCase,
+	listDLQTasks listdlqtasks.UseCase,
+	listTaskResults listtaskresults.UseCase,
+	listSchedules listschedules.UseCase,
+	requeueFromDLQ requeuefromdlq.UseCase,
+	purgeQueue purgequeue.UseCase,
+	purgeDLQ purgedlq.UseCase,
+	cleanupResults tmcleanup.UseCase,
+	triggerSchedule triggerschedule.UseCase,
+	listErrors listerrors.UseCase,
+	getError geterror.UseCase,
+	getErrorStats geterrorstats.UseCase,
+	cleanupErrors cleanuperrors.UseCase,
+) *Container {
+	return &Container{
+		listQueues,
+		getQueueStats,
+		listDLQTasks,
+		listTaskResults,
+		listSchedules,
+		requeueFromDLQ,
+		purgeQueue,
+		purgeDLQ,
+		cleanupResults,
+		triggerSchedule,
+		listErrors,
+		getError,
+		getErrorStats,
+		cleanupErrors,
+	}
+}
+
+func (c *Container) ListQueues() listqueues.UseCase           { return c.listQueues }
+func (c *Container) GetQueueStats() getqueuestats.UseCase     { return c.getQueueStats }
+func (c *Container) ListDLQTasks() listdlqtasks.UseCase       { return c.listDLQTasks }
+func (c *Container) ListTaskResults() listtaskresults.UseCase { return c.listTaskResults }
+func (c *Container) ListSchedules() listschedules.UseCase     { return c.listSchedules }
+func (c *Container) RequeueFromDLQ() requeuefromdlq.UseCase   { return c.requeueFromDLQ }
+func (c *Container) PurgeQueue() purgequeue.UseCase           { return c.purgeQueue }
+func (c *Container) PurgeDLQ() purgedlq.UseCase               { return c.purgeDLQ }
+func (c *Container) CleanupResults() tmcleanup.UseCase        { return c.cleanupResults }
+func (c *Container) TriggerSchedule() triggerschedule.UseCase { return c.triggerSchedule }
+
+func (c *Container) ListErrors() listerrors.UseCase       { return c.listErrors }
+func (c *Container) GetError() geterror.UseCase           { return c.getError }
+func (c *Container) GetErrorStats() geterrorstats.UseCase { return c.getErrorStats }
+func (c *Container) CleanupErrors() cleanuperrors.UseCase { return c.cleanupErrors }
