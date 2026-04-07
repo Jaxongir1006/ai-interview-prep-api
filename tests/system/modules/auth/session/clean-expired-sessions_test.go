@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"go-enterprise-blueprint/internal/modules/auth/usecase/session/cleanexpiredsessions"
-	"go-enterprise-blueprint/tests/state/auth"
-	"go-enterprise-blueprint/tests/state/database"
-	"go-enterprise-blueprint/tests/system/trigger"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/usecase/session/cleanexpiredsessions"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/auth"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
+	"github.com/jaxongir1006/hire-ready-api/tests/system/trigger"
 
 	"github.com/stretchr/testify/assert"
 )

@@ -1,4 +1,4 @@
-module go-enterprise-blueprint
+module github.com/Jaxongir1006/ai-interview-prep-api
 
 go 1.25.3
 

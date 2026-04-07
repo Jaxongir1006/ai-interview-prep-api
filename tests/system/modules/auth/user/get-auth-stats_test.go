@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	portalauth "go-enterprise-blueprint/internal/portal/auth"
-	"go-enterprise-blueprint/tests/state/auth"
-	"go-enterprise-blueprint/tests/state/database"
-	"go-enterprise-blueprint/tests/system/trigger"
+	portalauth "github.com/jaxongir1006/hire-ready-api/internal/portal/auth"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/auth"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
+	"github.com/jaxongir1006/hire-ready-api/tests/system/trigger"
 )
 
 func TestGetAuthStats_Success(t *testing.T) {

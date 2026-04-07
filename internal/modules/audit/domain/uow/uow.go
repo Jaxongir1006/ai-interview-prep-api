@@ -1,9 +1,9 @@
 package uow
 
 import (
-	"go-enterprise-blueprint/internal/modules/audit/domain/actionlog"
-	"go-enterprise-blueprint/internal/modules/audit/domain/statuschangelog"
-	"go-enterprise-blueprint/pkg/uowbase"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/actionlog"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/statuschangelog"
+	"github.com/jaxongir1006/hire-ready-api/pkg/uowbase"
 )
 
 // Factory defines an interface for creating new instances of the UnitOfWork.

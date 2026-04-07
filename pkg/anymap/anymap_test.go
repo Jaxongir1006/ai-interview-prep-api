@@ -1,7 +1,7 @@
 package anymap_test
 
 import (
-	"go-enterprise-blueprint/pkg/anymap"
+	"github.com/jaxongir1006/hire-ready-api/pkg/anymap"
 	"testing"
 	"time"
 

@@ -3,7 +3,7 @@ package postgres
 import (
 	"context"
 
-	"go-enterprise-blueprint/internal/modules/audit/domain/statuschangelog"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/statuschangelog"
 
 	"github.com/rise-and-shine/pkg/repogen"
 	"github.com/uptrace/bun"

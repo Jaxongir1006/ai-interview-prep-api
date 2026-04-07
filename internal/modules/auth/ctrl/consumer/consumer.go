@@ -1,7 +1,7 @@
 package consumer
 
 import (
-	"go-enterprise-blueprint/internal/modules/auth/usecase"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/usecase"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/kafka"

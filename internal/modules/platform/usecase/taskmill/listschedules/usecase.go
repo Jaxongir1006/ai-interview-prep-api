@@ -2,7 +2,7 @@ package listschedules
 
 import (
 	"context"
-	"go-enterprise-blueprint/internal/modules/platform/domain"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/domain"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/taskmill/console"

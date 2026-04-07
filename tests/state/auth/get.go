@@ -3,11 +3,11 @@ package auth
 import (
 	"testing"
 
-	"go-enterprise-blueprint/internal/modules/auth/domain/rbac"
-	"go-enterprise-blueprint/internal/modules/auth/domain/session"
-	"go-enterprise-blueprint/internal/modules/auth/domain/user"
-	"go-enterprise-blueprint/internal/modules/auth/infra/postgres"
-	"go-enterprise-blueprint/tests/state/database"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/rbac"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/session"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/user"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/infra/postgres"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
 
 	"github.com/rise-and-shine/pkg/sorter"
 )

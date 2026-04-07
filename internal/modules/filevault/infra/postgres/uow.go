@@ -1,9 +1,9 @@
 package postgres
 
 import (
-	"go-enterprise-blueprint/internal/modules/filevault/domain/file"
-	"go-enterprise-blueprint/internal/modules/filevault/domain/uow"
-	"go-enterprise-blueprint/pkg/uowbase/pguowbase"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/domain/file"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/domain/uow"
+	"github.com/jaxongir1006/hire-ready-api/pkg/uowbase/pguowbase"
 
 	"github.com/uptrace/bun"
 )

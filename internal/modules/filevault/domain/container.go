@@ -1,8 +1,8 @@
 package domain
 
 import (
-	"go-enterprise-blueprint/internal/modules/filevault/domain/file"
-	"go-enterprise-blueprint/internal/modules/filevault/domain/uow"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/domain/file"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/domain/uow"
 
 	"github.com/rise-and-shine/pkg/filestore"
 )

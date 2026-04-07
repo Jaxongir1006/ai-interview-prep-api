@@ -1,8 +1,8 @@
 package embassy
 
 import (
-	"go-enterprise-blueprint/internal/modules/filevault/domain"
-	"go-enterprise-blueprint/internal/portal/filevault"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/domain"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal/filevault"
 )
 
 type embassy struct {

@@ -1,6 +1,6 @@
 .git
 .github
-.claude
+.codex
 .vscode
 .env
 .env.*

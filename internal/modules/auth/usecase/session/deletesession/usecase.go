@@ -3,11 +3,11 @@ package deletesession
 import (
 	"context"
 
-	"go-enterprise-blueprint/internal/modules/auth/domain"
-	"go-enterprise-blueprint/internal/modules/auth/domain/session"
-	"go-enterprise-blueprint/internal/portal"
-	"go-enterprise-blueprint/internal/portal/audit"
-	"go-enterprise-blueprint/internal/portal/auth"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/session"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal/audit"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal/auth"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/ucdef"

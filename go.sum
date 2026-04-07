@@ -184,16 +184,6 @@ github.com/rcrowley/go-metrics v0.0.0-20250401214520-65e299d6c5c9 h1:bsUq1dX0N8A
 github.com/rcrowley/go-metrics v0.0.0-20250401214520-65e299d6c5c9/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
 github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec h1:W09IVJc94icq4NjY3clb7Lk8O1qJ8BdBEF8z0ibU0rE=
 github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec/go.mod h1:qqbHyh8v60DhA7CoWK5oRCqLrMHRGoxYCSS9EjAz6Eo=
-github.com/rise-and-shine/pkg v1.10.3 h1:iVm2AsWWbF/fwDNmmI0x1KuRlCcObySGsJKNlruiMDo=
-github.com/rise-and-shine/pkg v1.10.3/go.mod h1:DvrSRuqerfR5CoEBvxTeQPCcsKVx/eDFmBtLEOealWs=
-github.com/rise-and-shine/pkg v1.10.5 h1:l2w2uncW4vH39XogDVx2qk6mCtw1knDEqTH7KW1oapU=
-github.com/rise-and-shine/pkg v1.10.5/go.mod h1:DvrSRuqerfR5CoEBvxTeQPCcsKVx/eDFmBtLEOealWs=
-github.com/rise-and-shine/pkg v1.10.6 h1:NhmEtfqbOsOpfy2MUY9L46rlbV7gCLU6MnSVCR8/sZQ=
-github.com/rise-and-shine/pkg v1.10.6/go.mod h1:DvrSRuqerfR5CoEBvxTeQPCcsKVx/eDFmBtLEOealWs=
-github.com/rise-and-shine/pkg v1.10.7 h1:8F7QH6OoKIQWoOnYb3yJ5VJux5JA6WQZ5NSOJzIgXdM=
-github.com/rise-and-shine/pkg v1.10.7/go.mod h1:DvrSRuqerfR5CoEBvxTeQPCcsKVx/eDFmBtLEOealWs=
-github.com/rise-and-shine/pkg v1.10.8 h1:1NRKWa6/2syaxCgb+rEe0lU5wNinDQAcZirpl5s31dU=
-github.com/rise-and-shine/pkg v1.10.8/go.mod h1:DvrSRuqerfR5CoEBvxTeQPCcsKVx/eDFmBtLEOealWs=
 github.com/rise-and-shine/pkg v1.10.9 h1:4MK/WXCI/nbbRkLoFJA6H5BsiIL6ylZ3GOT4NArPFzk=
 github.com/rise-and-shine/pkg v1.10.9/go.mod h1:DvrSRuqerfR5CoEBvxTeQPCcsKVx/eDFmBtLEOealWs=
 github.com/robfig/cron/v3 v3.0.1 h1:WdRxkvbJztn8LMz/QEvLN5sBU+xKpSqwwUO1Pjr4qDs=

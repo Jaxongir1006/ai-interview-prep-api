@@ -2,7 +2,7 @@ package cleanexpiredsessions
 
 import (
 	"context"
-	"go-enterprise-blueprint/internal/modules/auth/domain"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/observability/logger"

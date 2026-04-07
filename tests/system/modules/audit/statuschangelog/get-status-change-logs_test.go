@@ -7,11 +7,11 @@ import (
 	"testing"
 	"time"
 
-	portalaudit "go-enterprise-blueprint/internal/portal/audit"
-	"go-enterprise-blueprint/tests/state/audit"
-	"go-enterprise-blueprint/tests/state/auth"
-	"go-enterprise-blueprint/tests/state/database"
-	"go-enterprise-blueprint/tests/system/trigger"
+	portalaudit "github.com/jaxongir1006/hire-ready-api/internal/portal/audit"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/audit"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/auth"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
+	"github.com/jaxongir1006/hire-ready-api/tests/system/trigger"
 )
 
 func TestGetStatusChangeLogs_Success(t *testing.T) {

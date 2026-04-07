@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"go-enterprise-blueprint/internal/modules/filevault/domain"
-	"go-enterprise-blueprint/internal/modules/filevault/domain/file"
-	"go-enterprise-blueprint/internal/portal/auth"
-	"go-enterprise-blueprint/internal/portal/filevault"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/domain"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/domain/file"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal/auth"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal/filevault"
 
 	"github.com/code19m/errx"
 	"github.com/google/uuid"

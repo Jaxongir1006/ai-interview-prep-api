@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"go-enterprise-blueprint/internal/modules/audit/usecase/actionlog/getactionlogs"
-	"go-enterprise-blueprint/internal/modules/audit/usecase/statuschangelog/getstatuschangelogs"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/usecase/actionlog/getactionlogs"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/usecase/statuschangelog/getstatuschangelogs"
 )
 
 type Container struct {

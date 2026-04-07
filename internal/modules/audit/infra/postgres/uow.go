@@ -1,10 +1,10 @@
 package postgres
 
 import (
-	"go-enterprise-blueprint/internal/modules/audit/domain/actionlog"
-	"go-enterprise-blueprint/internal/modules/audit/domain/statuschangelog"
-	"go-enterprise-blueprint/internal/modules/audit/domain/uow"
-	"go-enterprise-blueprint/pkg/uowbase/pguowbase"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/actionlog"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/statuschangelog"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/uow"
+	"github.com/jaxongir1006/hire-ready-api/pkg/uowbase/pguowbase"
 
 	"github.com/uptrace/bun"
 )

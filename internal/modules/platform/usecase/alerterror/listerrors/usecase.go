@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"go-enterprise-blueprint/internal/modules/platform/domain"
-	"go-enterprise-blueprint/internal/modules/platform/domain/alerterror"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/domain"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/domain/alerterror"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/pagination"

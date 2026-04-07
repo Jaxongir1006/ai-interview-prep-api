@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"testing"
 
-	"go-enterprise-blueprint/tests/state/auth"
-	"go-enterprise-blueprint/tests/state/database"
-	"go-enterprise-blueprint/tests/system/trigger"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/auth"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
+	"github.com/jaxongir1006/hire-ready-api/tests/system/trigger"
 )
 
 func TestGetRoles_Success(t *testing.T) {

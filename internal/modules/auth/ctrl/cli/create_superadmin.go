@@ -5,7 +5,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"go-enterprise-blueprint/internal/modules/auth/usecase/user/createsuperadmin"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/usecase/user/createsuperadmin"
 	"os"
 	"strings"
 	"syscall"

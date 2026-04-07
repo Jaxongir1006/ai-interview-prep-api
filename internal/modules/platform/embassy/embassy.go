@@ -1,6 +1,6 @@
 package embassy
 
-import "go-enterprise-blueprint/internal/portal/platform"
+import "github.com/jaxongir1006/hire-ready-api/internal/portal/platform"
 
 type embassy struct{}
 

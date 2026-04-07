@@ -1,11 +1,11 @@
 package portal
 
 import (
-	"go-enterprise-blueprint/internal/portal/audit"
-	"go-enterprise-blueprint/internal/portal/auth"
-	"go-enterprise-blueprint/internal/portal/esign"
-	"go-enterprise-blueprint/internal/portal/filevault"
-	"go-enterprise-blueprint/internal/portal/platform"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal/audit"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal/auth"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal/esign"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal/filevault"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal/platform"
 )
 
 // Container holds every modules portal interface.

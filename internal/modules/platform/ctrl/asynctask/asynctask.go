@@ -3,7 +3,7 @@ package asynctask
 import (
 	"context"
 	"errors"
-	"go-enterprise-blueprint/internal/modules/platform/usecase"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase"
 	"time"
 
 	"github.com/code19m/errx"

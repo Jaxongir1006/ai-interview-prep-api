@@ -1,4 +1,4 @@
-# CLAUDE
+# CODEX
 
 ## Skills
 
@@ -18,7 +18,7 @@ Don't read use case documents until you're actually working on them — token an
 
 ## Agents
 
-Use specialized agents (`.claude/agents/`) instead of generic subagents. Each agent has focused instructions, restricted tools, and auto-loaded skills.
+Use specialized agents (`.codex/agents/`) instead of generic subagents. Each agent has focused instructions, restricted tools, and auto-loaded skills.
 
 | Agent              | Role                            | Tools                             |
 | ------------------ | ------------------------------- | --------------------------------- |

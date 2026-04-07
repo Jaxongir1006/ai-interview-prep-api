@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"go-enterprise-blueprint/internal/modules/platform/usecase"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase"
 )
 
 type Controller struct {

@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"go-enterprise-blueprint/internal/modules/audit/domain"
-	"go-enterprise-blueprint/internal/modules/audit/domain/actionlog"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/actionlog"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/ucdef"

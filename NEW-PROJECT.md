@@ -18,15 +18,15 @@ git commit -m "Initial commit from go-enterprise-blueprint"
 # 4. Rename the Go module
 #    Replace "my-org/my-new-project" with your actual module path
 OLD_MODULE="go-enterprise-blueprint"
-NEW_MODULE="my-org/my-new-project"
+NEW_MODULE="hire-ready-api"
 
 # macOS
 find . -type f -name '*.go' -exec sed -i '' "s|${OLD_MODULE}|${NEW_MODULE}|g" {} +
 sed -i '' "s|${OLD_MODULE}|${NEW_MODULE}|g" go.mod
 
 # Linux
-# find . -type f -name '*.go' -exec sed -i "s|${OLD_MODULE}|${NEW_MODULE}|g" {} +
-# sed -i "s|${OLD_MODULE}|${NEW_MODULE}|g" go.mod
+find . -type f -name '*.go' -exec sed -i "s|${OLD_MODULE}|${NEW_MODULE}|g" {} +
+sed -i "s|${OLD_MODULE}|${NEW_MODULE}|g" go.mod
 
 # 5. Tidy dependencies
 go mod tidy
@@ -48,7 +48,7 @@ After cloning, review and adapt the following to your project:
 | Module name     | `go.mod`, all `*.go` imports   | Replaced in step 4 above                         |
 | App config      | `config/`                      | Update app name, ports, secrets                  |
 | README          | `README.md`                    | Rewrite for your project                         |
-| CLAUDE.md       | `CLAUDE.md`                    | Update if your conventions differ                |
+| AGENTS.md       | `AGENTS.md`                    | Update if your conventions differ                |
 | Docker          | `Dockerfile`, `dev-infra.yaml` | Update image names and services                  |
 | Migrations      | `migrations/`                  | Keep or remove existing migrations               |
 | Example modules | `internal/modules/`            | Remove modules you don't need, keep as reference |

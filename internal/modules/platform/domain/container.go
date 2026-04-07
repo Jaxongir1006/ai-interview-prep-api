@@ -1,8 +1,8 @@
 package domain
 
 import (
-	"go-enterprise-blueprint/internal/modules/platform/domain/alerterror"
-	"go-enterprise-blueprint/internal/modules/platform/domain/uow"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/domain/alerterror"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/domain/uow"
 
 	"github.com/rise-and-shine/pkg/taskmill/console"
 )

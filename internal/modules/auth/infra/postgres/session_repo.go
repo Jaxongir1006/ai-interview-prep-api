@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"go-enterprise-blueprint/internal/modules/auth/domain/session"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/session"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/repogen"

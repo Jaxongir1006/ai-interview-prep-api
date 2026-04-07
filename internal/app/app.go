@@ -1,10 +1,10 @@
 package app
 
 import (
-	"go-enterprise-blueprint/internal/modules/audit"
-	"go-enterprise-blueprint/internal/modules/auth"
-	"go-enterprise-blueprint/internal/modules/filevault"
-	"go-enterprise-blueprint/internal/modules/platform"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform"
 
 	"github.com/rise-and-shine/pkg/cfgloader"
 	"github.com/rise-and-shine/pkg/http/server"

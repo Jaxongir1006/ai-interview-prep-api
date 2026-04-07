@@ -42,4 +42,4 @@ local.yaml
 .env.local
 *.env
 workfile*
-/CLAUDE.local.md
+/codex.local.md

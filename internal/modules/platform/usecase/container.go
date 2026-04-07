@@ -1,20 +1,20 @@
 package usecase
 
 import (
-	"go-enterprise-blueprint/internal/modules/platform/usecase/alerterror/cleanuperrors"
-	"go-enterprise-blueprint/internal/modules/platform/usecase/alerterror/geterror"
-	"go-enterprise-blueprint/internal/modules/platform/usecase/alerterror/geterrorstats"
-	"go-enterprise-blueprint/internal/modules/platform/usecase/alerterror/listerrors"
-	tmcleanup "go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/cleanupresults"
-	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/getqueuestats"
-	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/listdlqtasks"
-	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/listqueues"
-	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/listschedules"
-	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/listtaskresults"
-	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/purgedlq"
-	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/purgequeue"
-	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/requeuefromdlq"
-	"go-enterprise-blueprint/internal/modules/platform/usecase/taskmill/triggerschedule"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/alerterror/cleanuperrors"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/alerterror/geterror"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/alerterror/geterrorstats"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/alerterror/listerrors"
+	tmcleanup "github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/cleanupresults"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/getqueuestats"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/listdlqtasks"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/listqueues"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/listschedules"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/listtaskresults"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/purgedlq"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/purgequeue"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/requeuefromdlq"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/triggerschedule"
 )
 
 type Container struct {

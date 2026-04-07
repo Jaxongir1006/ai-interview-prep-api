@@ -4,11 +4,11 @@ import (
 	"testing"
 	"time"
 
-	"go-enterprise-blueprint/internal/modules/audit/domain/actionlog"
-	"go-enterprise-blueprint/internal/modules/audit/domain/statuschangelog"
-	"go-enterprise-blueprint/internal/modules/audit/infra/postgres"
-	"go-enterprise-blueprint/pkg/anymap"
-	"go-enterprise-blueprint/tests/state/database"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/actionlog"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/statuschangelog"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/infra/postgres"
+	"github.com/jaxongir1006/hire-ready-api/pkg/anymap"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
 
 	"github.com/google/uuid"
 	"github.com/spf13/cast"

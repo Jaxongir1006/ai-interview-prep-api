@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"go-enterprise-blueprint/internal/modules/filevault/domain/file"
-	"go-enterprise-blueprint/internal/modules/filevault/infra/postgres"
-	"go-enterprise-blueprint/pkg/anymap"
-	"go-enterprise-blueprint/tests/state/database"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/domain/file"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/infra/postgres"
+	"github.com/jaxongir1006/hire-ready-api/pkg/anymap"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
 
 	"github.com/google/uuid"
 	"github.com/samber/lo"

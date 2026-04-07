@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"go-enterprise-blueprint/internal/modules/filevault/usecase/download"
-	"go-enterprise-blueprint/internal/modules/filevault/usecase/upload"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/usecase/download"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/usecase/upload"
 )
 
 type Container struct {

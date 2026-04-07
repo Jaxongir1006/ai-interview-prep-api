@@ -3,10 +3,10 @@ package getauthstats
 import (
 	"context"
 
-	"go-enterprise-blueprint/internal/modules/auth/domain"
-	"go-enterprise-blueprint/internal/modules/auth/domain/rbac"
-	"go-enterprise-blueprint/internal/modules/auth/domain/session"
-	"go-enterprise-blueprint/internal/modules/auth/domain/user"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/rbac"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/session"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/user"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/ucdef"

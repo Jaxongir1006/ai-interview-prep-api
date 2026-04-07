@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	"go-enterprise-blueprint/internal/modules/platform/domain/alerterror"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/domain/alerterror"
 
 	"github.com/code19m/errx"
 	"github.com/uptrace/bun"

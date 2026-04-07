@@ -6,8 +6,8 @@ import (
 	"errors"
 	"testing"
 
-	"go-enterprise-blueprint/pkg/uowbase"
-	"go-enterprise-blueprint/pkg/uowbase/pguowbase"
+	"github.com/jaxongir1006/hire-ready-api/pkg/uowbase"
+	"github.com/jaxongir1006/hire-ready-api/pkg/uowbase/pguowbase"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

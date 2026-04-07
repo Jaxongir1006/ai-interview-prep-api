@@ -2,7 +2,7 @@ package listtaskresults
 
 import (
 	"context"
-	"go-enterprise-blueprint/internal/modules/platform/domain"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/domain"
 	"time"
 
 	"github.com/code19m/errx"

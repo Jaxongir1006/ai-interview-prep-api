@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"go-enterprise-blueprint/pkg/anymap"
-	"go-enterprise-blueprint/tests/state/database"
+	"github.com/jaxongir1006/hire-ready-api/pkg/anymap"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
 
 	"github.com/google/uuid"
 	"github.com/samber/lo"

@@ -8,7 +8,7 @@ You are enhancing project documentation. The user will describe a concept, rule,
    - `docs/guidelines/` — development rules and coding standards
    - `docs/architecture/` — system architecture and codebase structure
    - `docs/specs/` — module specs, use cases, flows
-   - `CLAUDE.md` — agent-facing instructions
+   - `AGENTS.md` — agent-facing instructions
 
 2. **Read the entire target file.** Understand the current structure, sections, and flow.
 
@@ -28,7 +28,7 @@ You are enhancing project documentation. The user will describe a concept, rule,
    - Is anything redundant now? Remove duplication.
    - Does the file still flow well from top to bottom?
 
-6. **Sync the backend-guidelines skill.** After modifying any file in `docs/guidelines/`, `docs/architecture/codebase.md`, or `docs/specs/api/general.md`, you MUST update the corresponding section in `.claude/skills/backend-guidelines/SKILL.md`:
+6. **Sync the backend-guidelines skill.** After modifying any file in `docs/guidelines/`, `docs/architecture/codebase.md`, or `docs/specs/api/general.md`, you MUST update the corresponding section in `.codex/skills/backend-guidelines/SKILL.md`:
 
    **Mapping (all sections are in SKILL.md):**
    | Source docs | SKILL.md section |
@@ -54,7 +54,7 @@ You are enhancing project documentation. The user will describe a concept, rule,
 
    **Sync rules:**
    - The skill is a condensed, agent-optimized version — not a copy
-   - Maintain the concise style (no explanations Claude already knows)
+   - Maintain the concise style (no explanations Codex already knows)
    - Include all project-specific patterns and conventions
 
 ## Rules

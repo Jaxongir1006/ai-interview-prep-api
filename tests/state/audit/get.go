@@ -3,9 +3,9 @@ package audit
 import (
 	"testing"
 
-	"go-enterprise-blueprint/internal/modules/audit/domain/actionlog"
-	"go-enterprise-blueprint/internal/modules/audit/infra/postgres"
-	"go-enterprise-blueprint/tests/state/database"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/actionlog"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/infra/postgres"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
 )
 
 // GetActionLogByID retrieves an action log by ID.

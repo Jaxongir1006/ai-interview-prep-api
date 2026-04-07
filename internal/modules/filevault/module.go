@@ -1,15 +1,15 @@
 package filevault
 
 import (
-	"go-enterprise-blueprint/internal/modules/filevault/ctrl/http"
-	"go-enterprise-blueprint/internal/modules/filevault/domain"
-	"go-enterprise-blueprint/internal/modules/filevault/embassy"
-	"go-enterprise-blueprint/internal/modules/filevault/infra/postgres"
-	"go-enterprise-blueprint/internal/modules/filevault/usecase"
-	"go-enterprise-blueprint/internal/modules/filevault/usecase/download"
-	"go-enterprise-blueprint/internal/modules/filevault/usecase/upload"
-	"go-enterprise-blueprint/internal/portal"
-	"go-enterprise-blueprint/internal/portal/filevault"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/ctrl/http"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/domain"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/embassy"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/infra/postgres"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/usecase"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/usecase/download"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/usecase/upload"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal/filevault"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/filestore/miniowr"

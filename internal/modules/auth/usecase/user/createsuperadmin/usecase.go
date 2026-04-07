@@ -2,10 +2,10 @@ package createsuperadmin
 
 import (
 	"context"
-	"go-enterprise-blueprint/internal/modules/auth/domain"
-	"go-enterprise-blueprint/internal/modules/auth/domain/rbac"
-	"go-enterprise-blueprint/internal/modules/auth/domain/user"
-	"go-enterprise-blueprint/internal/portal/auth"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/rbac"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/user"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal/auth"
 
 	"github.com/code19m/errx"
 	"github.com/google/uuid"

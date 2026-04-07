@@ -2,7 +2,7 @@ package embassy
 
 import (
 	"context"
-	"go-enterprise-blueprint/internal/portal/filevault"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal/filevault"
 
 	"github.com/code19m/errx"
 )

@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	"go-enterprise-blueprint/internal/modules/auth/domain/rbac"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/rbac"
 
 	"github.com/rise-and-shine/pkg/repogen"
 	"github.com/uptrace/bun"

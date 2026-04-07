@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"go-enterprise-blueprint/internal/app"
+	"github.com/jaxongir1006/hire-ready-api/internal/app"
 
 	"github.com/rise-and-shine/pkg/observability/logger"
 	"github.com/spf13/cobra"

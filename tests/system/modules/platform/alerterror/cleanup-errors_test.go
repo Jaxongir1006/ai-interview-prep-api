@@ -7,12 +7,12 @@ import (
 	"testing"
 	"time"
 
-	"go-enterprise-blueprint/internal/portal/auth"
-	stateaudit "go-enterprise-blueprint/tests/state/audit"
-	stateauth "go-enterprise-blueprint/tests/state/auth"
-	"go-enterprise-blueprint/tests/state/database"
-	"go-enterprise-blueprint/tests/state/platform"
-	"go-enterprise-blueprint/tests/system/trigger"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal/auth"
+	stateaudit "github.com/jaxongir1006/hire-ready-api/tests/state/audit"
+	stateauth "github.com/jaxongir1006/hire-ready-api/tests/state/auth"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/platform"
+	"github.com/jaxongir1006/hire-ready-api/tests/system/trigger"
 
 	"github.com/stretchr/testify/assert"
 )

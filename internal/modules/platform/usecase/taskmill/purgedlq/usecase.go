@@ -3,10 +3,10 @@ package purgedlq
 import (
 	"context"
 
-	"go-enterprise-blueprint/internal/modules/platform/domain"
-	"go-enterprise-blueprint/internal/portal"
-	"go-enterprise-blueprint/internal/portal/audit"
-	portalplatform "go-enterprise-blueprint/internal/portal/platform"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/domain"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal/audit"
+	portalplatform "github.com/jaxongir1006/hire-ready-api/internal/portal/platform"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/ucdef"

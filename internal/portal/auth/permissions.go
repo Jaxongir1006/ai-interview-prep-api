@@ -1,6 +1,6 @@
 package auth
 
-import portalaudit "go-enterprise-blueprint/internal/portal/audit"
+import portalaudit "github.com/jaxongir1006/hire-ready-api/internal/portal/audit"
 
 const (
 	PermissionUserRead      = "auth:user:read"

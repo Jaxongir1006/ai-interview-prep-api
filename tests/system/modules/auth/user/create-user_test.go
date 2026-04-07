@@ -7,10 +7,10 @@ import (
 	"strings"
 	"testing"
 
-	stateaudit "go-enterprise-blueprint/tests/state/audit"
-	"go-enterprise-blueprint/tests/state/auth"
-	"go-enterprise-blueprint/tests/state/database"
-	"go-enterprise-blueprint/tests/system/trigger"
+	stateaudit "github.com/jaxongir1006/hire-ready-api/tests/state/audit"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/auth"
+	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
+	"github.com/jaxongir1006/hire-ready-api/tests/system/trigger"
 
 	"github.com/rise-and-shine/pkg/hasher"
 	"github.com/stretchr/testify/assert"

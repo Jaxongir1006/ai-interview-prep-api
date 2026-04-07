@@ -1,13 +1,13 @@
 package app
 
 import (
-	"go-enterprise-blueprint/i18n"
-	"go-enterprise-blueprint/internal/modules/audit"
-	"go-enterprise-blueprint/internal/modules/auth"
-	"go-enterprise-blueprint/internal/modules/filevault"
-	"go-enterprise-blueprint/internal/modules/platform"
-	"go-enterprise-blueprint/internal/portal"
-	"go-enterprise-blueprint/pkg/baseserver"
+	"github.com/jaxongir1006/hire-ready-api/i18n"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform"
+	"github.com/jaxongir1006/hire-ready-api/internal/portal"
+	"github.com/jaxongir1006/hire-ready-api/pkg/baseserver"
 	"os"
 	"os/signal"
 	"syscall"

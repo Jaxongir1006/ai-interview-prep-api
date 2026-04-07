@@ -1,7 +1,7 @@
 package http
 
 import (
-	"go-enterprise-blueprint/internal/modules/filevault/usecase/upload"
+	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/usecase/upload"
 
 	"github.com/code19m/errx"
 	"github.com/gofiber/fiber/v2"
