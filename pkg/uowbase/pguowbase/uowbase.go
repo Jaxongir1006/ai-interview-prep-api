@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"errors"
 
-	"github.com/jaxongir1006/hire-ready-api/pkg/uowbase"
+	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/uowbase"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/observability/logger"

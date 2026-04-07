@@ -2,7 +2,7 @@
 name: system-analyst
 description: Writes and maintains use case documents, module overviews, ERDs, flow docs, and specs. Use for documentation work — creating UC docs from templates, updating specs, maintaining doc-code sync, and designing API contracts.
 tools: Read, Write, Edit, Glob, Grep
-model: sonnet
+model: gpt-5.4
 skills: backend-guidelines
 ---
 

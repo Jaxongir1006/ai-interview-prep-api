@@ -1,10 +1,10 @@
 package postgres
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/actionlog"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/statuschangelog"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/uow"
-	"github.com/jaxongir1006/hire-ready-api/pkg/uowbase/pguowbase"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit/domain/actionlog"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit/domain/statuschangelog"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit/domain/uow"
+	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/uowbase/pguowbase"
 
 	"github.com/uptrace/bun"
 )

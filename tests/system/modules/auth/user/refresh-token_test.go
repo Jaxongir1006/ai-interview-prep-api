@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jaxongir1006/hire-ready-api/tests/state/auth"
-	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
-	"github.com/jaxongir1006/hire-ready-api/tests/system/trigger"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/auth"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/database"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/system/trigger"
 
 	"github.com/stretchr/testify/assert"
 )

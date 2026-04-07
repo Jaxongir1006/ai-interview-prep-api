@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/usecase/actionlog/getactionlogs"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/usecase/statuschangelog/getstatuschangelogs"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit/usecase/actionlog/getactionlogs"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit/usecase/statuschangelog/getstatuschangelogs"
 )
 
 type Container struct {

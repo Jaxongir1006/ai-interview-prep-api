@@ -1,15 +1,15 @@
 package filevault
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/ctrl/http"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/domain"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/embassy"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/infra/postgres"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/usecase"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/usecase/download"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/usecase/upload"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal/filevault"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/ctrl/http"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/domain"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/embassy"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/infra/postgres"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/usecase"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/usecase/download"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/usecase/upload"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/filevault"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/filestore/miniowr"

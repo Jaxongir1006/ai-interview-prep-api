@@ -3,9 +3,9 @@ package audit
 import (
 	"testing"
 
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/actionlog"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/infra/postgres"
-	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit/domain/actionlog"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit/infra/postgres"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/database"
 )
 
 // GetActionLogByID retrieves an action log by ID.

@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/migrations"
+	"github.com/Jaxongir1006/ai-interview-prep-api/migrations"
 
 	"github.com/code19m/errx"
 	"github.com/pressly/goose/v3"

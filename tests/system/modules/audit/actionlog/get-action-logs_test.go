@@ -7,11 +7,11 @@ import (
 	"testing"
 	"time"
 
-	portalaudit "github.com/jaxongir1006/hire-ready-api/internal/portal/audit"
-	"github.com/jaxongir1006/hire-ready-api/tests/state/audit"
-	"github.com/jaxongir1006/hire-ready-api/tests/state/auth"
-	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
-	"github.com/jaxongir1006/hire-ready-api/tests/system/trigger"
+	portalaudit "github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/audit"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/audit"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/auth"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/database"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/system/trigger"
 
 	"github.com/google/uuid"
 	"github.com/samber/lo"

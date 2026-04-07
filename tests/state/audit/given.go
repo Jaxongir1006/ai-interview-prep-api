@@ -4,11 +4,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/actionlog"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/statuschangelog"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/infra/postgres"
-	"github.com/jaxongir1006/hire-ready-api/pkg/anymap"
-	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit/domain/actionlog"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit/domain/statuschangelog"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit/infra/postgres"
+	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/anymap"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/database"
 
 	"github.com/google/uuid"
 	"github.com/spf13/cast"

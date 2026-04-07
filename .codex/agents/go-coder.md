@@ -2,7 +2,7 @@
 name: go-coder
 description: Implements Go backend code — use cases, controllers, repositories, infrastructure, domain entities, DI containers, PBLC components, and migrations. Use for all code implementation work following the project's architecture and conventions.
 tools: Read, Write, Edit, Bash, Glob, Grep
-model: sonnet
+model: gpt-5.4
 skills: backend-guidelines
 ---
 

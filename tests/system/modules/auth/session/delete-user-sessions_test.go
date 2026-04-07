@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"testing"
 
-	stateaudit "github.com/jaxongir1006/hire-ready-api/tests/state/audit"
-	"github.com/jaxongir1006/hire-ready-api/tests/state/auth"
-	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
-	"github.com/jaxongir1006/hire-ready-api/tests/system/trigger"
+	stateaudit "github.com/Jaxongir1006/ai-interview-prep-api/tests/state/audit"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/auth"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/database"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/system/trigger"
 
 	"github.com/stretchr/testify/assert"
 )

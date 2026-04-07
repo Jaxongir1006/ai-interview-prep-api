@@ -1,13 +1,13 @@
 package app
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/i18n"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal"
-	"github.com/jaxongir1006/hire-ready-api/pkg/baseserver"
+	"github.com/Jaxongir1006/ai-interview-prep-api/i18n"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal"
+	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/baseserver"
 	"os"
 	"os/signal"
 	"syscall"

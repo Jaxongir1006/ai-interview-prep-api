@@ -1,11 +1,11 @@
 package portal
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/portal/audit"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal/auth"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal/esign"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal/filevault"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal/platform"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/audit"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/auth"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/esign"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/filevault"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/platform"
 )
 
 // Container holds every modules portal interface.

@@ -1,8 +1,8 @@
 package domain
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/domain/alerterror"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/domain/uow"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/domain/alerterror"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/domain/uow"
 
 	"github.com/rise-and-shine/pkg/taskmill/console"
 )

@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/database"
 
 	"github.com/rise-and-shine/pkg/taskmill/enqueuer"
 	"github.com/uptrace/bun"

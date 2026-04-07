@@ -3,11 +3,11 @@ package enableuser
 import (
 	"context"
 
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/user"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal/audit"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal/auth"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/user"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/audit"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/auth"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/ucdef"

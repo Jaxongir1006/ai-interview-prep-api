@@ -1,10 +1,10 @@
 package app
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform"
 
 	"github.com/rise-and-shine/pkg/cfgloader"
 	"github.com/rise-and-shine/pkg/http/server"

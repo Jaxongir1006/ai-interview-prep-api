@@ -1,11 +1,11 @@
 package postgres
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/rbac"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/session"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/uow"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/user"
-	"github.com/jaxongir1006/hire-ready-api/pkg/uowbase/pguowbase"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/rbac"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/uow"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/user"
+	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/uowbase/pguowbase"
 
 	"github.com/uptrace/bun"
 )

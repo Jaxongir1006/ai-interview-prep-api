@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/domain"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/domain/alerterror"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/domain"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/domain/alerterror"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/pagination"

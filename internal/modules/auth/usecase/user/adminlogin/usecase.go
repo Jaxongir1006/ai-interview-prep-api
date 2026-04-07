@@ -2,13 +2,13 @@ package adminlogin
 
 import (
 	"context"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/session"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/uow"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/user"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal/audit"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal/auth"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/uow"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/user"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/audit"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/auth"
 	"time"
 
 	"github.com/code19m/errx"

@@ -3,10 +3,10 @@ package purgequeue
 import (
 	"context"
 
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/domain"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal/audit"
-	portalplatform "github.com/jaxongir1006/hire-ready-api/internal/portal/platform"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/domain"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/audit"
+	portalplatform "github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/platform"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/ucdef"

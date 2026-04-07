@@ -3,7 +3,7 @@ name: reviewer
 description: Reviews code against project guidelines and conventions. Use after implementation to catch violations — checks layer boundaries, naming, error handling, doc-code sync, and runs lint/tests. Read-only, cannot modify files.
 tools: Read, Glob, Grep, Bash
 disallowedTools: Write, Edit
-model: sonnet
+model: gpt-5.4
 skills: backend-guidelines
 ---
 

@@ -4,8 +4,8 @@ import (
 	"context"
 	"io"
 
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/domain"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/domain/file"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/domain"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/domain/file"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/filestore"

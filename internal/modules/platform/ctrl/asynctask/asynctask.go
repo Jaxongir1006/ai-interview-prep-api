@@ -3,7 +3,7 @@ package asynctask
 import (
 	"context"
 	"errors"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase"
 	"time"
 
 	"github.com/code19m/errx"

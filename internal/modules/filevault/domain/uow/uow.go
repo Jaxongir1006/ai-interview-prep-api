@@ -1,8 +1,8 @@
 package uow
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/domain/file"
-	"github.com/jaxongir1006/hire-ready-api/pkg/uowbase"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/domain/file"
+	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/uowbase"
 )
 
 type Factory = uowbase.Factory[UnitOfWork]

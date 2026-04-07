@@ -7,12 +7,12 @@ import (
 	"testing"
 	"time"
 
-	portalauth "github.com/jaxongir1006/hire-ready-api/internal/portal/auth"
-	stateaudit "github.com/jaxongir1006/hire-ready-api/tests/state/audit"
-	"github.com/jaxongir1006/hire-ready-api/tests/state/auth"
-	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
-	"github.com/jaxongir1006/hire-ready-api/tests/state/platform"
-	"github.com/jaxongir1006/hire-ready-api/tests/system/trigger"
+	portalauth "github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/auth"
+	stateaudit "github.com/Jaxongir1006/ai-interview-prep-api/tests/state/audit"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/auth"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/database"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/platform"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/system/trigger"
 
 	"github.com/stretchr/testify/assert"
 )

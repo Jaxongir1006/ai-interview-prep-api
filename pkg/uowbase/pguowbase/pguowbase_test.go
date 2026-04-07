@@ -6,8 +6,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/jaxongir1006/hire-ready-api/pkg/uowbase"
-	"github.com/jaxongir1006/hire-ready-api/pkg/uowbase/pguowbase"
+	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/uowbase"
+	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/uowbase/pguowbase"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

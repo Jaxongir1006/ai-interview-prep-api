@@ -1,8 +1,8 @@
 package embassy
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/domain"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal/filevault"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/domain"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/filevault"
 )
 
 type embassy struct {

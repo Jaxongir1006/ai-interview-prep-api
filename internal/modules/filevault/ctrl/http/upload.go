@@ -1,7 +1,7 @@
 package http
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/usecase/upload"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/usecase/upload"
 
 	"github.com/code19m/errx"
 	"github.com/gofiber/fiber/v2"

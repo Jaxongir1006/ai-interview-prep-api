@@ -1,7 +1,7 @@
 package anymap_test
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/pkg/anymap"
+	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/anymap"
 	"testing"
 	"time"
 

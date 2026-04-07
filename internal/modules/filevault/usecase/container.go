@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/usecase/download"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/usecase/upload"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/usecase/download"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/usecase/upload"
 )
 
 type Container struct {

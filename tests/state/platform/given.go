@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jaxongir1006/hire-ready-api/pkg/anymap"
-	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
+	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/anymap"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/database"
 
 	"github.com/google/uuid"
 	"github.com/samber/lo"

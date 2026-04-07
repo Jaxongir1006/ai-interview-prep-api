@@ -1,20 +1,20 @@
 package usecase
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/alerterror/cleanuperrors"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/alerterror/geterror"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/alerterror/geterrorstats"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/alerterror/listerrors"
-	tmcleanup "github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/cleanupresults"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/getqueuestats"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/listdlqtasks"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/listqueues"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/listschedules"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/listtaskresults"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/purgedlq"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/purgequeue"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/requeuefromdlq"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase/taskmill/triggerschedule"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase/alerterror/cleanuperrors"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase/alerterror/geterror"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase/alerterror/geterrorstats"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase/alerterror/listerrors"
+	tmcleanup "github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase/taskmill/cleanupresults"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase/taskmill/getqueuestats"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase/taskmill/listdlqtasks"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase/taskmill/listqueues"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase/taskmill/listschedules"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase/taskmill/listtaskresults"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase/taskmill/purgedlq"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase/taskmill/purgequeue"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase/taskmill/requeuefromdlq"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase/taskmill/triggerschedule"
 )
 
 type Container struct {

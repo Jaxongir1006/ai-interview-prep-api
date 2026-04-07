@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/domain/file"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/infra/postgres"
-	"github.com/jaxongir1006/hire-ready-api/pkg/anymap"
-	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/domain/file"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/infra/postgres"
+	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/anymap"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/database"
 
 	"github.com/google/uuid"
 	"github.com/samber/lo"

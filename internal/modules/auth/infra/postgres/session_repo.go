@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/session"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/repogen"

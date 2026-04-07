@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/domain/alerterror"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/domain/alerterror"
 
 	"github.com/code19m/errx"
 	"github.com/uptrace/bun"

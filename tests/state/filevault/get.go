@@ -3,9 +3,9 @@ package filevault
 import (
 	"testing"
 
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/domain/file"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/filevault/infra/postgres"
-	"github.com/jaxongir1006/hire-ready-api/tests/state/database"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/domain/file"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault/infra/postgres"
+	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/database"
 )
 
 // GetFileByID retrieves a file by ID.

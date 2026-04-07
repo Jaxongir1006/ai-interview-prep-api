@@ -1,10 +1,10 @@
 package uow
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/rbac"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/session"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/domain/user"
-	"github.com/jaxongir1006/hire-ready-api/pkg/uowbase"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/rbac"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/user"
+	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/uowbase"
 )
 
 // Factory defines an interface for creating new instances of the UnitOfWork.

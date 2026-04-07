@@ -1,9 +1,9 @@
 package postgres
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/domain/uow"
-	"github.com/jaxongir1006/hire-ready-api/pkg/uowbase"
-	"github.com/jaxongir1006/hire-ready-api/pkg/uowbase/pguowbase"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/domain/uow"
+	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/uowbase"
+	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/uowbase/pguowbase"
 
 	"github.com/uptrace/bun"
 )

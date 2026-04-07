@@ -1,6 +1,6 @@
 package auth
 
-import portalaudit "github.com/jaxongir1006/hire-ready-api/internal/portal/audit"
+import portalaudit "github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/audit"
 
 const (
 	PermissionUserRead      = "auth:user:read"

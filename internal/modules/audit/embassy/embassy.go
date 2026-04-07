@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/actionlog"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/domain/statuschangelog"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal/audit"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit/domain"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit/domain/actionlog"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit/domain/statuschangelog"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/audit"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/mask"

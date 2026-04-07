@@ -1,9 +1,9 @@
 package http
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal/auth"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/auth"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/rise-and-shine/pkg/http/server"

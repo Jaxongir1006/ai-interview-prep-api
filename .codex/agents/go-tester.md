@@ -2,7 +2,7 @@
 name: go-tester
 description: Writes unit tests (pkg/ layer) and system tests (use case coverage). Use for all testing work — writing GIVEN-WHEN-THEN system tests, creating state helpers, writing unit tests for shared packages, and running test suites.
 tools: Read, Write, Edit, Bash, Glob, Grep
-model: sonnet
+model: gpt-5.4
 skills: backend-guidelines
 ---
 

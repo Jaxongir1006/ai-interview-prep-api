@@ -1,10 +1,10 @@
 package http
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/audit/usecase"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal"
-	portalaudit "github.com/jaxongir1006/hire-ready-api/internal/portal/audit"
-	"github.com/jaxongir1006/hire-ready-api/internal/portal/auth"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit/usecase"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal"
+	portalaudit "github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/audit"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/auth"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/rise-and-shine/pkg/http/server"

@@ -5,7 +5,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/auth/usecase/user/createsuperadmin"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/createsuperadmin"
 	"os"
 	"strings"
 	"syscall"

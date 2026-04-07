@@ -4,6 +4,7 @@
 erDiagram
     users {
         VARCHAR id PK
+        VARCHAR email UK "primary unique login/email identity"
         VARCHAR username UK "nullable"
         VARCHAR password_hash "nullable"
         BOOLEAN is_active

@@ -2,7 +2,7 @@ package listqueues
 
 import (
 	"context"
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/domain"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/domain"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/ucdef"

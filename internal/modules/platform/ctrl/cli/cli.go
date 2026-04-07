@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"github.com/jaxongir1006/hire-ready-api/internal/modules/platform/usecase"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase"
 )
 
 type Controller struct {
