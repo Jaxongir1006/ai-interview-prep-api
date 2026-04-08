@@ -1,5 +1,5 @@
 service:
-  name: blueprint
+  name: interview-prep
   version: v0.1.0-test
 
 logger:
@@ -20,7 +20,7 @@ postgres:
   port: 5432
   user: postgres
   password: postgres
-  database: test_blueprint # IMPORTANT
+  database: test_interview-prep # IMPORTANT
 
 kafka_broker:
   brokers: localhost:9092
@@ -44,7 +44,7 @@ filevault:
     endpoint: localhost:9000
     access_key: minioadmin
     secret_key: minioadmin
-    bucket: blueprint
+    bucket: interview-prep
 
 audit:
   worker_poll_interval: 100ms

@@ -5,11 +5,12 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/createsuperadmin"
 	"os"
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/createsuperadmin"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/meta"

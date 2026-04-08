@@ -12,7 +12,9 @@ func NewUserRepo(idb bun.IDB) user.Repo {
 		WithSchemaName(schemaName).
 		WithNotFoundCode(user.CodeUserNotFound).
 		WithConflictCodesMap(map[string]string{
-			"users_username_key": user.CodeUsernameConflict,
+			"users_username_key":    user.CodeUsernameConflict,
+			"uk_users_email":        user.CodeEmailConflict,
+			"uk_users_phone_number": user.CodePhoneNumberConflict,
 		}).
 		WithFilterFunc(userFilterFunc).
 		Build()
@@ -24,6 +26,15 @@ func userFilterFunc(q *bun.SelectQuery, f user.Filter) *bun.SelectQuery {
 	}
 	if f.Username != nil {
 		q = q.Where("username = ?", *f.Username)
+	}
+	if f.Email != nil {
+		q = q.Where("email = ?", *f.Email)
+	}
+	if f.PhoneNumber != nil {
+		q = q.Where("phone_number = ?", *f.PhoneNumber)
+	}
+	if f.IsVerified != nil {
+		q = q.Where("is_verified = ?", *f.IsVerified)
 	}
 	if f.IsActive != nil {
 		q = q.Where("is_active = ?", *f.IsActive)

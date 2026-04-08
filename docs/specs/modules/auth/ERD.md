@@ -3,12 +3,15 @@
 ```mermaid
 erDiagram
     users {
-        VARCHAR id PK
-        VARCHAR email UK "primary unique login/email identity"
-        VARCHAR username UK "nullable"
-        VARCHAR password_hash "nullable"
+        VARCHAR id PK "UUID-formatted string identifier"
+        VARCHAR username UK "nullable, admin login identifier"
+        VARCHAR email UK "nullable, public user login identity"
+        VARCHAR phone_number UK "nullable, public user contact number"
+        VARCHAR password_hash "nullable, supports future external auth providers"
+        BOOLEAN is_verified "whether the user's primary public identity is verified"
         BOOLEAN is_active
-        TIMESTAMPTZ last_active_at
+        TIMESTAMPTZ last_login_at "updated on successful interactive login"
+        TIMESTAMPTZ last_active_at "updated on login and token refresh"
         TIMESTAMPTZ created_at
         TIMESTAMPTZ updated_at
     }
@@ -64,3 +67,10 @@ erDiagram
     roles ||--o{ role_permissions : "has"
     roles ||--o{ user_roles : "assigned via"
 ```
+
+## Notes
+
+- `username`, `email`, and `phone_number` are nullable to support different actor types in the same `users` table
+- Admin accounts authenticate with `username + password`; public users authenticate with `email + password`
+- Business-profile and interview-preparation data for public users should live in a separate module such as `candidate`
+- When implementing the migration, follow [Migration Guideline](../../../guidelines/13_db_migrations.md): create tables first, create indexes second, then add foreign keys and check constraints with `ALTER TABLE`

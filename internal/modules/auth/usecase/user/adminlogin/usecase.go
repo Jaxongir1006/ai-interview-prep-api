@@ -2,6 +2,8 @@ package adminlogin
 
 import (
 	"context"
+	"time"
+
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/uow"
@@ -9,7 +11,6 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/audit"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/auth"
-	"time"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/hasher"
@@ -127,8 +128,10 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 		return nil, errx.Wrap(err)
 	}
 
-	// Update user's last_active_at timestamp
-	u.LastActiveAt = lo.ToPtr(time.Now())
+	// Update user's last_login_at and last_active_at timestamps
+	now := time.Now()
+	u.LastLoginAt = lo.ToPtr(now)
+	u.LastActiveAt = lo.ToPtr(now)
 	_, err = uow.User().Update(ctx, u)
 	if err != nil {
 		return nil, errx.Wrap(err)

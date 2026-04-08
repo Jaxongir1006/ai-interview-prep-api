@@ -1,9 +1,10 @@
 package anymap_test
 
 import (
-	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/anymap"
 	"testing"
 	"time"
+
+	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/anymap"
 
 	"github.com/stretchr/testify/assert"
 )

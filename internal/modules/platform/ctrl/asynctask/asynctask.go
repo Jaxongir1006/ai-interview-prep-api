@@ -3,8 +3,9 @@ package asynctask
 import (
 	"context"
 	"errors"
-	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase"
 	"time"
+
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform/usecase"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/observability/logger"

@@ -1,16 +1,19 @@
 package app
 
 import (
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/Jaxongir1006/ai-interview-prep-api/i18n"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/analytics"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/candidate"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal"
 	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/baseserver"
-	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/code19m/errx"
 	"github.com/gofiber/fiber/v2"
@@ -144,6 +147,20 @@ func (a *app) initModules() error {
 		return errx.Wrap(err)
 	}
 
+	a.analytics, err = analytics.New(
+		a.cfg.Analytics, a.dbConn, portalContainer, a.httpServer,
+	)
+	if err != nil {
+		return errx.Wrap(err)
+	}
+
+	a.candidate, err = candidate.New(
+		a.cfg.Candidate, a.dbConn, portalContainer, a.httpServer,
+	)
+	if err != nil {
+		return errx.Wrap(err)
+	}
+
 	// Filevault Module
 	a.filevault, err = filevault.New(
 		a.cfg.Filevault, a.dbConn, portalContainer, a.httpServer,
@@ -163,7 +180,9 @@ func (a *app) initModules() error {
 	}
 
 	// Set all portal implementations here...
+	portalContainer.SetAnalyticsPortal(a.analytics.Portal())
 	portalContainer.SetAuditPortal(a.audit.Portal())
+	portalContainer.SetCandidatePortal(a.candidate.Portal())
 	portalContainer.SetFilevaultPortal(a.filevault.Portal())
 	portalContainer.SetPlatformPortal(a.platform.Portal())
 	// portalContainer.SetEsignPortal(esign.Portal())

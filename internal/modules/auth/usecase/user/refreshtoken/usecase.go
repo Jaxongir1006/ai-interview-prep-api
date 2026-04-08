@@ -2,10 +2,11 @@ package refreshtoken
 
 import (
 	"context"
+	"time"
+
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/user"
-	"time"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/meta"

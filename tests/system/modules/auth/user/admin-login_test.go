@@ -24,6 +24,7 @@ func TestAdminLogin_Success(t *testing.T) {
 	u := users[0]
 
 	sessionCountBefore := auth.SessionCount(t, u.ID)
+	assert.Nil(t, u.LastLoginAt, "last_login_at should be nil initially")
 	assert.Nil(t, u.LastActiveAt, "last_active_at should be nil initially")
 
 	// WHEN
@@ -45,8 +46,9 @@ func TestAdminLogin_Success(t *testing.T) {
 	sessionCountAfter := auth.SessionCount(t, u.ID)
 	assert.Equal(t, sessionCountBefore+1, sessionCountAfter, "one new session should be created")
 
-	// LastActiveAt updated
+	// LastLoginAt and LastActiveAt updated
 	updatedUser := auth.GetUserByID(t, u.ID)
+	assert.NotNil(t, updatedUser.LastLoginAt, "last_login_at should be updated after login")
 	assert.NotNil(t, updatedUser.LastActiveAt, "last_active_at should be updated after login")
 
 	// Verify audit log with correct user_id

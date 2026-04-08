@@ -23,8 +23,12 @@ import (
 // Each map in data represents a user with the following valid keys:
 //   - id: string (default: generated UUID)
 //   - username: string (default: "testadmin")
+//   - email: string (default: nil)
+//   - phone_number: string (default: nil)
 //   - password: string (default: TestPassword1) - will be hashed
+//   - is_verified: bool (default: false)
 //   - is_active: bool (default: true)
+//   - last_login_at: *time.Time (default: nil)
 //   - last_active_at: *time.Time (default: nil)
 //
 // Returns the created user entities.
@@ -65,8 +69,12 @@ func GivenUsers(t *testing.T, data ...map[string]any) []user.User {
 		u := &user.User{
 			ID:           anymap.String(d, "id", uuid.NewString()),
 			Username:     anymap.StringPtr(d, "username", lo.ToPtr("testadmin")),
+			Email:        anymap.StringPtr(d, "email", nil),
+			PhoneNumber:  anymap.StringPtr(d, "phone_number", nil),
 			PasswordHash: passwordHash,
+			IsVerified:   anymap.Bool(d, "is_verified", false),
 			IsActive:     anymap.Bool(d, "is_active", true),
+			LastLoginAt:  anymap.TimePtr(d, "last_login_at", nil),
 			LastActiveAt: anymap.TimePtr(d, "last_active_at", nil),
 		}
 

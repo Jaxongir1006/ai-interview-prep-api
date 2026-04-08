@@ -4,7 +4,10 @@
 
 The system uses token-based authentication with session-backed access and refresh tokens, combined with Role-Based Access Control (RBAC) for authorization. There are no magic bypasses — every user, including the superadmin, is authorized through explicitly assigned permissions.
 
-The authentication described here covers the **admin panel** only (username + password login). User-facing authentication (e.g., OTP, OAuth, SSO) is outside the scope of this blueprint and is implemented by derived projects.
+This derived project supports two credential modes in the same `auth.users` table:
+
+- Admin and operator accounts authenticate with `username + password`
+- Public platform users authenticate with `email + password`
 
 ## Authentication
 
@@ -23,10 +26,11 @@ sequenceDiagram
     API->>API: Verify password hash
     API->>DB: Enforce max active sessions (evict LRU if exceeded)
     API->>DB: Create session (access + refresh tokens, IP, user_agent)
-    API->>DB: Update user last_active_at
+    API->>DB: Update user last_login_at and last_active_at
     API-->>Client: {access_token, refresh_token, expiry timestamps}
 ```
 
+- Admin accounts use `username` as the login identifier. `email` and `phone_number` may be null.
 - Access token TTL: 15 minutes (default)
 - Refresh token TTL: 30 days (default)
 - Max active sessions per user: 5 (default) — on login, least recently used sessions are evicted if the limit is exceeded
@@ -70,11 +74,20 @@ Expired sessions (where the refresh token has expired) are deleted hourly by the
 
 ### User-Facing Authentication
 
-<!-- TODO: Derived project — document your user-facing authentication flow here.
-     Examples: OTP via SMS/email, OAuth 2.0, SSO, magic links, etc.
-     Describe: login flow, identity verification steps, session creation, token format differences (if any). -->
+### Public User Registration
 
-_Not provided by the blueprint. Implement in derived project._
+- Public users register with `email + password` and may additionally provide `phone_number`
+- Registration creates a row in `auth.users`
+- `is_verified` tracks whether the public user's primary contact identity has been verified
+- Candidate profile creation should be handled by the `candidate` module, not the `auth` module
+
+### Public User Login
+
+- Public users authenticate with `email + password`
+- On successful login, the system creates a session and updates both `last_login_at` and `last_active_at`
+- Public users may exist without any administrative permissions; authorization remains permission-based where applicable
+
+Detailed public registration and login use cases should be documented as dedicated use case specs in the derived project.
 
 ## Authorization
 
@@ -114,7 +127,7 @@ sequenceDiagram
 
 | Level            | Middleware                             | Example endpoints                     |
 | ---------------- | -------------------------------------- | ------------------------------------- |
-| Unauthenticated  | None                                   | `admin-login`, `refresh-token`        |
+| Unauthenticated  | None                                   | `admin-login`, `login`, `register`, `refresh-token` |
 | Authenticated    | `AuthMiddleware`                       | `logout`, `get-my-sessions`           |
 | Permission-gated | `AuthMiddleware` + `RequirePermission` | `create-user`, `set-role-permissions` |
 

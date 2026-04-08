@@ -1,8 +1,10 @@
 package app
 
 import (
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/analytics"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/audit"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/candidate"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform"
 
@@ -39,6 +41,10 @@ type Config struct {
 
 	Audit audit.Config `yaml:"audit"`
 
+	Analytics analytics.Config `yaml:"analytics"`
+
+	Candidate candidate.Config `yaml:"candidate"`
+
 	Filevault filevault.Config `yaml:"filevault"`
 
 	Platform platform.Config `yaml:"platform"`
@@ -54,6 +60,8 @@ type app struct {
 
 	auth      *auth.Module
 	audit     *audit.Module
+	analytics *analytics.Module
+	candidate *candidate.Module
 	filevault *filevault.Module
 	platform  *platform.Module
 }

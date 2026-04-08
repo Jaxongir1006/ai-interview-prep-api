@@ -48,7 +48,7 @@ Authenticates a user with admin permissions and creates a session with access an
 
 - Create session record with tokens and meta info (IP, user_agent)
 
-- Update user's last_active_at timestamp
+- Update user's last_login_at and last_active_at timestamps
 
 - Record audit log
 

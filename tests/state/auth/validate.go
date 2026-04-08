@@ -7,8 +7,12 @@ var (
 	validUserKeys = map[string]bool{
 		"id":             true,
 		"username":       true,
+		"email":          true,
+		"phone_number":   true,
 		"password":       true, // will be hashed to password_hash
+		"is_verified":    true,
 		"is_active":      true,
+		"last_login_at":  true,
 		"last_active_at": true,
 	}
 
