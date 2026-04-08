@@ -16,6 +16,17 @@ erDiagram
         TIMESTAMPTZ updated_at
     }
 
+    oauth_accounts {
+        BIGSERIAL id PK
+        VARCHAR user_id FK
+        VARCHAR provider "google or github"
+        VARCHAR provider_user_id "provider-side stable user identifier"
+        VARCHAR provider_email "nullable, email returned by provider"
+        TIMESTAMPTZ last_login_at "updated on successful OAuth login"
+        TIMESTAMPTZ created_at
+        TIMESTAMPTZ updated_at
+    }
+
     roles {
         BIGSERIAL id PK
         VARCHAR name UK
@@ -61,6 +72,7 @@ erDiagram
         TIMESTAMPTZ updated_at
     }
 
+    users ||--o{ oauth_accounts : "linked to"
     users ||--o{ user_roles : "has"
     users ||--o{ user_permissions : "has"
     users ||--o{ sessions : "has"
@@ -72,5 +84,7 @@ erDiagram
 
 - `username`, `email`, and `phone_number` are nullable to support different actor types in the same `users` table
 - Admin accounts authenticate with `username + password`; public users authenticate with `email + password`
+- Public users may alternatively authenticate through linked `oauth_accounts` for Google and GitHub
+- `oauth_accounts` should enforce uniqueness for `(provider, provider_user_id)`
 - Business-profile and interview-preparation data for public users should live in a separate module such as `candidate`
 - When implementing the migration, follow [Migration Guideline](../../../guidelines/13_db_migrations.md): create tables first, create indexes second, then add foreign keys and check constraints with `ALTER TABLE`

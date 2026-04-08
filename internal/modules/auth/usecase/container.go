@@ -24,15 +24,26 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/disableuser"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/enableuser"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/getauthstats"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/getme"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/getusers"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/githuboauthlogin"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/googleoauthlogin"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/login"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/logout"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/refreshtoken"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/register"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/updateuser"
 )
 
+//nolint:dupl // container fields intentionally mirror constructor args for DI clarity
 type Container struct {
 	// Self-service
 	adminLogin       adminlogin.UseCase
+	register         register.UseCase
+	login            login.UseCase
+	getMe            getme.UseCase
+	googleOAuthLogin googleoauthlogin.UseCase
+	gitHubOAuthLogin githuboauthlogin.UseCase
 	refreshToken     refreshtoken.UseCase
 	logout           logout.UseCase
 	changeMyPassword changemypassword.UseCase
@@ -69,8 +80,14 @@ type Container struct {
 	deleteUserSessions   deleteusersessions.UseCase
 }
 
+//nolint:dupl // constructor args intentionally mirror container fields for DI clarity
 func NewContainer(
 	adminLogin adminlogin.UseCase,
+	register register.UseCase,
+	login login.UseCase,
+	getMe getme.UseCase,
+	googleOAuthLogin googleoauthlogin.UseCase,
+	gitHubOAuthLogin githuboauthlogin.UseCase,
 	refreshToken refreshtoken.UseCase,
 	logout logout.UseCase,
 	changeMyPassword changemypassword.UseCase,
@@ -100,6 +117,11 @@ func NewContainer(
 ) *Container {
 	return &Container{
 		adminLogin:           adminLogin,
+		register:             register,
+		login:                login,
+		getMe:                getMe,
+		googleOAuthLogin:     googleOAuthLogin,
+		gitHubOAuthLogin:     gitHubOAuthLogin,
 		refreshToken:         refreshToken,
 		logout:               logout,
 		changeMyPassword:     changeMyPassword,
@@ -132,6 +154,11 @@ func NewContainer(
 // --- Self-service ---
 
 func (c *Container) AdminLogin() adminlogin.UseCase             { return c.adminLogin }
+func (c *Container) Register() register.UseCase                 { return c.register }
+func (c *Container) Login() login.UseCase                       { return c.login }
+func (c *Container) GetMe() getme.UseCase                       { return c.getMe }
+func (c *Container) GoogleOAuthLogin() googleoauthlogin.UseCase { return c.googleOAuthLogin }
+func (c *Container) GitHubOAuthLogin() githuboauthlogin.UseCase { return c.gitHubOAuthLogin }
 func (c *Container) RefreshToken() refreshtoken.UseCase         { return c.refreshToken }
 func (c *Container) Logout() logout.UseCase                     { return c.logout }
 func (c *Container) ChangeMyPassword() changemypassword.UseCase { return c.changeMyPassword }

@@ -10,8 +10,8 @@ erDiagram
         VARCHAR full_name "nullable"
         TEXT bio "nullable"
         VARCHAR location "nullable"
-        VARCHAR target_role "interview target role"
-        VARCHAR experience_level "junior, mid, senior"
+        VARCHAR target_role "nullable until onboarding is completed"
+        VARCHAR experience_level "nullable, junior, mid, senior"
         INT interview_goal_per_week "default 3"
         TIMESTAMPTZ created_at
         TIMESTAMPTZ updated_at
@@ -35,10 +35,11 @@ The candidate tables reside in the `candidate` schema.
 - `candidate_profiles.user_id` references `auth.users(id)` and is unique, enforcing a one-to-one relationship
 - `candidate_topic_preferences` stores one row per preferred topic; do not store preferred topics as JSONB on the profile row
 - `candidate_topic_preferences.topic_key` is a stable topic identifier, allowing the candidate module to stay decoupled from future question-bank storage details
-- `experience_level` is constrained to `junior`, `mid`, or `senior`
+- `experience_level` is constrained to `junior`, `mid`, or `senior` when present
 - `interview_goal_per_week` is constrained to be non-negative
 - `priority` is constrained to be non-negative
 - Candidate profile data is intentionally limited to stable, user-editable fields
+- A profile may be created with only baseline registration data and completed later through profile/onboarding use cases
 - Derived metrics such as streaks, interview counts, average scores, strengths, and weaknesses should not be stored here
 - Profile photo/avatar should be stored through `filevault` and attached to the candidate profile entity using an association type such as `avatar`
 - When implementing the migration, follow [Migration Guideline](../../../guidelines/13_db_migrations.md): create tables first, create indexes second, then add foreign keys and check constraints with `ALTER TABLE`

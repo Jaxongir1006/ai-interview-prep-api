@@ -1,7 +1,8 @@
-package adminlogin
+package login
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain"
@@ -17,17 +18,15 @@ import (
 	"github.com/rise-and-shine/pkg/ucdef"
 )
 
-var (
-	errIncorrectCreds = errx.New(
-		"username or password is incorrect",
-		errx.WithType(errx.T_Validation),
-		errx.WithCode(user.CodeIncorrectCreds),
-	)
+var errIncorrectCreds = errx.New(
+	"email or password is incorrect",
+	errx.WithType(errx.T_Validation),
+	errx.WithCode(user.CodeIncorrectCreds),
 )
 
 type Request struct {
-	Username string `json:"username" validate:"required"`
-	Password string `json:"password" validate:"required" mask:"true"`
+	Email    string `json:"email"    validate:"required,email,max=255"`
+	Password string `json:"password" validate:"required,min=8,max=72"  mask:"true"`
 }
 
 type Response struct {
@@ -37,7 +36,6 @@ type Response struct {
 	RefreshTokenExpiresAt string `json:"refresh_token_expires_at"`
 }
 
-// UseCase implements "admin-login" user action.
 type UseCase = ucdef.UserAction[*Request, *Response]
 
 func New(
@@ -58,51 +56,41 @@ type usecase struct {
 	sessionManager  *sessionmanager.Service
 }
 
-func (uc *usecase) OperationID() string { return "admin-login" }
+func (uc *usecase) OperationID() string { return "login" }
 
 func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) {
-	// Find user by username
+	email := normalizeEmail(in.Email)
+
 	u, err := uc.domainContainer.UserRepo().Get(ctx, user.Filter{
-		Username: &in.Username,
+		Email: &email,
 	})
 	if errx.IsCodeIn(err, user.CodeUserNotFound) {
-		return nil, errx.Wrap(errIncorrectCreds, errx.WithDetails(errx.D{"cause": "username"}))
+		return nil, errx.Wrap(errIncorrectCreds)
 	}
 	if err != nil {
 		return nil, errx.Wrap(err)
+	}
+	if !u.IsActive {
+		return nil, errx.Wrap(errIncorrectCreds)
+	}
+	if u.PasswordHash == nil || !hasher.Compare(in.Password, *u.PasswordHash) {
+		return nil, errx.Wrap(errIncorrectCreds)
 	}
 
 	ctx = context.WithValue(ctx, meta.ActorType, auth.ActorTypeUser)
 	ctx = context.WithValue(ctx, meta.ActorID, u.ID)
 
-	// Check if user is active
-	if !u.IsActive {
-		return nil, errx.Wrap(errIncorrectCreds, errx.WithDetails(errx.D{"cause": "is_active"}))
-	}
-
-	// Verify password hash
-	if u.PasswordHash == nil {
-		return nil, errx.Wrap(errIncorrectCreds, errx.WithDetails(errx.D{"cause": "password"}))
-	}
-	ok := hasher.Compare(in.Password, *u.PasswordHash)
-	if !ok {
-		return nil, errx.Wrap(errIncorrectCreds, errx.WithDetails(errx.D{"cause": "password"}))
-	}
-
-	// Start UOW
 	uow, err := uc.domainContainer.UOWFactory().NewUOW(ctx)
 	if err != nil {
 		return nil, errx.Wrap(err)
 	}
 	defer uow.DiscardUnapplied()
 
-	// Enforce session policy, create session, and update last_login_at / last_active_at
 	s, err := uc.sessionManager.CreateAuthenticatedSession(ctx, uow, u)
 	if err != nil {
 		return nil, errx.Wrap(err)
 	}
 
-	// Record audit log
 	err = uc.portalContainer.Audit().Log(uow.Lend(), audit.Action{
 		Module: auth.ModuleName, OperationID: uc.OperationID(), Payload: in,
 	})
@@ -110,7 +98,6 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 		return nil, errx.Wrap(err)
 	}
 
-	// Apply UOW
 	err = uow.ApplyChanges()
 	if err != nil {
 		return nil, errx.Wrap(err)
@@ -122,4 +109,8 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 		RefreshToken:          s.RefreshToken,
 		RefreshTokenExpiresAt: s.RefreshTokenExpiresAt.Format(time.RFC3339),
 	}, nil
+}
+
+func normalizeEmail(email string) string {
+	return strings.ToLower(strings.TrimSpace(email))
 }

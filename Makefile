@@ -59,11 +59,11 @@ test-system:
 
 .PHONY: infra-up
 infra-up:
-	docker-compose -f dev-infra.yaml --profile full up -d --build
+	docker-compose -f dev-infra.yaml up -d --build
 
 .PHONY: infra-down
 infra-down:
-	docker-compose -f dev-infra.yaml --profile full down --remove-orphans
+	docker-compose -f dev-infra.yaml down --remove-orphans
 
 .PHONY: run
 run: infra-up

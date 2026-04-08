@@ -8,6 +8,7 @@ This derived project supports two credential modes in the same `auth.users` tabl
 
 - Admin and operator accounts authenticate with `username + password`
 - Public platform users authenticate with `email + password`
+- Public platform users may also authenticate with Google OAuth or GitHub OAuth
 
 ## Authentication
 
@@ -76,10 +77,12 @@ Expired sessions (where the refresh token has expired) are deleted hourly by the
 
 ### Public User Registration
 
-- Public users register with `email + password` and may additionally provide `phone_number`
+- Public users register with `email + password + full_name`
 - Registration creates a row in `auth.users`
+- Registration also creates a minimal candidate profile
 - `is_verified` tracks whether the public user's primary contact identity has been verified
-- Candidate profile creation should be handled by the `candidate` module, not the `auth` module
+- Target role, experience level, preferred topics, location, and other profile details are completed later through profile/onboarding APIs
+- The `register` use case orchestrates both auth and candidate writes while preserving module boundaries through portals/UOW coordination
 
 ### Public User Login
 
@@ -87,7 +90,23 @@ Expired sessions (where the refresh token has expired) are deleted hourly by the
 - On successful login, the system creates a session and updates both `last_login_at` and `last_active_at`
 - Public users may exist without any administrative permissions; authorization remains permission-based where applicable
 
-Detailed public registration and login use cases should be documented as dedicated use case specs in the derived project.
+### Google OAuth Login
+
+- Public users can authenticate with Google OAuth
+- The system links the Google identity to an existing user by provider account or matching email, or creates a new public user when needed
+- New OAuth-created users receive a minimal candidate profile at first login
+
+### GitHub OAuth Login
+
+- Public users can authenticate with GitHub OAuth
+- The system links the GitHub identity to an existing user by provider account or matching email, or creates a new public user when needed
+- GitHub OAuth login requires a usable email from the provider payload before account creation or linking
+
+### Get Me
+
+- Authenticated public users can fetch their current account snapshot through `get-me`
+- `get-me` returns auth identity data plus linked OAuth providers, candidate profile, preferred topics, progress summary, and avatar metadata when available
+- `get-me` is read-only and aggregates data across module boundaries without mutating state
 
 ## Authorization
 

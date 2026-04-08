@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/oauthaccount"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/rbac"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/uow"
@@ -11,6 +12,7 @@ import (
 // It acts as a dependency injection container for the domain layer.
 type Container struct {
 	userRepo           user.Repo
+	oauthAccountRepo   oauthaccount.Repo
 	sessionRepo        session.Repo
 	roleRepo           rbac.RoleRepo
 	rolePermissionRepo rbac.RolePermissionRepo
@@ -21,6 +23,7 @@ type Container struct {
 
 func NewContainer(
 	userRepo user.Repo,
+	oauthAccountRepo oauthaccount.Repo,
 	sessionRepo session.Repo,
 	roleRepo rbac.RoleRepo,
 	rolePermissionRepo rbac.RolePermissionRepo,
@@ -30,6 +33,7 @@ func NewContainer(
 ) *Container {
 	return &Container{
 		userRepo,
+		oauthAccountRepo,
 		sessionRepo,
 		roleRepo,
 		rolePermissionRepo,
@@ -41,6 +45,10 @@ func NewContainer(
 
 func (c *Container) UserRepo() user.Repo {
 	return c.userRepo
+}
+
+func (c *Container) OAuthAccountRepo() oauthaccount.Repo {
+	return c.oauthAccountRepo
 }
 
 func (c *Container) SessionRepo() session.Repo {

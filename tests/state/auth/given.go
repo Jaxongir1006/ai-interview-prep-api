@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/oauthaccount"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/rbac"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/user"
@@ -146,6 +147,51 @@ func GivenSessions(t *testing.T, data ...map[string]any) []session.Session {
 	}
 
 	return sessions
+}
+
+// GivenOAuthAccounts creates oauth account records in the database for test setup.
+func GivenOAuthAccounts(t *testing.T, data ...map[string]any) []oauthaccount.OAuthAccount {
+	t.Helper()
+
+	if len(data) == 0 {
+		t.Fatal("GivenOAuthAccounts: at least one oauth account data map is required")
+	}
+
+	db := database.GetTestDB(t)
+	repo := postgres.NewOAuthAccountRepo(db)
+
+	ctx, cancel := database.QueryContext()
+	defer cancel()
+
+	accounts := make([]oauthaccount.OAuthAccount, 0, len(data))
+
+	for i, d := range data {
+		anymap.ValidateKeys(t, "GivenOAuthAccounts", validOAuthAccountKeys, d)
+
+		userID := anymap.String(d, "user_id", "")
+		provider := anymap.String(d, "provider", "")
+		providerUserID := anymap.String(d, "provider_user_id", "")
+		if userID == "" || provider == "" || providerUserID == "" {
+			t.Fatalf("GivenOAuthAccounts[%d]: user_id, provider, and provider_user_id are required", i)
+		}
+
+		account := &oauthaccount.OAuthAccount{
+			UserID:         userID,
+			Provider:       provider,
+			ProviderUserID: providerUserID,
+			ProviderEmail:  anymap.StringPtr(d, "provider_email", nil),
+			LastLoginAt:    anymap.TimePtr(d, "last_login_at", nil),
+		}
+
+		created, err := repo.Create(ctx, account)
+		if err != nil {
+			t.Fatalf("GivenOAuthAccounts[%d]: failed to create oauth account: %v", i, err)
+		}
+
+		accounts = append(accounts, *created)
+	}
+
+	return accounts
 }
 
 // GivenUserPermissions creates user permission records in the database for test setup.

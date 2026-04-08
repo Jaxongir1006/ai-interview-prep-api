@@ -16,6 +16,15 @@ var (
 		"last_active_at": true,
 	}
 
+	validOAuthAccountKeys = map[string]bool{
+		"id":               true,
+		"user_id":          true,
+		"provider":         true,
+		"provider_user_id": true,
+		"provider_email":   true,
+		"last_login_at":    true,
+	}
+
 	// validSessionKeys defines the allowed keys for session test data.
 	// Keys correspond to session.Session entity fields.
 	validSessionKeys = map[string]bool{

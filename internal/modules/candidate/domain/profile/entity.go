@@ -18,7 +18,7 @@ type CandidateProfile struct {
 	Bio      *string `json:"bio"`
 	Location *string `json:"location"`
 
-	TargetRole           string `json:"target_role"`
-	ExperienceLevel      string `json:"experience_level"`
-	InterviewGoalPerWeek int    `json:"interview_goal_per_week"`
+	TargetRole           *string `json:"target_role"`
+	ExperienceLevel      *string `json:"experience_level"`
+	InterviewGoalPerWeek int     `json:"interview_goal_per_week"`
 }

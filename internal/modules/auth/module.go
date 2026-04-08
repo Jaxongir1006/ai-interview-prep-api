@@ -10,7 +10,9 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/ctrl/http"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/embassy"
+	oauthinfra "github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/infra/oauth"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/infra/postgres"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/pblc/sessionmanager"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/rbac/createrole"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/rbac/deleterole"
@@ -35,9 +37,14 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/disableuser"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/enableuser"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/getauthstats"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/getme"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/getusers"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/githuboauthlogin"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/googleoauthlogin"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/login"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/logout"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/refreshtoken"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/register"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/updateuser"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/auth"
@@ -51,6 +58,9 @@ import (
 
 type Config struct {
 	Consumers consumer.Config `yaml:"consumers"`
+
+	GoogleOAuth oauthinfra.GoogleConfig `yaml:"google_oauth"`
+	GitHubOAuth oauthinfra.GitHubConfig `yaml:"github_oauth"`
 
 	AccessTokenTTL    time.Duration `yaml:"access_token_ttl"    default:"15m"`
 	RefreshTokenTTL   time.Duration `yaml:"refresh_token_ttl"   default:"720h"` // 30 days
@@ -89,6 +99,7 @@ func New(
 	// Init repositories
 	domainContainer := domain.NewContainer(
 		postgres.NewUserRepo(dbConn),
+		postgres.NewOAuthAccountRepo(dbConn),
 		postgres.NewSessionRepo(dbConn),
 		postgres.NewRoleRepo(dbConn),
 		postgres.NewRolePermissionRepo(dbConn),
@@ -97,16 +108,27 @@ func New(
 		postgres.NewUOWFactory(dbConn),
 	)
 
+	sessionManager := sessionmanager.New(
+		cfg.AccessTokenTTL,
+		cfg.RefreshTokenTTL,
+		cfg.MaxActiveSessions,
+	)
+	googleProvider := oauthinfra.NewGoogleProvider(cfg.GoogleOAuth)
+	gitHubProvider := oauthinfra.NewGitHubProvider(cfg.GitHubOAuth)
+
 	// Init use cases
 	usecaseContainer := usecase.NewContainer(
 		// Self-service
 		adminlogin.New(
 			domainContainer,
 			portalContainer,
-			cfg.AccessTokenTTL,
-			cfg.RefreshTokenTTL,
-			cfg.MaxActiveSessions,
+			sessionManager,
 		),
+		register.New(domainContainer, portalContainer, cfg.HashingCost),
+		login.New(domainContainer, portalContainer, sessionManager),
+		getme.New(domainContainer, portalContainer),
+		googleoauthlogin.New(domainContainer, portalContainer, sessionManager, googleProvider),
+		githuboauthlogin.New(domainContainer, portalContainer, sessionManager, gitHubProvider),
 		refreshtoken.New(domainContainer, cfg.AccessTokenTTL, cfg.RefreshTokenTTL),
 		logout.New(domainContainer, portalContainer),
 		changemypassword.New(domainContainer, portalContainer, cfg.HashingCost),

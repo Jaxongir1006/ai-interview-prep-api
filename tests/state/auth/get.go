@@ -3,6 +3,7 @@ package auth
 import (
 	"testing"
 
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/oauthaccount"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/rbac"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/user"
@@ -26,6 +27,25 @@ func GetUserByID(t *testing.T, id string) *user.User {
 	u, err := repo.Get(ctx, user.Filter{ID: &id})
 	if err != nil {
 		t.Fatalf("GetUserByID: failed to get user %q: %v", id, err)
+	}
+
+	return u
+}
+
+// GetUserByEmail retrieves a user by email.
+// Fails the test if the user is not found.
+func GetUserByEmail(t *testing.T, email string) *user.User {
+	t.Helper()
+
+	db := database.GetTestDB(t)
+	repo := postgres.NewUserRepo(db)
+
+	ctx, cancel := database.QueryContext()
+	defer cancel()
+
+	u, err := repo.Get(ctx, user.Filter{Email: &email})
+	if err != nil {
+		t.Fatalf("GetUserByEmail: failed to get user %q: %v", email, err)
 	}
 
 	return u
@@ -224,6 +244,24 @@ func GetUserPermissions(t *testing.T, userID string) []rbac.UserPermission {
 	}
 
 	return perms
+}
+
+// ListOAuthAccountsByUserID returns linked OAuth accounts for the user.
+func ListOAuthAccountsByUserID(t *testing.T, userID string) []oauthaccount.OAuthAccount {
+	t.Helper()
+
+	db := database.GetTestDB(t)
+	repo := postgres.NewOAuthAccountRepo(db)
+
+	ctx, cancel := database.QueryContext()
+	defer cancel()
+
+	accounts, err := repo.List(ctx, oauthaccount.Filter{UserID: &userID})
+	if err != nil {
+		t.Fatalf("ListOAuthAccountsByUserID: failed to list oauth accounts for user %q: %v", userID, err)
+	}
+
+	return accounts
 }
 
 // HasPermission checks if a user has a specific direct permission.

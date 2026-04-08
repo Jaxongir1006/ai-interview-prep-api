@@ -32,6 +32,10 @@ http_server:
 # Module specific configs
 
 auth:
+  google_oauth:
+    enabled: false
+  github_oauth:
+    enabled: false
   access_token_ttl: 24h
   refresh_token_ttl: 168h # 7 days
   max_active_sessions: 5

@@ -25,8 +25,8 @@ log_error() {
 
 # Start infrastructure
 start_infra() {
-	log "starting infrastructure: docker-compose -f dev-infra.yaml --profile test up -d --build"
-	docker-compose -f "$PROJECT_DIR/dev-infra.yaml" --profile test up -d --build
+	log "starting infrastructure: docker-compose -f dev-infra.yaml up -d --build"
+	docker-compose -f "$PROJECT_DIR/dev-infra.yaml" up -d --build
 	log "infrastructure is ready"
 }
 
