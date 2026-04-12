@@ -32,21 +32,25 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/logout"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/refreshtoken"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/register"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/resendverificationemail"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/updateuser"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/verifyemail"
 )
 
 //nolint:dupl // container fields intentionally mirror constructor args for DI clarity
 type Container struct {
 	// Self-service
-	adminLogin       adminlogin.UseCase
-	register         register.UseCase
-	login            login.UseCase
-	getMe            getme.UseCase
-	googleOAuthLogin googleoauthlogin.UseCase
-	gitHubOAuthLogin githuboauthlogin.UseCase
-	refreshToken     refreshtoken.UseCase
-	logout           logout.UseCase
-	changeMyPassword changemypassword.UseCase
+	adminLogin              adminlogin.UseCase
+	register                register.UseCase
+	login                   login.UseCase
+	getMe                   getme.UseCase
+	googleOAuthLogin        googleoauthlogin.UseCase
+	gitHubOAuthLogin        githuboauthlogin.UseCase
+	refreshToken            refreshtoken.UseCase
+	logout                  logout.UseCase
+	changeMyPassword        changemypassword.UseCase
+	verifyEmail             verifyemail.UseCase
+	resendVerificationEmail resendverificationemail.UseCase
 
 	// User management
 	createSuperadmin createsuperadmin.UseCase
@@ -91,6 +95,8 @@ func NewContainer(
 	refreshToken refreshtoken.UseCase,
 	logout logout.UseCase,
 	changeMyPassword changemypassword.UseCase,
+	verifyEmail verifyemail.UseCase,
+	resendVerificationEmail resendverificationemail.UseCase,
 	createSuperadmin createsuperadmin.UseCase,
 	getUsers getusers.UseCase,
 	getAuthStats getauthstats.UseCase,
@@ -116,38 +122,40 @@ func NewContainer(
 	deleteUserSessions deleteusersessions.UseCase,
 ) *Container {
 	return &Container{
-		adminLogin:           adminLogin,
-		register:             register,
-		login:                login,
-		getMe:                getMe,
-		googleOAuthLogin:     googleOAuthLogin,
-		gitHubOAuthLogin:     gitHubOAuthLogin,
-		refreshToken:         refreshToken,
-		logout:               logout,
-		changeMyPassword:     changeMyPassword,
-		createSuperadmin:     createSuperadmin,
-		getUsers:             getUsers,
-		getAuthStats:         getAuthStats,
-		createUser:           createUser,
-		updateUser:           updateUser,
-		disableUser:          disableUser,
-		enableUser:           enableUser,
-		createRole:           createRole,
-		updateRole:           updateRole,
-		deleteRole:           deleteRole,
-		getRoles:             getRoles,
-		setRolePermissions:   setRolePermissions,
-		getRolePermissions:   getRolePermissions,
-		setUserRoles:         setUserRoles,
-		getUserRoles:         getUserRoles,
-		setUserPermissions:   setUserPermissions,
-		getUserPermissions:   getUserPermissions,
-		getMySessions:        getMySessions,
-		deleteMySession:      deleteMySession,
-		cleanExpiredSessions: cleanExpiredSessions,
-		getUserSessions:      getUserSessions,
-		deleteSession:        deleteSession,
-		deleteUserSessions:   deleteUserSessions,
+		adminLogin:              adminLogin,
+		register:                register,
+		login:                   login,
+		getMe:                   getMe,
+		googleOAuthLogin:        googleOAuthLogin,
+		gitHubOAuthLogin:        gitHubOAuthLogin,
+		refreshToken:            refreshToken,
+		logout:                  logout,
+		changeMyPassword:        changeMyPassword,
+		verifyEmail:             verifyEmail,
+		resendVerificationEmail: resendVerificationEmail,
+		createSuperadmin:        createSuperadmin,
+		getUsers:                getUsers,
+		getAuthStats:            getAuthStats,
+		createUser:              createUser,
+		updateUser:              updateUser,
+		disableUser:             disableUser,
+		enableUser:              enableUser,
+		createRole:              createRole,
+		updateRole:              updateRole,
+		deleteRole:              deleteRole,
+		getRoles:                getRoles,
+		setRolePermissions:      setRolePermissions,
+		getRolePermissions:      getRolePermissions,
+		setUserRoles:            setUserRoles,
+		getUserRoles:            getUserRoles,
+		setUserPermissions:      setUserPermissions,
+		getUserPermissions:      getUserPermissions,
+		getMySessions:           getMySessions,
+		deleteMySession:         deleteMySession,
+		cleanExpiredSessions:    cleanExpiredSessions,
+		getUserSessions:         getUserSessions,
+		deleteSession:           deleteSession,
+		deleteUserSessions:      deleteUserSessions,
 	}
 }
 
@@ -162,6 +170,10 @@ func (c *Container) GitHubOAuthLogin() githuboauthlogin.UseCase { return c.gitHu
 func (c *Container) RefreshToken() refreshtoken.UseCase         { return c.refreshToken }
 func (c *Container) Logout() logout.UseCase                     { return c.logout }
 func (c *Container) ChangeMyPassword() changemypassword.UseCase { return c.changeMyPassword }
+func (c *Container) VerifyEmail() verifyemail.UseCase           { return c.verifyEmail }
+func (c *Container) ResendVerificationEmail() resendverificationemail.UseCase {
+	return c.resendVerificationEmail
+}
 
 // --- User management ---
 

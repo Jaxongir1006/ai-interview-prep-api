@@ -19,6 +19,10 @@
 | Use Case (module:operation-id) | Type           | Permissions                    | Docs                                                                                |
 | ------------------------------ | -------------- | ------------------------------ | ----------------------------------------------------------------------------------- |
 | `auth:admin-login`             | user_action    | -                              | [spec](docs/specs/modules/auth/usecases/user/admin-login.md)                        |
+| `auth:login`                   | user_action    | -                              | [spec](docs/specs/modules/auth/usecases/user/login.md)                              |
+| `auth:register`                | user_action    | -                              | [spec](docs/specs/modules/auth/usecases/user/register.md)                           |
+| `auth:verify-email`            | user_action    | -                              | [spec](docs/specs/modules/auth/usecases/user/verify-email.md)                       |
+| `auth:resend-verification-email` | user_action   | -                              | [spec](docs/specs/modules/auth/usecases/user/resend-verification-email.md)          |
 | `auth:refresh-token`           | user_action    | -                              | [spec](docs/specs/modules/auth/usecases/user/refresh-token.md)                      |
 | `auth:logout`                  | user_action    | -                              | [spec](docs/specs/modules/auth/usecases/user/logout.md)                             |
 | `auth:get-my-sessions`         | user_action    | -                              | [spec](docs/specs/modules/auth/usecases/user/get-my-sessions.md)                    |

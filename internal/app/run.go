@@ -118,7 +118,7 @@ func (a *app) initSharedComponents() error {
 	}
 
 	// init http server
-	a.httpServer = baseserver.New(a.cfg.HTTPServer)
+	a.httpServer = baseserver.New(a.cfg.HTTPServer, a.cfg.CORS)
 	a.httpServer.GetApp().Get("/health", func(c *fiber.Ctx) error { return c.JSON(fiber.Map{"status": "ok"}) })
 
 	return nil
@@ -169,8 +169,6 @@ func (a *app) initModules() error {
 		return errx.Wrap(err)
 	}
 
-	// Esign
-
 	// Platform
 	a.platform, err = platform.New(
 		a.cfg.Platform, a.cfg.KafkaBroker, a.dbConn, portalContainer, a.httpServer,
@@ -185,7 +183,6 @@ func (a *app) initModules() error {
 	portalContainer.SetCandidatePortal(a.candidate.Portal())
 	portalContainer.SetFilevaultPortal(a.filevault.Portal())
 	portalContainer.SetPlatformPortal(a.platform.Portal())
-	// portalContainer.SetEsignPortal(esign.Portal())
 
 	return nil
 }

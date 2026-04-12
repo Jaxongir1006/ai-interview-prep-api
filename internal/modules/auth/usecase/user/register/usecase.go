@@ -6,6 +6,7 @@ import (
 
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/user"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/pblc/emailverification"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/audit"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/auth"
@@ -26,8 +27,9 @@ type Request struct {
 }
 
 type Response struct {
-	User    UserInfo    `json:"user"`
-	Profile ProfileInfo `json:"profile"`
+	User                 UserInfo    `json:"user"`
+	Profile              ProfileInfo `json:"profile"`
+	VerificationRequired bool        `json:"verification_required"`
 }
 
 type UserInfo struct {
@@ -61,37 +63,44 @@ type UseCase = ucdef.UserAction[*Request, *Response]
 func New(
 	domainContainer *domain.Container,
 	portalContainer *portal.Container,
+	emailVerificationService *emailverification.Service,
 	hashingCost int,
 ) UseCase {
 	return &usecase{
-		domainContainer: domainContainer,
-		portalContainer: portalContainer,
-		hashingCost:     hashingCost,
+		domainContainer:          domainContainer,
+		portalContainer:          portalContainer,
+		emailVerificationService: emailVerificationService,
+		hashingCost:              hashingCost,
 	}
 }
 
 type usecase struct {
-	domainContainer *domain.Container
-	portalContainer *portal.Container
-	hashingCost     int
+	domainContainer          *domain.Container
+	portalContainer          *portal.Container
+	emailVerificationService *emailverification.Service
+	hashingCost              int
 }
 
 func (uc *usecase) OperationID() string { return "register" }
 
 func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) {
+	// Normalize email
 	email := normalizeEmail(in.Email)
 
+	// Hash the password
 	passwordHash, err := hasher.Hash(in.Password, hasher.WithCost(uc.hashingCost))
 	if err != nil {
 		return nil, errx.Wrap(err)
 	}
 
+	// Start UOW
 	uow, err := uc.domainContainer.UOWFactory().NewUOW(ctx)
 	if err != nil {
 		return nil, errx.Wrap(err)
 	}
 	defer uow.DiscardUnapplied()
 
+	// Create auth user with email-based credentials
 	u, err := uow.User().Create(ctx, &user.User{
 		ID:           uuid.NewString(),
 		Email:        &email,
@@ -102,6 +111,10 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 		return nil, errx.WrapWithTypeOnCodes(err, errx.T_Conflict, user.CodeEmailConflict)
 	}
 
+	// Set user is_verified to false
+	u.IsVerified = false
+
+	// Create minimal candidate profile for the new user using the provided full name
 	p, err := uc.portalContainer.Candidate().
 		CreateInitialProfile(uow.Lend(), &candidateportal.CreateInitialProfileRequest{
 			UserID:   u.ID,
@@ -111,6 +124,13 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 		return nil, errx.Wrap(err)
 	}
 
+	// Create one-time email verification token for the user's email
+	verificationToken, err := uc.emailVerificationService.CreateToken(ctx, uow, u, email)
+	if err != nil {
+		return nil, errx.Wrap(err)
+	}
+
+	// Record audit log
 	auditCtx := context.WithValue(uow.Lend(), meta.ActorType, auth.ActorTypeUser)
 	auditCtx = context.WithValue(auditCtx, meta.ActorID, u.ID)
 
@@ -121,11 +141,19 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 		return nil, errx.Wrap(err)
 	}
 
+	// Apply UOW
 	err = uow.ApplyChanges()
 	if err != nil {
 		return nil, errx.Wrap(err)
 	}
 
+	// Send verification email with frontend verification URL and raw token
+	err = uc.emailVerificationService.SendVerificationEmail(ctx, email, verificationToken)
+	if err != nil {
+		return nil, errx.Wrap(err)
+	}
+
+	// Return created user and profile data with verification_required true
 	return &Response{
 		User: UserInfo{
 			ID:           u.ID,
@@ -151,6 +179,7 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 			CreatedAt:            p.CreatedAt,
 			UpdatedAt:            p.UpdatedAt,
 		},
+		VerificationRequired: true,
 	}, nil
 }
 

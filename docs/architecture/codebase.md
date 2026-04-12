@@ -108,7 +108,7 @@ Modules communicate **only** through Portal interfaces. No direct imports betwee
 internal/portal/                          # Portal interfaces (contracts)
 ├── container.go                          # Aggregates all module portals
 ├── auth/                                 # Auth module portal interface
-└── esign/                                # Esign module portal interface
+└── filevault/                            # Filevault module portal interface
 
 internal/modules/{module}/embassy/        # Embassy (portal implementation)
 └── embassy.go

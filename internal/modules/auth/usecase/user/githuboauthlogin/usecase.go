@@ -58,10 +58,18 @@ type usecase struct {
 
 func (uc *usecase) OperationID() string { return "github-oauth-login" }
 
+//nolint:funlen // OAuth login is a linear orchestration that mirrors the documented use-case flow.
 func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) {
 	identity, err := uc.provider.AuthenticateCode(ctx, in.Code)
 	if err != nil {
 		return nil, errx.Wrap(err, errx.WithType(errx.T_Validation))
+	}
+	if !identity.EmailVerified {
+		return nil, errx.New(
+			"github email is not verified",
+			errx.WithType(errx.T_Validation),
+			errx.WithCode(user.CodeEmailNotVerified),
+		)
 	}
 
 	oauthAcc, userEntity, err := uc.resolveAccount(ctx, identity)
@@ -93,6 +101,12 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 			return nil, errx.Wrap(err)
 		}
 		isNewUser = true
+	} else if !userEntity.IsVerified {
+		userEntity.IsVerified = true
+		userEntity, err = uow.User().Update(ctx, userEntity)
+		if err != nil {
+			return nil, errx.Wrap(err)
+		}
 	}
 
 	now := time.Now()

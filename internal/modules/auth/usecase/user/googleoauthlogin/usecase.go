@@ -67,11 +67,20 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 	return uc.loginWithIdentity(ctx, in, identity)
 }
 
+//nolint:funlen // OAuth login is a linear orchestration that mirrors the documented use-case flow.
 func (uc *usecase) loginWithIdentity(
 	ctx context.Context,
 	in *Request,
 	identity *authoauth.Identity,
 ) (*Response, error) {
+	if !identity.EmailVerified {
+		return nil, errx.New(
+			"google email is not verified",
+			errx.WithType(errx.T_Validation),
+			errx.WithCode(user.CodeEmailNotVerified),
+		)
+	}
+
 	oauthAcc, userEntity, err := uc.resolveAccount(ctx, identity)
 	if err != nil {
 		return nil, errx.Wrap(err)
@@ -101,6 +110,12 @@ func (uc *usecase) loginWithIdentity(
 			return nil, errx.Wrap(err)
 		}
 		isNewUser = true
+	} else if !userEntity.IsVerified {
+		userEntity.IsVerified = true
+		userEntity, err = uow.User().Update(ctx, userEntity)
+		if err != nil {
+			return nil, errx.Wrap(err)
+		}
 	}
 
 	now := time.Now()

@@ -12,6 +12,7 @@ const (
 	CodeEmailConflict       = "EMAIL_CONFLICT"
 	CodePhoneNumberConflict = "PHONE_NUMBER_CONFLICT"
 	CodeIncorrectCreds      = "INCORRECT_CREDENTIALS"
+	CodeEmailNotVerified    = "EMAIL_NOT_VERIFIED"
 	CodeUserAlreadyActive   = "USER_ALREADY_ACTIVE"
 	CodeUserAlreadyDisabled = "USER_ALREADY_DISABLED"
 )

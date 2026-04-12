@@ -10,8 +10,10 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/ctrl/http"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/embassy"
+	mailinfra "github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/infra/mail"
 	oauthinfra "github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/infra/oauth"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/infra/postgres"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/pblc/emailverification"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/pblc/sessionmanager"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/rbac/createrole"
@@ -45,7 +47,9 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/logout"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/refreshtoken"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/register"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/resendverificationemail"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/updateuser"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/verifyemail"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/auth"
 
@@ -61,10 +65,14 @@ type Config struct {
 
 	GoogleOAuth oauthinfra.GoogleConfig `yaml:"google_oauth"`
 	GitHubOAuth oauthinfra.GitHubConfig `yaml:"github_oauth"`
+	Mail        mailinfra.Config        `yaml:"mail"`
 
 	AccessTokenTTL    time.Duration `yaml:"access_token_ttl"    default:"15m"`
 	RefreshTokenTTL   time.Duration `yaml:"refresh_token_ttl"   default:"720h"` // 30 days
 	MaxActiveSessions int           `yaml:"max_active_sessions" default:"5"`
+
+	EmailVerificationTokenTTL time.Duration `yaml:"email_verification_token_ttl" default:"24h"`
+	FrontendVerifyEmailURL    string        `yaml:"frontend_verify_email_url"    default:"http://localhost:3000/verify-email"`
 
 	WorkerPollInterval time.Duration `yaml:"worker_poll_interval" default:"1s"`
 
@@ -99,6 +107,8 @@ func New(
 	// Init repositories
 	domainContainer := domain.NewContainer(
 		postgres.NewUserRepo(dbConn),
+		postgres.NewEmailVerificationTokenRepo(dbConn),
+		mailinfra.NewSender(cfg.Mail),
 		postgres.NewOAuthAccountRepo(dbConn),
 		postgres.NewSessionRepo(dbConn),
 		postgres.NewRoleRepo(dbConn),
@@ -113,6 +123,11 @@ func New(
 		cfg.RefreshTokenTTL,
 		cfg.MaxActiveSessions,
 	)
+	emailVerificationService := emailverification.New(
+		cfg.EmailVerificationTokenTTL,
+		cfg.FrontendVerifyEmailURL,
+		domainContainer.MailSender(),
+	)
 	googleProvider := oauthinfra.NewGoogleProvider(cfg.GoogleOAuth)
 	gitHubProvider := oauthinfra.NewGitHubProvider(cfg.GitHubOAuth)
 
@@ -124,7 +139,7 @@ func New(
 			portalContainer,
 			sessionManager,
 		),
-		register.New(domainContainer, portalContainer, cfg.HashingCost),
+		register.New(domainContainer, portalContainer, emailVerificationService, cfg.HashingCost),
 		login.New(domainContainer, portalContainer, sessionManager),
 		getme.New(domainContainer, portalContainer),
 		googleoauthlogin.New(domainContainer, portalContainer, sessionManager, googleProvider),
@@ -132,6 +147,8 @@ func New(
 		refreshtoken.New(domainContainer, cfg.AccessTokenTTL, cfg.RefreshTokenTTL),
 		logout.New(domainContainer, portalContainer),
 		changemypassword.New(domainContainer, portalContainer, cfg.HashingCost),
+		verifyemail.New(domainContainer, portalContainer),
+		resendverificationemail.New(domainContainer, emailVerificationService),
 
 		// User management
 		createsuperadmin.New(domainContainer, cfg.HashingCost),

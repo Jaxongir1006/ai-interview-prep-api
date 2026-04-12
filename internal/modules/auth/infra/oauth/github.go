@@ -155,10 +155,6 @@ func (p *gitHubProvider) resolveEmail(
 	accessToken string,
 	directEmail *string,
 ) (string, bool, error) {
-	if directEmail != nil && *directEmail != "" {
-		return *directEmail, false, nil
-	}
-
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, p.userEmailsURL, nil)
 	if err != nil {
 		return "", false, errx.Wrap(err)
@@ -182,14 +178,17 @@ func (p *gitHubProvider) resolveEmail(
 	}
 
 	for _, email := range payload {
-		if email.Primary && email.Email != "" {
+		if email.Primary && email.Email != "" && email.Verified {
 			return email.Email, email.Verified, nil
 		}
 	}
 	for _, email := range payload {
-		if email.Email != "" {
+		if email.Email != "" && email.Verified {
 			return email.Email, email.Verified, nil
 		}
+	}
+	if directEmail != nil && *directEmail != "" {
+		return *directEmail, false, nil
 	}
 
 	return "", false, nil

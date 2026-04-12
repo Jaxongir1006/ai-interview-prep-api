@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/emailverificationtoken"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/mail"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/oauthaccount"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/rbac"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
@@ -11,18 +13,22 @@ import (
 // Container holds domain interfaces.
 // It acts as a dependency injection container for the domain layer.
 type Container struct {
-	userRepo           user.Repo
-	oauthAccountRepo   oauthaccount.Repo
-	sessionRepo        session.Repo
-	roleRepo           rbac.RoleRepo
-	rolePermissionRepo rbac.RolePermissionRepo
-	userRoleRepo       rbac.UserRoleRepo
-	userPermissionRepo rbac.UserPermissionRepo
-	uowFactory         uow.Factory
+	userRepo                   user.Repo
+	emailVerificationTokenRepo emailverificationtoken.Repo
+	mailSender                 mail.Sender
+	oauthAccountRepo           oauthaccount.Repo
+	sessionRepo                session.Repo
+	roleRepo                   rbac.RoleRepo
+	rolePermissionRepo         rbac.RolePermissionRepo
+	userRoleRepo               rbac.UserRoleRepo
+	userPermissionRepo         rbac.UserPermissionRepo
+	uowFactory                 uow.Factory
 }
 
 func NewContainer(
 	userRepo user.Repo,
+	emailVerificationTokenRepo emailverificationtoken.Repo,
+	mailSender mail.Sender,
 	oauthAccountRepo oauthaccount.Repo,
 	sessionRepo session.Repo,
 	roleRepo rbac.RoleRepo,
@@ -33,6 +39,8 @@ func NewContainer(
 ) *Container {
 	return &Container{
 		userRepo,
+		emailVerificationTokenRepo,
+		mailSender,
 		oauthAccountRepo,
 		sessionRepo,
 		roleRepo,
@@ -45,6 +53,14 @@ func NewContainer(
 
 func (c *Container) UserRepo() user.Repo {
 	return c.userRepo
+}
+
+func (c *Container) EmailVerificationTokenRepo() emailverificationtoken.Repo {
+	return c.emailVerificationTokenRepo
+}
+
+func (c *Container) MailSender() mail.Sender {
+	return c.mailSender
 }
 
 func (c *Container) OAuthAccountRepo() oauthaccount.Repo {

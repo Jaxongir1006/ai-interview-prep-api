@@ -8,7 +8,7 @@ BINARY_NAME="system-test-app"
 BINARY_PATH="$PROJECT_DIR/bin/$BINARY_NAME"
 HEALTH_URL="http://localhost:9876/health" # host and port should be consistent with test.yaml config
 HEALTH_TIMEOUT=10
-TEST_DB_NAME="test_blueprint" # should be consistent with test.yaml config
+TEST_DB_NAME="test_interview-prep" # should be consistent with test.yaml config
 
 # Default superadmin credentials for E2E testing.
 # Frontend E2E tests use these to bootstrap users, roles, and permissions via API.
@@ -51,8 +51,8 @@ create_test_db() {
 	docker-compose -f "$PROJECT_DIR/dev-infra.yaml" exec -T postgres \
 		psql -U postgres \
 		-c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$TEST_DB_NAME' AND pid <> pg_backend_pid()" \
-		-c "DROP DATABASE IF EXISTS $TEST_DB_NAME" \
-		-c "CREATE DATABASE $TEST_DB_NAME"
+		-c "DROP DATABASE IF EXISTS \"$TEST_DB_NAME\"" \
+		-c "CREATE DATABASE \"$TEST_DB_NAME\""
 	log "test database ready"
 }
 

@@ -7,7 +7,7 @@ erDiagram
     action_logs {
         BIGSERIAL id PK
         VARCHAR user_id "nullable, who performed the action"
-        VARCHAR module "source module: auth, esign, etc."
+        VARCHAR module "source module: auth, candidate, etc."
         VARCHAR operation_id "use case: create-user, disable-user"
         JSONB request_payload "masked request body, nullable"
         VARCHAR_ARRAY tags "categorical tags, default empty"

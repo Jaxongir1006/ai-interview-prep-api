@@ -42,6 +42,8 @@ Authenticates a public platform user with GitHub OAuth and creates or reuses the
 
 - Check that a usable email address is available from the provider
 
+- Check that the provider email is verified
+
 - Find linked OAuth account by provider and provider user ID
 
 - Find user by email when no linked OAuth account exists
@@ -49,6 +51,8 @@ Authenticates a public platform user with GitHub OAuth and creates or reuses the
 - Start UOW
 
 - Create auth user when no matching user exists
+
+- Mark newly created user as verified because GitHub verified the email identity
 
 - Create linked GitHub OAuth account when it does not exist
 
@@ -65,3 +69,8 @@ Authenticates a public platform user with GitHub OAuth and creates or reuses the
 - Apply UOW
 
 - Return session tokens and whether the user was newly created
+
+## Email Verification
+
+- This use case does not send an application email-verification message
+- GitHub OAuth users rely on GitHub's verified primary email signal

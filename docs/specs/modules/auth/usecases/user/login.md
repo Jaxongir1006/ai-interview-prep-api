@@ -40,6 +40,8 @@ Authenticates a public platform user with email and password, then creates a ses
 
 - Check if user is active
 
+- Check if user's email is verified
+
 - Verify password hash
 
 - Start UOW
@@ -55,3 +57,8 @@ Authenticates a public platform user with email and password, then creates a ses
 - Apply UOW
 
 - Return session tokens
+
+## Errors
+
+- Return `EMAIL_NOT_VERIFIED` when a password-authenticated public user's email has not been verified
+- OAuth users are not blocked by this use case because OAuth authentication is handled by separate OAuth login use cases

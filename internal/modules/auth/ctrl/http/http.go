@@ -42,6 +42,8 @@ func (c *Controller) initRoutes(r fiber.Router) {
 	v1.Post("/google-oauth-login", forward.ToUserAction(c.usecaseContainer.GoogleOAuthLogin()))
 	v1.Post("/github-oauth-login", forward.ToUserAction(c.usecaseContainer.GitHubOAuthLogin()))
 	v1.Post("/refresh-token", forward.ToUserAction(c.usecaseContainer.RefreshToken()))
+	v1.Post("/verify-email", forward.ToUserAction(c.usecaseContainer.VerifyEmail()))
+	v1.Post("/resend-verification-email", forward.ToUserAction(c.usecaseContainer.ResendVerificationEmail()))
 
 	// Authenticated (no specific permission required)
 	v1Auth := v1.Group("", auth.NewAuthMiddleware(c.authPortal))

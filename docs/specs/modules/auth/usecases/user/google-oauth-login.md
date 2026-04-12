@@ -40,6 +40,8 @@ Authenticates a public platform user with Google OAuth and creates or reuses the
 
 - Extract provider user ID, email, verification status, and full name from the provider payload
 
+- Reject provider payloads where the email is not verified
+
 - Find linked OAuth account by provider and provider user ID
 
 - Find user by email when no linked OAuth account exists
@@ -47,6 +49,8 @@ Authenticates a public platform user with Google OAuth and creates or reuses the
 - Start UOW
 
 - Create auth user when no matching user exists
+
+- Mark newly created user as verified because Google verified the email identity
 
 - Create linked Google OAuth account when it does not exist
 
@@ -63,3 +67,8 @@ Authenticates a public platform user with Google OAuth and creates or reuses the
 - Apply UOW
 
 - Return session tokens and whether the user was newly created
+
+## Email Verification
+
+- This use case does not send an application email-verification message
+- Google OAuth users rely on Google's verified email signal

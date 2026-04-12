@@ -1,9 +1,10 @@
 package progress
 
 import (
+	"context"
 	"time"
 
-	"github.com/rise-and-shine/pkg/pg"
+	"github.com/uptrace/bun"
 )
 
 const (
@@ -12,7 +13,7 @@ const (
 )
 
 type Summary struct {
-	pg.BaseModel
+	bun.BaseModel `bun:"table:candidate_progress_summaries,alias:cps"`
 
 	ID int64 `json:"id" bun:"id,pk,autoincrement"`
 
@@ -24,10 +25,13 @@ type Summary struct {
 	TotalTimeSpentSeconds int64      `json:"total_time_spent_seconds"`
 	AverageScore          float64    `json:"average_score"`
 	LastInterviewAt       *time.Time `json:"last_interview_at"`
+
+	CreatedAt time.Time `bun:",nullzero" json:"created_at"`
+	UpdatedAt time.Time `bun:",nullzero" json:"updated_at"`
 }
 
 type TopicStat struct {
-	pg.BaseModel
+	bun.BaseModel `bun:"table:candidate_topic_stats,alias:cts"`
 
 	ID int64 `json:"id" bun:"id,pk,autoincrement"`
 
@@ -39,4 +43,29 @@ type TopicStat struct {
 	AverageScore          float64    `json:"average_score"`
 	BestScore             float64    `json:"best_score"`
 	LastPracticedAt       *time.Time `json:"last_practiced_at"`
+
+	CreatedAt time.Time `bun:",nullzero" json:"created_at"`
+	UpdatedAt time.Time `bun:",nullzero" json:"updated_at"`
+}
+
+func (m *Summary) BeforeAppendModel(_ context.Context, query bun.Query) error {
+	switch query.(type) {
+	case *bun.InsertQuery:
+		m.CreatedAt = time.Now()
+		m.UpdatedAt = time.Now()
+	case *bun.UpdateQuery:
+		m.UpdatedAt = time.Now()
+	}
+	return nil
+}
+
+func (m *TopicStat) BeforeAppendModel(_ context.Context, query bun.Query) error {
+	switch query.(type) {
+	case *bun.InsertQuery:
+		m.CreatedAt = time.Now()
+		m.UpdatedAt = time.Now()
+	case *bun.UpdateQuery:
+		m.UpdatedAt = time.Now()
+	}
+	return nil
 }

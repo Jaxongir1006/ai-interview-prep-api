@@ -1,9 +1,10 @@
 package oauthaccount
 
 import (
+	"context"
 	"time"
 
-	"github.com/rise-and-shine/pkg/pg"
+	"github.com/uptrace/bun"
 )
 
 const (
@@ -16,7 +17,7 @@ const (
 )
 
 type OAuthAccount struct {
-	pg.BaseModel
+	bun.BaseModel `bun:"table:oauth_accounts,alias:oa"`
 
 	ID int64 `json:"id" bun:"id,pk,autoincrement"`
 
@@ -26,4 +27,18 @@ type OAuthAccount struct {
 	ProviderUserID string     `json:"provider_user_id"`
 	ProviderEmail  *string    `json:"provider_email"`
 	LastLoginAt    *time.Time `json:"last_login_at"`
+
+	CreatedAt time.Time `bun:",nullzero" json:"created_at"`
+	UpdatedAt time.Time `bun:",nullzero" json:"updated_at"`
+}
+
+func (m *OAuthAccount) BeforeAppendModel(_ context.Context, query bun.Query) error {
+	switch query.(type) {
+	case *bun.InsertQuery:
+		m.CreatedAt = time.Now()
+		m.UpdatedAt = time.Now()
+	case *bun.UpdateQuery:
+		m.UpdatedAt = time.Now()
+	}
+	return nil
 }

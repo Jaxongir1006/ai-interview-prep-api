@@ -17,6 +17,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestRegister_CORSPreflight(t *testing.T) {
+	resp := trigger.UserAction(t).OPTIONS("/api/v1/auth/register").
+		WithHeader("Origin", "http://localhost:3000").
+		WithHeader("Access-Control-Request-Method", http.MethodPost).
+		WithHeader("Access-Control-Request-Headers", "content-type,authorization").
+		Expect()
+
+	resp.Status(http.StatusNoContent)
+	resp.Header("Access-Control-Allow-Origin").IsEqual("http://localhost:3000")
+	resp.Header("Access-Control-Allow-Credentials").IsEqual("true")
+	resp.Header("Access-Control-Allow-Methods").Contains(http.MethodPost)
+	resp.Header("Access-Control-Allow-Methods").Contains(http.MethodOptions)
+	resp.Header("Access-Control-Allow-Headers").Contains("Content-Type")
+	resp.Header("Access-Control-Allow-Headers").Contains("Authorization")
+	resp.Header("Access-Control-Max-Age").IsEqual("86400")
+}
+
 func TestRegister_Success(t *testing.T) {
 	database.Empty(t)
 
@@ -34,12 +51,20 @@ func TestRegister_Success(t *testing.T) {
 	resp.JSON().Object().Value("user").Object().Value("is_verified").Boolean().IsFalse()
 	resp.JSON().Object().Value("profile").Object().Value("full_name").String().IsEqual("John Candidate")
 	resp.JSON().Object().Value("profile").Object().Value("preferred_topics").Array().Length().IsEqual(0)
+	resp.JSON().Object().Value("verification_required").Boolean().IsTrue()
 
 	u := auth.GetUserByEmail(t, "candidate@example.com")
 	assert.True(t, u.IsActive)
 	assert.NotNil(t, u.PasswordHash)
 	assert.True(t, strings.HasPrefix(*u.PasswordHash, "$2"))
 	assert.True(t, hasher.Compare("SecurePassword_1", *u.PasswordHash))
+	assert.False(t, u.IsVerified)
+
+	verificationTokens := auth.GetEmailVerificationTokensByUserID(t, u.ID)
+	assert.Len(t, verificationTokens, 1)
+	assert.Equal(t, "candidate@example.com", verificationTokens[0].Email)
+	assert.NotEmpty(t, verificationTokens[0].TokenHash)
+	assert.Nil(t, verificationTokens[0].UsedAt)
 
 	profile := statecandidate.GetProfileByUserID(t, u.ID)
 	assert.NotNil(t, profile.FullName)

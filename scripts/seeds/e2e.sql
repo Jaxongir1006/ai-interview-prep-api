@@ -6,7 +6,7 @@
 -- in the frontend test setup; platform data has no create API so we
 -- insert directly.
 --
--- Target database: test_blueprint
+-- Target database: test_interview-prep
 -- =============================================================================
 
 BEGIN;

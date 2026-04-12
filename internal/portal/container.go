@@ -5,7 +5,6 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/audit"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/auth"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/candidate"
-	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/esign"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/filevault"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/platform"
 )
@@ -17,7 +16,6 @@ type Container struct {
 	audit     audit.Portal
 	auth      auth.Portal
 	candidate candidate.Portal
-	esign     esign.Portal
 	filevault filevault.Portal
 	platform  platform.Portal
 }
@@ -32,10 +30,6 @@ func (c *Container) SetAuthPortal(auth auth.Portal) {
 
 func (c *Container) SetCandidatePortal(candidate candidate.Portal) {
 	c.candidate = candidate
-}
-
-func (c *Container) SetEsignPortal(esign esign.Portal) {
-	c.esign = esign
 }
 
 func (c *Container) SetAuditPortal(audit audit.Portal) {
@@ -56,10 +50,6 @@ func (c *Container) Analytics() analytics.Portal {
 
 func (c *Container) Candidate() candidate.Portal {
 	return c.candidate
-}
-
-func (c *Container) Esign() esign.Portal {
-	return c.esign
 }
 
 func (c *Container) Audit() audit.Portal {

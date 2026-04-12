@@ -27,6 +27,17 @@ erDiagram
         TIMESTAMPTZ updated_at
     }
 
+    email_verification_tokens {
+        BIGSERIAL id PK
+        VARCHAR user_id FK
+        VARCHAR email "email address being verified"
+        VARCHAR token_hash "hash of the one-time verification token"
+        TIMESTAMPTZ expires_at
+        TIMESTAMPTZ used_at "nullable, set after successful verification"
+        TIMESTAMPTZ created_at
+        TIMESTAMPTZ updated_at
+    }
+
     roles {
         BIGSERIAL id PK
         VARCHAR name UK
@@ -73,6 +84,7 @@ erDiagram
     }
 
     users ||--o{ oauth_accounts : "linked to"
+    users ||--o{ email_verification_tokens : "verifies email through"
     users ||--o{ user_roles : "has"
     users ||--o{ user_permissions : "has"
     users ||--o{ sessions : "has"
@@ -86,5 +98,8 @@ erDiagram
 - Admin accounts authenticate with `username + password`; public users authenticate with `email + password`
 - Public users may alternatively authenticate through linked `oauth_accounts` for Google and GitHub
 - `oauth_accounts` should enforce uniqueness for `(provider, provider_user_id)`
+- `email_verification_tokens` stores only a hash of the raw token sent to the user's email
+- `email_verification_tokens` should enforce uniqueness for `token_hash`
+- Only the latest unused, unexpired token for a user/email should be accepted for verification
 - Business-profile and interview-preparation data for public users should live in a separate module such as `candidate`
 - When implementing the migration, follow [Migration Guideline](../../../guidelines/13_db_migrations.md): create tables first, create indexes second, then add foreign keys and check constraints with `ALTER TABLE`

@@ -17,8 +17,9 @@ import (
 func TestLogin_Success(t *testing.T) {
 	database.Empty(t)
 	u := auth.GivenUsers(t, map[string]any{
-		"email":    "candidate@example.com",
-		"password": auth.TestPassword1,
+		"email":       "candidate@example.com",
+		"password":    auth.TestPassword1,
+		"is_verified": true,
 	})[0]
 
 	sessionCountBefore := auth.SessionCount(t, u.ID)
@@ -62,8 +63,9 @@ func TestLogin_IncorrectCredentials(t *testing.T) {
 			name: "incorrect password",
 			setup: func(t *testing.T) map[string]string {
 				auth.GivenUsers(t, map[string]any{
-					"email":    "candidate@example.com",
-					"password": auth.TestPassword1,
+					"email":       "candidate@example.com",
+					"password":    auth.TestPassword1,
+					"is_verified": true,
 				})
 				return map[string]string{
 					"email":    "candidate@example.com",
@@ -101,4 +103,23 @@ func TestLogin_IncorrectCredentials(t *testing.T) {
 			resp.JSON().Object().Value("error").Object().Value("code").String().IsEqual(tc.wantCode)
 		})
 	}
+}
+
+func TestLogin_EmailNotVerified(t *testing.T) {
+	database.Empty(t)
+	auth.GivenUsers(t, map[string]any{
+		"email":       "candidate@example.com",
+		"password":    auth.TestPassword1,
+		"is_verified": false,
+	})
+
+	resp := trigger.UserAction(t).POST("/api/v1/auth/login").
+		WithJSON(map[string]string{
+			"email":    "candidate@example.com",
+			"password": auth.TestPassword1,
+		}).
+		Expect()
+
+	resp.Status(http.StatusBadRequest)
+	resp.JSON().Object().Value("error").Object().Value("code").String().IsEqual("EMAIL_NOT_VERIFIED")
 }

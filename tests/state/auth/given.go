@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/emailverificationtoken"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/oauthaccount"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/rbac"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
@@ -88,6 +89,54 @@ func GivenUsers(t *testing.T, data ...map[string]any) []user.User {
 	}
 
 	return users
+}
+
+func GivenEmailVerificationTokens(
+	t *testing.T,
+	data ...map[string]any,
+) []emailverificationtoken.EmailVerificationToken {
+	t.Helper()
+
+	if len(data) == 0 {
+		t.Fatal("GivenEmailVerificationTokens: at least one token data map is required")
+	}
+
+	db := database.GetTestDB(t)
+	repo := postgres.NewEmailVerificationTokenRepo(db)
+
+	ctx, cancel := database.QueryContext()
+	defer cancel()
+
+	tokens := make([]emailverificationtoken.EmailVerificationToken, 0, len(data))
+	now := time.Now()
+
+	for i, d := range data {
+		anymap.ValidateKeys(t, "GivenEmailVerificationTokens", validEmailVerificationTokenKeys, d)
+
+		userID := anymap.String(d, "user_id", "")
+		email := anymap.String(d, "email", "")
+		tokenHash := anymap.String(d, "token_hash", "")
+		if userID == "" || email == "" || tokenHash == "" {
+			t.Fatalf("GivenEmailVerificationTokens[%d]: user_id, email, and token_hash are required", i)
+		}
+
+		evt := &emailverificationtoken.EmailVerificationToken{
+			UserID:    userID,
+			Email:     email,
+			TokenHash: tokenHash,
+			ExpiresAt: anymap.Time(d, "expires_at", now.Add(24*time.Hour)),
+			UsedAt:    anymap.TimePtr(d, "used_at", nil),
+		}
+
+		created, err := repo.Create(ctx, evt)
+		if err != nil {
+			t.Fatalf("GivenEmailVerificationTokens[%d]: failed to create token: %v", i, err)
+		}
+
+		tokens = append(tokens, *created)
+	}
+
+	return tokens
 }
 
 // GivenSessions creates session records in the database for test setup.

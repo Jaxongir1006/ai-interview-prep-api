@@ -3,6 +3,7 @@ package auth
 import (
 	"testing"
 
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/emailverificationtoken"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/oauthaccount"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/rbac"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
@@ -86,6 +87,46 @@ func UserExists(t *testing.T, username string) bool {
 	}
 
 	return exists
+}
+
+func GetEmailVerificationTokensByUserID(
+	t *testing.T,
+	userID string,
+) []emailverificationtoken.EmailVerificationToken {
+	t.Helper()
+
+	db := database.GetTestDB(t)
+	repo := postgres.NewEmailVerificationTokenRepo(db)
+
+	ctx, cancel := database.QueryContext()
+	defer cancel()
+
+	tokens, err := repo.List(ctx, emailverificationtoken.Filter{UserID: &userID})
+	if err != nil {
+		t.Fatalf("GetEmailVerificationTokensByUserID: failed to get tokens for user %q: %v", userID, err)
+	}
+
+	return tokens
+}
+
+func GetEmailVerificationTokenByHash(
+	t *testing.T,
+	tokenHash string,
+) *emailverificationtoken.EmailVerificationToken {
+	t.Helper()
+
+	db := database.GetTestDB(t)
+	repo := postgres.NewEmailVerificationTokenRepo(db)
+
+	ctx, cancel := database.QueryContext()
+	defer cancel()
+
+	evt, err := repo.Get(ctx, emailverificationtoken.Filter{TokenHash: &tokenHash})
+	if err != nil {
+		t.Fatalf("GetEmailVerificationTokenByHash: failed to get token: %v", err)
+	}
+
+	return evt
 }
 
 // GetSessionsByUserID retrieves all sessions for a user, ordered by last_used_at ASC.

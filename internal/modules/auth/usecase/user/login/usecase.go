@@ -24,6 +24,12 @@ var errIncorrectCreds = errx.New(
 	errx.WithCode(user.CodeIncorrectCreds),
 )
 
+var errEmailNotVerified = errx.New(
+	"email is not verified",
+	errx.WithType(errx.T_Validation),
+	errx.WithCode(user.CodeEmailNotVerified),
+)
+
 type Request struct {
 	Email    string `json:"email"    validate:"required,email,max=255"`
 	Password string `json:"password" validate:"required,min=8,max=72"  mask:"true"`
@@ -59,8 +65,10 @@ type usecase struct {
 func (uc *usecase) OperationID() string { return "login" }
 
 func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) {
+	// Normalize email
 	email := normalizeEmail(in.Email)
 
+	// Find user by email
 	u, err := uc.domainContainer.UserRepo().Get(ctx, user.Filter{
 		Email: &email,
 	})
@@ -70,9 +78,15 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 	if err != nil {
 		return nil, errx.Wrap(err)
 	}
+	// Check if user is active
 	if !u.IsActive {
 		return nil, errx.Wrap(errIncorrectCreds)
 	}
+	// Check if user's email is verified
+	if !u.IsVerified {
+		return nil, errx.Wrap(errEmailNotVerified)
+	}
+	// Verify password hash
 	if u.PasswordHash == nil || !hasher.Compare(in.Password, *u.PasswordHash) {
 		return nil, errx.Wrap(errIncorrectCreds)
 	}
@@ -80,17 +94,20 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 	ctx = context.WithValue(ctx, meta.ActorType, auth.ActorTypeUser)
 	ctx = context.WithValue(ctx, meta.ActorID, u.ID)
 
+	// Start UOW
 	uow, err := uc.domainContainer.UOWFactory().NewUOW(ctx)
 	if err != nil {
 		return nil, errx.Wrap(err)
 	}
 	defer uow.DiscardUnapplied()
 
+	// Enforce max active sessions limit and create session record
 	s, err := uc.sessionManager.CreateAuthenticatedSession(ctx, uow, u)
 	if err != nil {
 		return nil, errx.Wrap(err)
 	}
 
+	// Record audit log
 	err = uc.portalContainer.Audit().Log(uow.Lend(), audit.Action{
 		Module: auth.ModuleName, OperationID: uc.OperationID(), Payload: in,
 	})
@@ -98,11 +115,13 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 		return nil, errx.Wrap(err)
 	}
 
+	// Apply UOW
 	err = uow.ApplyChanges()
 	if err != nil {
 		return nil, errx.Wrap(err)
 	}
 
+	// Return session tokens
 	return &Response{
 		AccessToken:           s.AccessToken,
 		AccessTokenExpiresAt:  s.AccessTokenExpiresAt.Format(time.RFC3339),

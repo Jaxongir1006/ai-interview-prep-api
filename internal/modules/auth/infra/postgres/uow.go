@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/emailverificationtoken"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/oauthaccount"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/rbac"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
@@ -39,6 +40,10 @@ func (u *pgUOW) UserRole() rbac.UserRoleRepo {
 
 func (u *pgUOW) UserPermission() rbac.UserPermissionRepo {
 	return NewUserPermissionRepo(u.IDB())
+}
+
+func (u *pgUOW) EmailVerificationToken() emailverificationtoken.Repo {
+	return NewEmailVerificationTokenRepo(u.IDB())
 }
 
 func (u *pgUOW) OAuthAccount() oauthaccount.Repo {

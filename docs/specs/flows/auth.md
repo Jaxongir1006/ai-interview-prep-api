@@ -79,28 +79,76 @@ Expired sessions (where the refresh token has expired) are deleted hourly by the
 
 - Public users register with `email + password + full_name`
 - Registration creates a row in `auth.users`
+- Registration sets `is_verified = false`
+- Registration fails with `EMAIL_ALREADY_EXISTS` when a user already exists with the same email
+- If the existing user is an unverified password-registered public user, the client should offer `resend-verification-email` instead of attempting to register again
 - Registration also creates a minimal candidate profile
+- Registration creates a one-time email verification token and sends a verification email
 - `is_verified` tracks whether the public user's primary contact identity has been verified
 - Target role, experience level, preferred topics, location, and other profile details are completed later through profile/onboarding APIs
 - The `register` use case orchestrates both auth and candidate writes while preserving module boundaries through portals/UOW coordination
 
+```mermaid
+sequenceDiagram
+    actor Client
+    participant API
+    participant DB
+    participant Mail
+
+    Client->>API: POST /auth/register {email, password, full_name}
+    API->>DB: Create user with is_verified=false
+    API->>DB: Create candidate profile
+    API->>DB: Store hashed email verification token
+    API->>Mail: Send verification link to email
+    API-->>Client: {user, profile, verification_required:true}
+    Client->>Client: Navigate to check-email page
+```
+
+### Email Verification
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Frontend
+    participant API
+    participant DB
+
+    User->>Frontend: Open /verify-email?token=...
+    Frontend->>API: POST /auth/verify-email {token}
+    API->>DB: Find unused token by hash
+    API->>API: Verify token is not expired
+    API->>DB: Mark token used
+    API->>DB: Set user.is_verified=true
+    API-->>Frontend: {user_id, email, is_verified:true}
+```
+
+- Password login is blocked until `is_verified = true`
+- `resend-verification-email` sends a new verification link for active password users who are not verified yet
+- `resend-verification-email` is also the recovery path when a user tries to register again with an email that already belongs to an unverified password-registered account
+- Raw verification tokens are sent only to the user's email and are not stored directly
+- Development environments should use SMTP capture tooling such as Mailpit so verification emails can be inspected at a local web UI before configuring a real provider
+
 ### Public User Login
 
 - Public users authenticate with `email + password`
+- Public users must have `is_verified = true` before password login succeeds
 - On successful login, the system creates a session and updates both `last_login_at` and `last_active_at`
 - Public users may exist without any administrative permissions; authorization remains permission-based where applicable
 
 ### Google OAuth Login
 
 - Public users can authenticate with Google OAuth
+- Google OAuth requires the provider email to be verified
 - The system links the Google identity to an existing user by provider account or matching email, or creates a new public user when needed
 - New OAuth-created users receive a minimal candidate profile at first login
+- OAuth-created users are marked verified based on Google's verified email signal
 
 ### GitHub OAuth Login
 
 - Public users can authenticate with GitHub OAuth
 - The system links the GitHub identity to an existing user by provider account or matching email, or creates a new public user when needed
-- GitHub OAuth login requires a usable email from the provider payload before account creation or linking
+- GitHub OAuth login requires a usable verified email from the provider payload before account creation or linking
+- OAuth-created users are marked verified based on GitHub's verified primary email signal
 
 ### Get Me
 
