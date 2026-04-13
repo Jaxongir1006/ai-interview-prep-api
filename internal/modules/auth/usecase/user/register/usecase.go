@@ -20,6 +20,12 @@ import (
 	"github.com/rise-and-shine/pkg/ucdef"
 )
 
+var errEmailConflict = errx.New(
+	"email already exists",
+	errx.WithType(errx.T_Conflict),
+	errx.WithCode(user.CodeEmailConflict),
+)
+
 type Request struct {
 	Email    string `json:"email"     validate:"required,email,max=255"`
 	FullName string `json:"full_name" validate:"required,min=1,max=255"`
@@ -27,35 +33,8 @@ type Request struct {
 }
 
 type Response struct {
-	User                 UserInfo    `json:"user"`
-	Profile              ProfileInfo `json:"profile"`
-	VerificationRequired bool        `json:"verification_required"`
-}
-
-type UserInfo struct {
-	ID           string  `json:"id"`
-	Email        *string `json:"email"`
-	PhoneNumber  *string `json:"phone_number"`
-	IsVerified   bool    `json:"is_verified"`
-	IsActive     bool    `json:"is_active"`
-	LastLoginAt  any     `json:"last_login_at"`
-	LastActiveAt any     `json:"last_active_at"`
-	CreatedAt    any     `json:"created_at"`
-	UpdatedAt    any     `json:"updated_at"`
-}
-
-type ProfileInfo struct {
-	ID                   int64    `json:"id"`
-	UserID               string   `json:"user_id"`
-	FullName             *string  `json:"full_name"`
-	Bio                  *string  `json:"bio"`
-	Location             *string  `json:"location"`
-	TargetRole           *string  `json:"target_role"`
-	ExperienceLevel      *string  `json:"experience_level"`
-	InterviewGoalPerWeek int      `json:"interview_goal_per_week"`
-	PreferredTopics      []string `json:"preferred_topics"`
-	CreatedAt            any      `json:"created_at"`
-	UpdatedAt            any      `json:"updated_at"`
+	Email                string `json:"email"`
+	VerificationRequired bool   `json:"verification_required"`
 }
 
 type UseCase = ucdef.UserAction[*Request, *Response]
@@ -87,6 +66,17 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 	// Normalize email
 	email := normalizeEmail(in.Email)
 
+	// Check whether a user already exists with the same email
+	existingUser, err := uc.domainContainer.UserRepo().Get(ctx, user.Filter{
+		Email: &email,
+	})
+	if err == nil {
+		return uc.handleExistingUser(ctx, existingUser, email)
+	}
+	if !errx.IsCodeIn(err, user.CodeUserNotFound) {
+		return nil, errx.Wrap(err)
+	}
+
 	// Hash the password
 	passwordHash, err := hasher.Hash(in.Password, hasher.WithCost(uc.hashingCost))
 	if err != nil {
@@ -115,17 +105,11 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 	u.IsVerified = false
 
 	// Create minimal candidate profile for the new user using the provided full name
-	p, err := uc.portalContainer.Candidate().
+	_, err = uc.portalContainer.Candidate().
 		CreateInitialProfile(uow.Lend(), &candidateportal.CreateInitialProfileRequest{
 			UserID:   u.ID,
 			FullName: &in.FullName,
 		})
-	if err != nil {
-		return nil, errx.Wrap(err)
-	}
-
-	// Create one-time email verification token for the user's email
-	verificationToken, err := uc.emailVerificationService.CreateToken(ctx, uow, u, email)
 	if err != nil {
 		return nil, errx.Wrap(err)
 	}
@@ -141,44 +125,62 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 		return nil, errx.Wrap(err)
 	}
 
-	// Apply UOW
+	// Create one-time email verification token for the user's email
+	verificationToken, err := uc.emailVerificationService.CreateToken(ctx, uow, u, email)
+	if err != nil {
+		return nil, errx.Wrap(err)
+	}
+
 	err = uow.ApplyChanges()
 	if err != nil {
 		return nil, errx.Wrap(err)
 	}
 
-	// Send verification email with frontend verification URL and raw token
-	err = uc.emailVerificationService.SendVerificationEmail(ctx, email, verificationToken)
+	return uc.sendVerificationEmail(ctx, email, verificationToken)
+}
+
+func (uc *usecase) handleExistingUser(
+	ctx context.Context,
+	u *user.User,
+	email string,
+) (*Response, error) {
+	if u.PasswordHash == nil || !u.IsActive || u.IsVerified {
+		return nil, errEmailConflict
+	}
+
+	uow, err := uc.domainContainer.UOWFactory().NewUOW(ctx)
+	if err != nil {
+		return nil, errx.Wrap(err)
+	}
+	defer uow.DiscardUnapplied()
+
+	// Expire previous unused verification tokens and create a fresh one
+	verificationToken, err := uc.emailVerificationService.CreateToken(ctx, uow, u, email)
 	if err != nil {
 		return nil, errx.Wrap(err)
 	}
 
-	// Return created user and profile data with verification_required true
+	err = uow.ApplyChanges()
+	if err != nil {
+		return nil, errx.Wrap(err)
+	}
+
+	return uc.sendVerificationEmail(ctx, email, verificationToken)
+}
+
+func (uc *usecase) sendVerificationEmail(
+	ctx context.Context,
+	email string,
+	verificationToken *emailverification.CreatedToken,
+) (*Response, error) {
+	err := uc.emailVerificationService.SendVerificationEmail(ctx, email, verificationToken)
+	if err != nil {
+		return nil, errx.Wrap(err)
+	}
+
+	// Return normalized email with verification_required true
 	return &Response{
-		User: UserInfo{
-			ID:           u.ID,
-			Email:        u.Email,
-			PhoneNumber:  u.PhoneNumber,
-			IsVerified:   u.IsVerified,
-			IsActive:     u.IsActive,
-			LastLoginAt:  u.LastLoginAt,
-			LastActiveAt: u.LastActiveAt,
-			CreatedAt:    u.CreatedAt,
-			UpdatedAt:    u.UpdatedAt,
-		},
-		Profile: ProfileInfo{
-			ID:                   p.ID,
-			UserID:               p.UserID,
-			FullName:             p.FullName,
-			Bio:                  p.Bio,
-			Location:             p.Location,
-			TargetRole:           p.TargetRole,
-			ExperienceLevel:      p.ExperienceLevel,
-			InterviewGoalPerWeek: p.InterviewGoalPerWeek,
-			PreferredTopics:      []string{},
-			CreatedAt:            p.CreatedAt,
-			UpdatedAt:            p.UpdatedAt,
-		},
+		Email:                email,
 		VerificationRequired: true,
 	}, nil
 }

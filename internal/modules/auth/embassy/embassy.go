@@ -75,6 +75,7 @@ func (e *embassy) Authenticate(ctx context.Context, accessToken string) (*auth.U
 	return &auth.UserContext{
 		UserID:      u.ID,
 		Username:    u.Username,
+		IsVerified:  u.IsVerified,
 		SessionID:   s.ID,
 		Permissions: permissions,
 	}, nil

@@ -28,7 +28,12 @@ Verifies ownership of a password-registered public user's email address using a 
 {
   "user_id": "string",
   "email": "user@example.com",
-  "is_verified": true
+  "is_verified": true,
+  "access_token": "string",
+  "access_token_expires_at": "2026-04-13T11:00:00Z",
+  "refresh_token": "string",
+  "refresh_token_expires_at": "2026-04-20T10:00:00Z",
+  "onboarding_required": true
 }
 ```
 
@@ -52,11 +57,15 @@ Verifies ownership of a password-registered public user's email address using a 
 
 - Mark user as verified
 
+- Create authenticated session
+
 - Record audit log
 
 - Apply UOW
 
-- Return verified user identity data
+- Resolve whether onboarding is still required
+
+- Return verified user identity data, authenticated session tokens, and onboarding requirement
 
 ## Errors
 

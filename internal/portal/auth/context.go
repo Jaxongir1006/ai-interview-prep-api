@@ -5,6 +5,7 @@ import "context"
 type UserContext struct {
 	UserID      string
 	Username    *string
+	IsVerified  bool
 	SessionID   int64
 	Permissions []string
 }

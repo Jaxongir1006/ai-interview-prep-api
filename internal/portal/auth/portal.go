@@ -8,10 +8,11 @@ import (
 const (
 	ModuleName = "auth"
 
-	CodeUnauthorized   = "UNAUTHORIZED"
-	CodeForbidden      = "FORBIDDEN"
-	CodeSessionExpired = "SESSION_EXPIRED"
-	CodeUserInactive   = "USER_INACTIVE"
+	CodeUnauthorized     = "UNAUTHORIZED"
+	CodeForbidden        = "FORBIDDEN"
+	CodeSessionExpired   = "SESSION_EXPIRED"
+	CodeUserInactive     = "USER_INACTIVE"
+	CodeEmailNotVerified = "EMAIL_NOT_VERIFIED"
 
 	ActorTypeUser = "user"
 )

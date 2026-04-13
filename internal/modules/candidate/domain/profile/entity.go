@@ -1,6 +1,10 @@
 package profile
 
-import "github.com/rise-and-shine/pkg/pg"
+import (
+	"time"
+
+	"github.com/rise-and-shine/pkg/pg"
+)
 
 const (
 	CodeCandidateProfileNotFound     = "CANDIDATE_PROFILE_NOT_FOUND"
@@ -18,7 +22,9 @@ type CandidateProfile struct {
 	Bio      *string `json:"bio"`
 	Location *string `json:"location"`
 
-	TargetRole           *string `json:"target_role"`
-	ExperienceLevel      *string `json:"experience_level"`
-	InterviewGoalPerWeek int     `json:"interview_goal_per_week"`
+	TargetRole            *string    `json:"target_role"`
+	ExperienceLevel       *string    `json:"experience_level"`
+	InterviewGoalPerWeek  int        `json:"interview_goal_per_week"`
+	OnboardingCompleted   bool       `json:"onboarding_completed"`
+	OnboardingCompletedAt *time.Time `json:"onboarding_completed_at"`
 }

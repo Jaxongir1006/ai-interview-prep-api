@@ -50,6 +50,7 @@
 | `auth:clean-expired-sessions`  | async_task     | -                              | [spec](docs/specs/modules/auth/usecases/session/clean-expired-sessions.md)          |
 | `audit:get-action-logs`        | user_action    | `audit:action-log:read`        | [spec](docs/specs/modules/audit/usecases/actionlog/get-action-logs.md)              |
 | `audit:get-status-change-logs` | user_action    | `audit:status-change-log:read` | [spec](docs/specs/modules/audit/usecases/statuschangelog/get-status-change-logs.md) |
+| `candidate:complete-onboarding` | user_action   | -                              | [spec](docs/specs/modules/candidate/usecases/profile/complete-onboarding.md)        |
 | `platform:list-queues`         | user_action    | `taskmill:view`                | [spec](docs/specs/modules/platform/usecases/taskmill/list-queues.md)                |
 | `platform:get-queue-stats`     | user_action    | `taskmill:view`                | [spec](docs/specs/modules/platform/usecases/taskmill/get-queue-stats.md)            |
 | `platform:list-dlq-tasks`      | user_action    | `taskmill:view`                | [spec](docs/specs/modules/platform/usecases/taskmill/list-dlq-tasks.md)             |

@@ -96,4 +96,7 @@ func (c *Controller) initRoutes(r fiber.Router) {
 		forward.ToUserAction(c.usecaseContainer.DeleteSession()))
 	v1Auth.Post("/delete-user-sessions", sessionManage,
 		forward.ToUserAction(c.usecaseContainer.DeleteUserSessions()))
+
+	me := r.Group("/api/v1/me", auth.NewAuthMiddleware(c.authPortal))
+	me.Get("", forward.ToUserAction(c.usecaseContainer.GetMe()))
 }

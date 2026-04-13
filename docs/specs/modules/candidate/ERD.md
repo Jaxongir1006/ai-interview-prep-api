@@ -13,6 +13,8 @@ erDiagram
         VARCHAR target_role "nullable until onboarding is completed"
         VARCHAR experience_level "nullable, junior, mid, senior"
         INT interview_goal_per_week "default 3"
+        BOOLEAN onboarding_completed "default false"
+        TIMESTAMPTZ onboarding_completed_at "nullable"
         TIMESTAMPTZ created_at
         TIMESTAMPTZ updated_at
     }
@@ -40,6 +42,8 @@ The candidate tables reside in the `candidate` schema.
 - `priority` is constrained to be non-negative
 - Candidate profile data is intentionally limited to stable, user-editable fields
 - A profile may be created with only baseline registration data and completed later through profile/onboarding use cases
+- `onboarding_completed` is set to true when target role, experience level, and preferred topics are saved
+- `onboarding_completed_at` is nullable until onboarding is completed
 - Derived metrics such as streaks, interview counts, average scores, strengths, and weaknesses should not be stored here
 - Profile photo/avatar should be stored through `filevault` and attached to the candidate profile entity using an association type such as `avatar`
 - When implementing the migration, follow [Migration Guideline](../../../guidelines/13_db_migrations.md): create tables first, create indexes second, then add foreign keys and check constraints with `ALTER TABLE`

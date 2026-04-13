@@ -80,8 +80,8 @@ Expired sessions (where the refresh token has expired) are deleted hourly by the
 - Public users register with `email + password + full_name`
 - Registration creates a row in `auth.users`
 - Registration sets `is_verified = false`
-- Registration fails with `EMAIL_ALREADY_EXISTS` when a user already exists with the same email
-- If the existing user is an unverified password-registered public user, the client should offer `resend-verification-email` instead of attempting to register again
+- Registration sends a fresh verification link when the same email belongs to an active, unverified password-registered public user
+- Registration fails with `EMAIL_CONFLICT` when the same email belongs to a verified, inactive, or OAuth-only user
 - Registration also creates a minimal candidate profile
 - Registration creates a one-time email verification token and sends a verification email
 - `is_verified` tracks whether the public user's primary contact identity has been verified
@@ -96,11 +96,19 @@ sequenceDiagram
     participant Mail
 
     Client->>API: POST /auth/register {email, password, full_name}
-    API->>DB: Create user with is_verified=false
-    API->>DB: Create candidate profile
-    API->>DB: Store hashed email verification token
+    API->>DB: Find user by email
+    alt User does not exist
+        API->>DB: Create user with is_verified=false
+        API->>DB: Create candidate profile
+        API->>DB: Store hashed email verification token
+    else Active unverified password user exists
+        API->>DB: Expire previous unused verification tokens
+        API->>DB: Store fresh hashed email verification token
+    else Verified, inactive, or OAuth-only user exists
+        API-->>Client: EMAIL_CONFLICT
+    end
     API->>Mail: Send verification link to email
-    API-->>Client: {user, profile, verification_required:true}
+    API-->>Client: {email, verification_required:true}
     Client->>Client: Navigate to check-email page
 ```
 
@@ -124,7 +132,7 @@ sequenceDiagram
 
 - Password login is blocked until `is_verified = true`
 - `resend-verification-email` sends a new verification link for active password users who are not verified yet
-- `resend-verification-email` is also the recovery path when a user tries to register again with an email that already belongs to an unverified password-registered account
+- Calling `register` again with an active unverified password user's email also sends a new verification link
 - Raw verification tokens are sent only to the user's email and are not stored directly
 - Development environments should use SMTP capture tooling such as Mailpit so verification emails can be inspected at a local web UI before configuring a real provider
 

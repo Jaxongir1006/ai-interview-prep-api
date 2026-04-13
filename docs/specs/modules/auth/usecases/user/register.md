@@ -28,30 +28,7 @@ Registers a public platform user with email and password, initializes a minimal 
 
 ```json
 {
-  "user": {
-    "id": "string",
-    "email": "user@example.com",
-    "phone_number": null,
-    "is_verified": false,
-    "is_active": true,
-    "last_login_at": null,
-    "last_active_at": null,
-    "created_at": "2024-01-01T00:00:00Z",
-    "updated_at": "2024-01-01T00:00:00Z"
-  },
-  "profile": {
-    "id": 1,
-    "user_id": "string",
-    "full_name": "John Doe",
-    "bio": null,
-    "location": null,
-    "target_role": null,
-    "experience_level": null,
-    "interview_goal_per_week": 3,
-    "preferred_topics": [],
-    "created_at": "2024-01-01T00:00:00Z",
-    "updated_at": "2024-01-01T00:00:00Z"
-  },
+  "email": "user@example.com",
   "verification_required": true
 }
 ```
@@ -60,9 +37,9 @@ Registers a public platform user with email and password, initializes a minimal 
 
 - Validate input
 
-- Check that no user already exists with the same email
-  - If a user already exists with the same email, return `EMAIL_ALREADY_EXISTS`
-  - If the existing user is not verified, the client should offer `resend-verification-email`
+- Check whether a user already exists with the same email
+  - If the existing user is active, password-based, and not verified, create a fresh email verification token, send a new verification email, and return the normal success response
+  - If the existing user is already verified, inactive, or OAuth-only, return `EMAIL_CONFLICT`
 
 - Start UOW
 
@@ -80,7 +57,7 @@ Registers a public platform user with email and password, initializes a minimal 
 
 - Send verification email with frontend verification URL and raw token
 
-- Return created user and profile data with `verification_required = true`
+- Return normalized email with `verification_required = true`
 
 ## Email Verification
 
@@ -90,8 +67,8 @@ Registers a public platform user with email and password, initializes a minimal 
 - Verification is completed by `verify-email`
 - OAuth login use cases do not send this email
 - If email delivery fails after registration is committed, the user can request a fresh link through `resend-verification-email`
+- Re-registering with the same unverified password-based email sends a fresh verification link without changing the stored password or profile data
 
 ## Errors
 
-- Return `EMAIL_ALREADY_EXISTS` when a user already exists with the same email
-- When `EMAIL_ALREADY_EXISTS` is returned for an unverified password-registered user, the client should guide the user to `resend-verification-email`
+- Return `EMAIL_CONFLICT` when a verified, inactive, or OAuth-only user already exists with the same email

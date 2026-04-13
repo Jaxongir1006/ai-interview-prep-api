@@ -6,7 +6,7 @@ Returns the full current-user snapshot by aggregating auth identity, candidate p
 
 > **operation-id**: `get-me`
 
-> **access**: GET /api/v1/auth/get-me
+> **access**: GET /api/v1/auth/get-me, GET /api/v1/me
 
 > **actor**: user (authenticated)
 
@@ -51,6 +51,8 @@ No input required. User identity is provided by auth middleware via the `Authori
       "golang-concurrency",
       "postgres-indexing"
     ],
+    "onboarding_completed": false,
+    "onboarding_completed_at": null, // nullable
     "created_at": "2024-01-01T00:00:00Z",
     "updated_at": "2024-01-01T00:00:00Z"
   }, // nullable

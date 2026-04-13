@@ -33,13 +33,15 @@ func GivenProfiles(t *testing.T, data ...map[string]any) []profile.CandidateProf
 		}
 
 		item := &profile.CandidateProfile{
-			UserID:               userID,
-			FullName:             anymap.StringPtr(d, "full_name", nil),
-			Bio:                  anymap.StringPtr(d, "bio", nil),
-			Location:             anymap.StringPtr(d, "location", nil),
-			TargetRole:           anymap.StringPtr(d, "target_role", nil),
-			ExperienceLevel:      anymap.StringPtr(d, "experience_level", nil),
-			InterviewGoalPerWeek: cast.ToInt(d["interview_goal_per_week"]),
+			UserID:                userID,
+			FullName:              anymap.StringPtr(d, "full_name", nil),
+			Bio:                   anymap.StringPtr(d, "bio", nil),
+			Location:              anymap.StringPtr(d, "location", nil),
+			TargetRole:            anymap.StringPtr(d, "target_role", nil),
+			ExperienceLevel:       anymap.StringPtr(d, "experience_level", nil),
+			InterviewGoalPerWeek:  cast.ToInt(d["interview_goal_per_week"]),
+			OnboardingCompleted:   anymap.Bool(d, "onboarding_completed", false),
+			OnboardingCompletedAt: anymap.TimePtr(d, "onboarding_completed_at", nil),
 		}
 		if _, ok := d["interview_goal_per_week"]; !ok {
 			item.InterviewGoalPerWeek = 3

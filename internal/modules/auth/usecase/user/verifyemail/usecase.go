@@ -8,9 +8,11 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/emailverificationtoken"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/user"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/pblc/emailverification"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/pblc/sessionmanager"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/audit"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/auth"
+	candidateportal "github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/candidate"
 
 	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/meta"
@@ -22,23 +24,34 @@ type Request struct {
 }
 
 type Response struct {
-	UserID     string `json:"user_id"`
-	Email      string `json:"email"`
-	IsVerified bool   `json:"is_verified"`
+	UserID                string `json:"user_id"`
+	Email                 string `json:"email"`
+	IsVerified            bool   `json:"is_verified"`
+	AccessToken           string `json:"access_token"`
+	AccessTokenExpiresAt  string `json:"access_token_expires_at"`
+	RefreshToken          string `json:"refresh_token"`
+	RefreshTokenExpiresAt string `json:"refresh_token_expires_at"`
+	OnboardingRequired    bool   `json:"onboarding_required"`
 }
 
 type UseCase = ucdef.UserAction[*Request, *Response]
 
-func New(domainContainer *domain.Container, portalContainer *portal.Container) UseCase {
+func New(
+	domainContainer *domain.Container,
+	portalContainer *portal.Container,
+	sessionManager *sessionmanager.Service,
+) UseCase {
 	return &usecase{
 		domainContainer: domainContainer,
 		portalContainer: portalContainer,
+		sessionManager:  sessionManager,
 	}
 }
 
 type usecase struct {
 	domainContainer *domain.Container
 	portalContainer *portal.Container
+	sessionManager  *sessionmanager.Service
 }
 
 func (uc *usecase) OperationID() string { return "verify-email" }
@@ -108,6 +121,15 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 		return nil, errx.Wrap(err)
 	}
 
+	ctx = context.WithValue(ctx, meta.ActorType, auth.ActorTypeUser)
+	ctx = context.WithValue(ctx, meta.ActorID, u.ID)
+
+	// Create authenticated session
+	s, err := uc.sessionManager.CreateAuthenticatedSession(ctx, uow, u)
+	if err != nil {
+		return nil, errx.Wrap(err)
+	}
+
 	// Record audit log
 	auditCtx := context.WithValue(uow.Lend(), meta.ActorType, auth.ActorTypeUser)
 	auditCtx = context.WithValue(auditCtx, meta.ActorID, u.ID)
@@ -127,12 +149,34 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 		return nil, errx.Wrap(err)
 	}
 
-	// Return verified user identity data
+	onboardingRequired, err := uc.onboardingRequired(ctx, u.ID)
+	if err != nil {
+		return nil, errx.Wrap(err)
+	}
+
+	// Return verified user identity data and authenticated session
 	return &Response{
-		UserID:     u.ID,
-		Email:      evt.Email,
-		IsVerified: u.IsVerified,
+		UserID:                u.ID,
+		Email:                 evt.Email,
+		IsVerified:            u.IsVerified,
+		AccessToken:           s.AccessToken,
+		AccessTokenExpiresAt:  s.AccessTokenExpiresAt.Format(time.RFC3339),
+		RefreshToken:          s.RefreshToken,
+		RefreshTokenExpiresAt: s.RefreshTokenExpiresAt.Format(time.RFC3339),
+		OnboardingRequired:    onboardingRequired,
 	}, nil
+}
+
+func (uc *usecase) onboardingRequired(ctx context.Context, userID string) (bool, error) {
+	p, err := uc.portalContainer.Candidate().GetProfileByUserID(ctx, userID)
+	if errx.IsCodeIn(err, candidateportal.CodeProfileNotFound) {
+		return true, nil
+	}
+	if err != nil {
+		return false, errx.Wrap(err)
+	}
+
+	return !p.OnboardingCompleted, nil
 }
 
 func invalidTokenErr() error {

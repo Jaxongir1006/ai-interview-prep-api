@@ -44,6 +44,8 @@ func TestGetMe_Success(t *testing.T) {
 		"target_role":             "Golang Backend Developer",
 		"experience_level":        "mid",
 		"interview_goal_per_week": 4,
+		"onboarding_completed":    true,
+		"onboarding_completed_at": time.Now().Add(-30 * time.Minute),
 	})[0]
 	statecandidate.GivenTopicPreferences(t,
 		map[string]any{
@@ -84,6 +86,8 @@ func TestGetMe_Success(t *testing.T) {
 	obj.Value("user").Object().Value("oauth_providers").Array().Length().IsEqual(1)
 	obj.Value("profile").Object().Value("full_name").String().IsEqual("John Candidate")
 	obj.Value("profile").Object().Value("preferred_topics").Array().Length().IsEqual(2)
+	obj.Value("profile").Object().Value("onboarding_completed").Boolean().IsTrue()
+	obj.Value("profile").Object().Value("onboarding_completed_at").String().NotEmpty()
 	obj.Value("progress_summary").Object().Value("total_interviews_taken").Number().IsEqual(8)
 	obj.Value("avatar").Object().Value("file_id").String().IsEqual(avatar.ID)
 	obj.Value("avatar").Object().Value("download_url").String().
@@ -91,6 +95,26 @@ func TestGetMe_Success(t *testing.T) {
 
 	linkedOAuth := auth.ListOAuthAccountsByUserID(t, userEntity.ID)
 	assert.Len(t, linkedOAuth, 1)
+}
+
+func TestGetMe_MeAliasSuccess(t *testing.T) {
+	database.Empty(t)
+
+	userEntity := auth.GivenUsers(t, map[string]any{
+		"email":       "candidate@example.com",
+		"is_verified": true,
+	})[0]
+	sessionEntity := auth.GivenSessions(t, map[string]any{
+		"user_id": userEntity.ID,
+	})[0]
+
+	resp := trigger.UserAction(t).GET("/api/v1/me").
+		WithHeader("Authorization", "Bearer "+sessionEntity.AccessToken).
+		Expect()
+
+	resp.Status(http.StatusOK)
+	resp.JSON().Object().Value("user").Object().
+		Value("id").String().IsEqual(userEntity.ID)
 }
 
 func TestGetMe_AuthFailures(t *testing.T) {

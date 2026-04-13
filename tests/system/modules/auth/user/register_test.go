@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+	"time"
 
 	stateaudit "github.com/Jaxongir1006/ai-interview-prep-api/tests/state/audit"
 	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/auth"
@@ -46,12 +47,11 @@ func TestRegister_Success(t *testing.T) {
 		Expect()
 
 	resp.Status(http.StatusOK)
-	resp.JSON().Object().Value("user").Object().Value("id").String().NotEmpty()
-	resp.JSON().Object().Value("user").Object().Value("email").String().IsEqual("candidate@example.com")
-	resp.JSON().Object().Value("user").Object().Value("is_verified").Boolean().IsFalse()
-	resp.JSON().Object().Value("profile").Object().Value("full_name").String().IsEqual("John Candidate")
-	resp.JSON().Object().Value("profile").Object().Value("preferred_topics").Array().Length().IsEqual(0)
-	resp.JSON().Object().Value("verification_required").Boolean().IsTrue()
+	obj := resp.JSON().Object()
+	obj.Value("email").String().IsEqual("candidate@example.com")
+	obj.Value("verification_required").Boolean().IsTrue()
+	obj.NotContainsKey("user")
+	obj.NotContainsKey("profile")
 
 	u := auth.GetUserByEmail(t, "candidate@example.com")
 	assert.True(t, u.IsActive)
@@ -76,11 +76,58 @@ func TestRegister_Success(t *testing.T) {
 	assert.Equal(t, 1, stateaudit.ActionLogCount(t))
 }
 
-func TestRegister_EmailConflict(t *testing.T) {
+func TestRegister_ExistingUnverifiedUserResendsVerificationEmail(t *testing.T) {
+	database.Empty(t)
+	users := auth.GivenUsers(t, map[string]any{
+		"email":       "candidate@example.com",
+		"password":    auth.TestPassword1,
+		"is_verified": false,
+	})
+	auth.GivenEmailVerificationTokens(t, map[string]any{
+		"user_id":    users[0].ID,
+		"email":      "candidate@example.com",
+		"token_hash": "old-token-hash",
+		"expires_at": time.Now().Add(time.Hour),
+	})
+
+	resp := trigger.UserAction(t).POST("/api/v1/auth/register").
+		WithJSON(map[string]string{
+			"email":     "candidate@example.com",
+			"full_name": "John Candidate",
+			"password":  "SecurePassword_1",
+		}).
+		Expect()
+
+	resp.Status(http.StatusOK)
+	obj := resp.JSON().Object()
+	obj.Value("email").String().IsEqual("candidate@example.com")
+	obj.Value("verification_required").Boolean().IsTrue()
+	obj.NotContainsKey("user")
+	obj.NotContainsKey("profile")
+
+	u := auth.GetUserByEmail(t, "candidate@example.com")
+	assert.Equal(t, users[0].ID, u.ID)
+	assert.False(t, u.IsVerified)
+
+	verificationTokens := auth.GetEmailVerificationTokensByUserID(t, u.ID)
+	assert.Len(t, verificationTokens, 2)
+
+	var oldToken *time.Time
+	for i := range verificationTokens {
+		if verificationTokens[i].TokenHash == "old-token-hash" {
+			oldToken = &verificationTokens[i].ExpiresAt
+		}
+	}
+	assert.NotNil(t, oldToken)
+	assert.True(t, oldToken.Before(time.Now().Add(time.Second)))
+}
+
+func TestRegister_VerifiedEmailConflict(t *testing.T) {
 	database.Empty(t)
 	auth.GivenUsers(t, map[string]any{
-		"email":    "candidate@example.com",
-		"password": auth.TestPassword1,
+		"email":       "candidate@example.com",
+		"password":    auth.TestPassword1,
+		"is_verified": true,
 	})
 
 	resp := trigger.UserAction(t).POST("/api/v1/auth/register").

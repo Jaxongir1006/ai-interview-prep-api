@@ -17,6 +17,11 @@ ALTER TABLE candidate.candidate_profiles
 ALTER TABLE candidate.candidate_profiles
     DROP CONSTRAINT IF EXISTS chk_candidate_profiles_experience_level;
 
+UPDATE candidate.candidate_profiles
+SET
+    target_role = COALESCE(target_role, 'unknown'),
+    experience_level = COALESCE(experience_level, 'junior');
+
 ALTER TABLE candidate.candidate_profiles
     ADD CONSTRAINT chk_candidate_profiles_experience_level
         CHECK (experience_level IN ('junior', 'mid', 'senior'));

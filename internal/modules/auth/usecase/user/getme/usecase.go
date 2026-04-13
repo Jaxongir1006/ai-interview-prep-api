@@ -43,17 +43,19 @@ type UserInfo struct {
 }
 
 type ProfileInfo struct {
-	ID                   int64    `json:"id"`
-	UserID               string   `json:"user_id"`
-	FullName             *string  `json:"full_name"`
-	Bio                  *string  `json:"bio"`
-	Location             *string  `json:"location"`
-	TargetRole           *string  `json:"target_role"`
-	ExperienceLevel      *string  `json:"experience_level"`
-	InterviewGoalPerWeek int      `json:"interview_goal_per_week"`
-	PreferredTopics      []string `json:"preferred_topics"`
-	CreatedAt            any      `json:"created_at"`
-	UpdatedAt            any      `json:"updated_at"`
+	ID                    int64    `json:"id"`
+	UserID                string   `json:"user_id"`
+	FullName              *string  `json:"full_name"`
+	Bio                   *string  `json:"bio"`
+	Location              *string  `json:"location"`
+	TargetRole            *string  `json:"target_role"`
+	ExperienceLevel       *string  `json:"experience_level"`
+	InterviewGoalPerWeek  int      `json:"interview_goal_per_week"`
+	PreferredTopics       []string `json:"preferred_topics"`
+	OnboardingCompleted   bool     `json:"onboarding_completed"`
+	OnboardingCompletedAt any      `json:"onboarding_completed_at"`
+	CreatedAt             any      `json:"created_at"`
+	UpdatedAt             any      `json:"updated_at"`
 }
 
 type ProgressSummaryInfo struct {
@@ -131,17 +133,19 @@ func (uc *usecase) Execute(ctx context.Context, _ *Request) (*Response, error) {
 		}
 
 		resp.Profile = &ProfileInfo{
-			ID:                   p.ID,
-			UserID:               p.UserID,
-			FullName:             p.FullName,
-			Bio:                  p.Bio,
-			Location:             p.Location,
-			TargetRole:           p.TargetRole,
-			ExperienceLevel:      p.ExperienceLevel,
-			InterviewGoalPerWeek: p.InterviewGoalPerWeek,
-			PreferredTopics:      toTopicKeys(preferredTopics),
-			CreatedAt:            p.CreatedAt,
-			UpdatedAt:            p.UpdatedAt,
+			ID:                    p.ID,
+			UserID:                p.UserID,
+			FullName:              p.FullName,
+			Bio:                   p.Bio,
+			Location:              p.Location,
+			TargetRole:            p.TargetRole,
+			ExperienceLevel:       p.ExperienceLevel,
+			InterviewGoalPerWeek:  p.InterviewGoalPerWeek,
+			PreferredTopics:       toTopicKeys(preferredTopics),
+			OnboardingCompleted:   p.OnboardingCompleted,
+			OnboardingCompletedAt: p.OnboardingCompletedAt,
+			CreatedAt:             p.CreatedAt,
+			UpdatedAt:             p.UpdatedAt,
 		}
 
 		avatar, foundAvatar, avatarErr := uc.findAvatar(ctx, p.ID)

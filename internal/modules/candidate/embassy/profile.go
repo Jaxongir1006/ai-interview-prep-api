@@ -86,15 +86,17 @@ func (e *embassy) ListTopicPreferencesByProfileID(
 
 func toPortalProfile(p *profile.CandidateProfile) *candidateportal.Profile {
 	return &candidateportal.Profile{
-		ID:                   p.ID,
-		UserID:               p.UserID,
-		FullName:             p.FullName,
-		Bio:                  p.Bio,
-		Location:             p.Location,
-		TargetRole:           p.TargetRole,
-		ExperienceLevel:      p.ExperienceLevel,
-		InterviewGoalPerWeek: p.InterviewGoalPerWeek,
-		CreatedAt:            p.CreatedAt,
-		UpdatedAt:            p.UpdatedAt,
+		ID:                    p.ID,
+		UserID:                p.UserID,
+		FullName:              p.FullName,
+		Bio:                   p.Bio,
+		Location:              p.Location,
+		TargetRole:            p.TargetRole,
+		ExperienceLevel:       p.ExperienceLevel,
+		InterviewGoalPerWeek:  p.InterviewGoalPerWeek,
+		OnboardingCompleted:   p.OnboardingCompleted,
+		OnboardingCompletedAt: p.OnboardingCompletedAt,
+		CreatedAt:             p.CreatedAt,
+		UpdatedAt:             p.UpdatedAt,
 	}
 }

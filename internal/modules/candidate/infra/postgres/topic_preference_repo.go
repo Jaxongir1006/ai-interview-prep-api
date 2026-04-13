@@ -1,18 +1,44 @@
 package postgres
 
 import (
+	"context"
+
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/candidate/domain/topicpreference"
 
+	"github.com/code19m/errx"
 	"github.com/rise-and-shine/pkg/repogen"
 	"github.com/uptrace/bun"
 )
 
 func NewTopicPreferenceRepo(idb bun.IDB) topicpreference.Repo {
-	return repogen.NewPgRepoBuilder[topicpreference.TopicPreference, topicpreference.Filter](idb).
+	baseRepo := repogen.NewPgRepoBuilder[topicpreference.TopicPreference, topicpreference.Filter](idb).
 		WithSchemaName(schemaName).
 		WithNotFoundCode(topicpreference.CodeTopicPreferenceNotFound).
 		WithFilterFunc(topicPreferenceFilterFunc).
 		Build()
+
+	return &topicPreferenceRepo{
+		Repo: baseRepo,
+		idb:  idb,
+	}
+}
+
+type topicPreferenceRepo struct {
+	repogen.Repo[topicpreference.TopicPreference, topicpreference.Filter]
+	idb bun.IDB
+}
+
+func (r *topicPreferenceRepo) DeleteByProfileID(ctx context.Context, profileID int64) error {
+	_, err := r.idb.NewDelete().
+		Model((*topicpreference.TopicPreference)(nil)).
+		ModelTableExpr(schemaName+".candidate_topic_preferences AS ctp").
+		Where("candidate_profile_id = ?", profileID).
+		Exec(ctx)
+	if err != nil {
+		return errx.Wrap(err)
+	}
+
+	return nil
 }
 
 func topicPreferenceFilterFunc(q *bun.SelectQuery, f topicpreference.Filter) *bun.SelectQuery {

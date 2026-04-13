@@ -11,6 +11,7 @@ The Candidate module manages public-user interview-preparation profile data. It 
 - Store user-editable presentation/profile fields such as full name, bio, and location
 - Store preparation preferences and goals that are part of the product domain
 - Store preferred topics as normalized preference records, not JSON blobs
+- Track onboarding completion after the candidate selects role, experience level, and topics
 - Own candidate-facing profile concepts while delegating binary files to Filevault
 - Expose candidate data to other modules through a portal when needed
 - Support gradual onboarding, where a candidate profile may start minimal at registration and be completed later

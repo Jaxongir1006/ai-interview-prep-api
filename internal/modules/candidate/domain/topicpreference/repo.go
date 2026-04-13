@@ -1,6 +1,8 @@
 package topicpreference
 
 import (
+	"context"
+
 	"github.com/rise-and-shine/pkg/repogen"
 	"github.com/rise-and-shine/pkg/sorter"
 )
@@ -19,4 +21,6 @@ type Filter struct {
 
 type Repo interface {
 	repogen.Repo[TopicPreference, Filter]
+
+	DeleteByProfileID(ctx context.Context, profileID int64) error
 }

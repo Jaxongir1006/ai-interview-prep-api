@@ -147,7 +147,7 @@ func New(
 		refreshtoken.New(domainContainer, cfg.AccessTokenTTL, cfg.RefreshTokenTTL),
 		logout.New(domainContainer, portalContainer),
 		changemypassword.New(domainContainer, portalContainer, cfg.HashingCost),
-		verifyemail.New(domainContainer, portalContainer),
+		verifyemail.New(domainContainer, portalContainer, sessionManager),
 		resendverificationemail.New(domainContainer, emailVerificationService),
 
 		// User management
