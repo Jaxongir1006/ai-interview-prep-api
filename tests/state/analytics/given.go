@@ -52,3 +52,46 @@ func GivenProgressSummaries(t *testing.T, data ...map[string]any) []progress.Sum
 
 	return items
 }
+
+func GivenTopicStats(t *testing.T, data ...map[string]any) []progress.TopicStat {
+	t.Helper()
+
+	if len(data) == 0 {
+		t.Fatal("GivenTopicStats: at least one topic stat data map is required")
+	}
+
+	db := database.GetTestDB(t)
+	repo := analyticspg.NewTopicStatRepo(db)
+
+	ctx, cancel := database.QueryContext()
+	defer cancel()
+
+	items := make([]progress.TopicStat, 0, len(data))
+
+	for i, d := range data {
+		userID := anymap.String(d, "user_id", "")
+		topicKey := anymap.String(d, "topic_key", "")
+		if userID == "" || topicKey == "" {
+			t.Fatalf("GivenTopicStats[%d]: user_id and topic_key are required", i)
+		}
+
+		item := &progress.TopicStat{
+			UserID:                userID,
+			TopicKey:              topicKey,
+			Attempts:              cast.ToInt(d["attempts"]),
+			TotalTimeSpentSeconds: cast.ToInt64(d["total_time_spent_seconds"]),
+			AverageScore:          cast.ToFloat64(d["average_score"]),
+			BestScore:             cast.ToFloat64(d["best_score"]),
+			LastPracticedAt:       anymap.TimePtr(d, "last_practiced_at", (*time.Time)(nil)),
+		}
+
+		created, err := repo.Create(ctx, item)
+		if err != nil {
+			t.Fatalf("GivenTopicStats[%d]: failed to create topic stat: %v", i, err)
+		}
+
+		items = append(items, *created)
+	}
+
+	return items
+}

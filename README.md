@@ -1,102 +1,237 @@
-# [Project Name]
+# HireReady API
 
-<!-- PROJECT-SPECIFIC: Replace [Project Name] above with your project name -->
+Backend API for HireReady, an AI-assisted interview preparation platform.
 
-> Built on [Go Enterprise Blueprint](https://github.com/rise-and-shine/go-enterprise-blueprint)
+The project is built as a modular Go backend with document-first development, strict module boundaries, session-backed authentication, RBAC, candidate onboarding, file storage, audit logging, analytics foundations, and platform operations APIs.
 
-## Overview
+## What Exists Today
 
-<!-- PROJECT-SPECIFIC: Describe your project here -->
+| Area | Status |
+| --- | --- |
+| Authentication | Admin login, public login, email verification, OAuth login, refresh tokens, logout |
+| Authorization | RBAC with roles, role permissions, direct user permissions, and permission middleware |
+| Candidate profile | Registration-created profile, onboarding, target role, experience level, preferred topics |
+| Analytics | Database model for progress summaries, topic stats, and achievements |
+| File storage | Upload/download through Filevault with MinIO metadata and attachment support |
+| Audit | Action logs and status-change logs |
+| Platform operations | Taskmill queue/admin APIs and alert error browsing/cleanup |
 
-[Brief description of what your project does, its purpose, mission, and key features.]
+The Interview module now defines the persistence foundation for sessions, questions, answers, and review outcomes. Use cases for starting interviews, submitting answers, and running AI reviews still need to be documented before implementation.
 
-- [Architecture](docs/architecture/)
-- [Guidelines](docs/guidelines/)
-- [Specs](docs/specs/)
+## Architecture
 
-## Use Case Index
+The codebase follows a module-first architecture:
 
-| Use Case (module:operation-id) | Type           | Permissions                    | Docs                                                                                |
-| ------------------------------ | -------------- | ------------------------------ | ----------------------------------------------------------------------------------- |
-| `auth:admin-login`             | user_action    | -                              | [spec](docs/specs/modules/auth/usecases/user/admin-login.md)                        |
-| `auth:login`                   | user_action    | -                              | [spec](docs/specs/modules/auth/usecases/user/login.md)                              |
-| `auth:register`                | user_action    | -                              | [spec](docs/specs/modules/auth/usecases/user/register.md)                           |
-| `auth:verify-email`            | user_action    | -                              | [spec](docs/specs/modules/auth/usecases/user/verify-email.md)                       |
-| `auth:resend-verification-email` | user_action   | -                              | [spec](docs/specs/modules/auth/usecases/user/resend-verification-email.md)          |
-| `auth:refresh-token`           | user_action    | -                              | [spec](docs/specs/modules/auth/usecases/user/refresh-token.md)                      |
-| `auth:logout`                  | user_action    | -                              | [spec](docs/specs/modules/auth/usecases/user/logout.md)                             |
-| `auth:get-my-sessions`         | user_action    | -                              | [spec](docs/specs/modules/auth/usecases/user/get-my-sessions.md)                    |
-| `auth:delete-my-session`       | user_action    | -                              | [spec](docs/specs/modules/auth/usecases/user/delete-my-session.md)                  |
-| `auth:get-auth-stats`          | user_action    | `auth:user:read`               | [spec](docs/specs/modules/auth/usecases/user/get-auth-stats.md)                     |
-| `auth:get-users`               | user_action    | `auth:user:read`               | [spec](docs/specs/modules/auth/usecases/user/get-users.md)                          |
-| `auth:create-user`             | user_action    | `auth:user:manage`             | [spec](docs/specs/modules/auth/usecases/user/create-user.md)                        |
-| `auth:update-user`             | user_action    | `auth:user:manage`             | [spec](docs/specs/modules/auth/usecases/user/update-user.md)                        |
-| `auth:disable-user`            | user_action    | `auth:user:manage`             | [spec](docs/specs/modules/auth/usecases/user/disable-user.md)                       |
-| `auth:enable-user`             | user_action    | `auth:user:manage`             | [spec](docs/specs/modules/auth/usecases/user/enable-user.md)                        |
-| `auth:create-role`             | user_action    | `auth:role:manage`             | [spec](docs/specs/modules/auth/usecases/rbac/create-role.md)                        |
-| `auth:update-role`             | user_action    | `auth:role:manage`             | [spec](docs/specs/modules/auth/usecases/rbac/update-role.md)                        |
-| `auth:delete-role`             | user_action    | `auth:role:manage`             | [spec](docs/specs/modules/auth/usecases/rbac/delete-role.md)                        |
-| `auth:get-roles`               | user_action    | `auth:role:read`               | [spec](docs/specs/modules/auth/usecases/rbac/get-roles.md)                          |
-| `auth:set-role-permissions`    | user_action    | `auth:role:manage`             | [spec](docs/specs/modules/auth/usecases/rbac/set-role-permissions.md)               |
-| `auth:get-role-permissions`    | user_action    | `auth:role:read`               | [spec](docs/specs/modules/auth/usecases/rbac/get-role-permissions.md)               |
-| `auth:set-user-roles`          | user_action    | `auth:access:manage`           | [spec](docs/specs/modules/auth/usecases/rbac/set-user-roles.md)                     |
-| `auth:get-user-roles`          | user_action    | `auth:access:read`             | [spec](docs/specs/modules/auth/usecases/rbac/get-user-roles.md)                     |
-| `auth:set-user-permissions`    | user_action    | `auth:access:manage`           | [spec](docs/specs/modules/auth/usecases/rbac/set-user-permissions.md)               |
-| `auth:get-user-permissions`    | user_action    | `auth:access:read`             | [spec](docs/specs/modules/auth/usecases/rbac/get-user-permissions.md)               |
-| `auth:get-user-sessions`       | user_action    | `auth:session:read`            | [spec](docs/specs/modules/auth/usecases/session/get-user-sessions.md)               |
-| `auth:delete-session`          | user_action    | `auth:session:manage`          | [spec](docs/specs/modules/auth/usecases/session/delete-session.md)                  |
-| `auth:delete-user-sessions`    | user_action    | `auth:session:manage`          | [spec](docs/specs/modules/auth/usecases/session/delete-user-sessions.md)            |
-| `auth:create-superadmin`       | manual_command | -                              | [spec](docs/specs/modules/auth/usecases/user/create-superadmin.md)                  |
-| `auth:clean-expired-sessions`  | async_task     | -                              | [spec](docs/specs/modules/auth/usecases/session/clean-expired-sessions.md)          |
-| `audit:get-action-logs`        | user_action    | `audit:action-log:read`        | [spec](docs/specs/modules/audit/usecases/actionlog/get-action-logs.md)              |
-| `audit:get-status-change-logs` | user_action    | `audit:status-change-log:read` | [spec](docs/specs/modules/audit/usecases/statuschangelog/get-status-change-logs.md) |
-| `candidate:complete-onboarding` | user_action   | -                              | [spec](docs/specs/modules/candidate/usecases/profile/complete-onboarding.md)        |
-| `platform:list-queues`         | user_action    | `taskmill:view`                | [spec](docs/specs/modules/platform/usecases/taskmill/list-queues.md)                |
-| `platform:get-queue-stats`     | user_action    | `taskmill:view`                | [spec](docs/specs/modules/platform/usecases/taskmill/get-queue-stats.md)            |
-| `platform:list-dlq-tasks`      | user_action    | `taskmill:view`                | [spec](docs/specs/modules/platform/usecases/taskmill/list-dlq-tasks.md)             |
-| `platform:list-task-results`   | user_action    | `taskmill:view`                | [spec](docs/specs/modules/platform/usecases/taskmill/list-task-results.md)          |
-| `platform:list-schedules`      | user_action    | `taskmill:view`                | [spec](docs/specs/modules/platform/usecases/taskmill/list-schedules.md)             |
-| `platform:requeue-from-dlq`    | user_action    | `taskmill:manage`              | [spec](docs/specs/modules/platform/usecases/taskmill/requeue-from-dlq.md)           |
-| `platform:purge-queue`         | user_action    | `taskmill:manage`              | [spec](docs/specs/modules/platform/usecases/taskmill/purge-queue.md)                |
-| `platform:purge-dlq`           | user_action    | `taskmill:manage`              | [spec](docs/specs/modules/platform/usecases/taskmill/purge-dlq.md)                  |
-| `platform:cleanup-results`     | user_action    | `taskmill:manage`              | [spec](docs/specs/modules/platform/usecases/taskmill/cleanup-results.md)            |
-| `platform:trigger-schedule`    | user_action    | `taskmill:manage`              | [spec](docs/specs/modules/platform/usecases/taskmill/trigger-schedule.md)           |
-| `platform:list-errors`         | user_action    | `alert:view`                   | [spec](docs/specs/modules/platform/usecases/alerterror/list-errors.md)              |
-| `platform:get-error`           | user_action    | `alert:view`                   | [spec](docs/specs/modules/platform/usecases/alerterror/get-error.md)                |
-| `platform:get-error-stats`     | user_action    | `alert:view`                   | [spec](docs/specs/modules/platform/usecases/alerterror/get-error-stats.md)          |
-| `platform:cleanup-errors`      | user_action    | `alert:manage`                 | [spec](docs/specs/modules/platform/usecases/alerterror/cleanup-errors.md)           |
-
-## How to Run
-
-### Production
-
-<!-- PROJECT-SPECIFIC: Build, Deploy, Run and other CLI commands for devops team -->
-
-```bash
-# Build
-# TODO: ...
-
-# Run
-# TODO: ...
+```text
+internal/
+├── app/          # Application bootstrap and lifecycle
+├── modules/      # Business modules
+└── portal/       # Cross-module contracts
 ```
 
-### Development
+Each module owns its data and exposes cross-module behavior only through a portal interface. Modules do not import each other directly.
 
-**Prerequisites:**
+Typical module layout:
 
-- Docker
-- Go 1.25+
-- OS: macOS or Linux (some features won't work on Windows)
-
-**Run locally:**
-
-```bash
-make run       # Start infrastructure (database, etc.) and run the application
+```text
+internal/modules/{module}/
+├── domain/       # Entities, value objects, repository interfaces
+├── usecase/      # One package per business operation
+├── pblc/         # Reusable business logic components
+├── infra/        # Repository/client implementations
+├── ctrl/         # HTTP, CLI, consumers, async tasks
+└── embassy/      # Portal implementation
 ```
 
-**Run tests:**
+Implementation order is bottom-up:
+
+1. Migrations
+2. Domain
+3. Infra
+4. PBLC
+5. Use case
+6. Controller
+7. DI/container wiring
+8. Tests and verification
+
+## Modules
+
+| Module | Responsibility |
+| --- | --- |
+| `auth` | Identity, sessions, OAuth accounts, email verification, RBAC |
+| `candidate` | Interview-prep profile data, onboarding, topic preferences |
+| `analytics` | Derived candidate metrics, topic performance, achievements |
+| `interview` | Interview sessions, questions shown, answers, review outcomes |
+| `filevault` | Object storage, file metadata, downloads, entity attachments |
+| `audit` | Centralized user action and status-change logs |
+| `platform` | Operational APIs for queues, schedules, task results, and errors |
+
+## API Style
+
+This API is operation-based, not REST-based.
+
+- `GET` is used for queries.
+- `POST` is used for mutations.
+- No path parameters. Use query parameters for `GET` and JSON bodies for `POST`.
+- List responses are wrapped in `{ "content": [] }`.
+- Paginated responses include `page_number`, `page_size`, `count`, and `content`.
+- Every response includes `X-Trace-ID`.
+
+Examples:
+
+```text
+POST /api/v1/auth/register
+POST /api/v1/auth/login
+GET  /api/v1/auth/get-me
+POST /api/v1/me/complete-onboarding
+```
+
+See [docs/specs/api/general.md](docs/specs/api/general.md) for response contracts.
+
+## Documentation
+
+Documentation is the source of truth.
+
+```text
+docs/
+├── architecture/        # Codebase architecture
+├── guidelines/          # Engineering rules and patterns
+├── specs/
+│   ├── api/             # Shared API contracts
+│   ├── flows/           # Business flows
+│   ├── modules/         # Module specs, ERDs, use cases
+│   └── templates/       # Use case templates
+└── plans/               # Implementation plans
+```
+
+Before implementing a module feature, read:
+
+1. `docs/specs/modules/{module}/overview.md`
+2. `docs/specs/modules/{module}/ERD.md`
+3. Relevant files in `docs/specs/flows/`
+4. The specific use case document only when working on that use case
+
+Use case documents are API specs. They must describe every input, output field, validation rule, business step, error, and transaction boundary.
+
+## Local Development
+
+Copy local configuration:
 
 ```bash
-make test         # Run unit tests
-make test-system  # Run system tests
+cp config/local.yaml.example config/local.yaml
 ```
+
+Start infrastructure and run the app:
+
+```bash
+make run
+```
+
+The default local services are:
+
+| Service | URL |
+| --- | --- |
+| API | `http://localhost:9876` |
+| PostgreSQL | `localhost:5432` |
+| Mailpit UI | `http://localhost:8025` |
+| MinIO API | `http://localhost:9000` |
+| MinIO Console | `http://localhost:9001` |
+| AKHQ | `http://localhost:8080` |
+
+Run only infrastructure:
+
+```bash
+make infra-up
+```
+
+Stop infrastructure:
+
+```bash
+make infra-down
+```
+
+## Database Migrations
+
+Run migrations:
+
+```bash
+make migrate-up
+```
+
+Rollback one migration:
+
+```bash
+make migrate-down
+```
+
+Create a migration:
+
+```bash
+make migrate-create
+```
+
+Migration files live in [migrations](migrations).
+
+## Verification
+
+Run formatting:
+
+```bash
+make fmt
+```
+
+Run lint:
+
+```bash
+make lint
+```
+
+Run unit tests for shared packages:
+
+```bash
+make test
+```
+
+Run system tests:
+
+```bash
+make test-system
+```
+
+Before delivering backend code, the expected verification set is:
+
+```bash
+make lint
+make test
+make test-system
+```
+
+If lint fails, run `make fmt` and then `make lint` again.
+
+## AI Interview Engine Direction
+
+The current docs prepare the foundation for an AI interview product, but they do not yet define the interview/question modules.
+
+Recommended next modules:
+
+| Module | Owns |
+| --- | --- |
+| `questionbank` | Reusable/manual question catalog, topic taxonomy, difficulty metadata |
+| `interview` | Interview sessions, selected questions, submitted answers, timing, completion state, raw review outcomes |
+| `analytics` | Aggregated progress derived from completed interviews and reviews |
+
+Questions should be persisted. Even if AI generates them, the system should store the exact question shown to the user, its topic, difficulty, prompt/version metadata, and whether it is reusable or session-specific.
+
+AI reviews should also be persisted. Store the submitted answer, the AI evaluation result, score, rubric breakdown, feedback, model/provider metadata, and timestamps. This keeps progress dashboards reproducible and avoids changing historical results when prompts or models change.
+
+## Development Rules
+
+- Document first, then implement.
+- Keep docs, code, and tests in sync.
+- Put business logic in use cases or PBLCs, not controllers or repositories.
+- Use portals for cross-module communication.
+- Do not create cross-module imports between `internal/modules/*`.
+- Use UOW only when multiple writes need atomicity.
+- Add or update system tests for use case behavior.
+
+See [docs/guidelines](docs/guidelines) for the detailed engineering rules.

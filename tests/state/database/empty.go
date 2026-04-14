@@ -12,7 +12,7 @@ import (
 // appSchemas returns the application schemas to clean.
 // Add new schemas here as the application grows.
 func appSchemas() []string {
-	return []string{"auth", "audit", "candidate", "analytics", "taskmill", "alert", "filevault"}
+	return []string{"auth", "audit", "candidate", "analytics", "taskmill", "alert", "filevault", "interview"}
 }
 
 // Empty truncates all application tables, providing a clean state for tests.

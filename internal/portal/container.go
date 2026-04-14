@@ -6,6 +6,7 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/auth"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/candidate"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/filevault"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/interview"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/platform"
 )
 
@@ -17,6 +18,7 @@ type Container struct {
 	auth      auth.Portal
 	candidate candidate.Portal
 	filevault filevault.Portal
+	interview interview.Portal
 	platform  platform.Portal
 }
 
@@ -40,6 +42,10 @@ func (c *Container) SetFilevaultPortal(fv filevault.Portal) {
 	c.filevault = fv
 }
 
+func (c *Container) SetInterviewPortal(interview interview.Portal) {
+	c.interview = interview
+}
+
 func (c *Container) Auth() auth.Portal {
 	return c.auth
 }
@@ -58,6 +64,10 @@ func (c *Container) Audit() audit.Portal {
 
 func (c *Container) Filevault() filevault.Portal {
 	return c.filevault
+}
+
+func (c *Container) Interview() interview.Portal {
+	return c.interview
 }
 
 func (c *Container) SetPlatformPortal(platform platform.Portal) {

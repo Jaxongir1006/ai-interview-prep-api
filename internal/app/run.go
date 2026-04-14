@@ -11,6 +11,7 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/candidate"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/interview"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal"
 	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/baseserver"
@@ -169,6 +170,14 @@ func (a *app) initModules() error {
 		return errx.Wrap(err)
 	}
 
+	// Interview Module
+	a.interview, err = interview.New(
+		a.cfg.Interview, a.dbConn, portalContainer, a.httpServer,
+	)
+	if err != nil {
+		return errx.Wrap(err)
+	}
+
 	// Platform
 	a.platform, err = platform.New(
 		a.cfg.Platform, a.cfg.KafkaBroker, a.dbConn, portalContainer, a.httpServer,
@@ -182,6 +191,7 @@ func (a *app) initModules() error {
 	portalContainer.SetAuditPortal(a.audit.Portal())
 	portalContainer.SetCandidatePortal(a.candidate.Portal())
 	portalContainer.SetFilevaultPortal(a.filevault.Portal())
+	portalContainer.SetInterviewPortal(a.interview.Portal())
 	portalContainer.SetPlatformPortal(a.platform.Portal())
 
 	return nil

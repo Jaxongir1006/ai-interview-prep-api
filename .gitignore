@@ -41,5 +41,3 @@ local.yaml
 .env
 .env.local
 *.env
-workfile*
-/codex.local.md

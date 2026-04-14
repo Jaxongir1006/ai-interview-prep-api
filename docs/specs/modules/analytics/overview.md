@@ -11,6 +11,7 @@ The Analytics module tracks derived candidate progress over time. It stores aggr
 - Store achievement definitions and awarded achievements
 - Expose analytics data for dashboards, recommendations, and progress reports
 - Keep derived performance data separate from editable profile data
+- Provide authenticated candidate dashboard read models by combining analytics aggregates with candidate profile data and interview activity
 
 ## Domain Main Entities
 
@@ -27,5 +28,6 @@ The Analytics module tracks derived candidate progress over time. It stores aggr
 - `interview` owns interview sessions, submitted answers, and raw outcomes
 - `analytics` owns derived aggregates and badges built from interview outcomes
 - Strengths and weaknesses should be inferred from topic stats, not stored as free-form profile fields
+- Dashboard read models may aggregate data through portals, but analytics must not take ownership of editable profile fields or raw interview answers
 
 See ERD.md for entity relationships.

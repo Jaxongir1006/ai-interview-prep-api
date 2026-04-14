@@ -6,6 +6,7 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/candidate"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/filevault"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/interview"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform"
 	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/baseserver"
 
@@ -50,6 +51,8 @@ type Config struct {
 
 	Filevault filevault.Config `yaml:"filevault"`
 
+	Interview interview.Config `yaml:"interview"`
+
 	Platform platform.Config `yaml:"platform"`
 }
 
@@ -66,6 +69,7 @@ type app struct {
 	analytics *analytics.Module
 	candidate *candidate.Module
 	filevault *filevault.Module
+	interview *interview.Module
 	platform  *platform.Module
 }
 

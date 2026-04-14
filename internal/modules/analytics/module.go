@@ -1,9 +1,18 @@
 package analytics
 
 import (
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/analytics/ctrl/http"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/analytics/domain"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/analytics/embassy"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/analytics/infra/postgres"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/analytics/pblc/dashboard"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/analytics/usecase"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/analytics/usecase/dashboard/getoverview"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/analytics/usecase/dashboard/getperformancetrend"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/analytics/usecase/dashboard/getrecentactivity"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/analytics/usecase/dashboard/getrecommendations"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/analytics/usecase/dashboard/getstats"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/analytics/usecase/dashboard/gettopics"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal"
 	analyticsportal "github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/analytics"
 
@@ -14,14 +23,15 @@ import (
 type Config struct{}
 
 type Module struct {
-	portal analyticsportal.Portal
+	httpCTRL *http.Controller
+	portal   analyticsportal.Portal
 }
 
 func New(
 	_ Config,
 	dbConn *bun.DB,
-	_ *portal.Container,
-	_ *server.HTTPServer,
+	portalContainer *portal.Container,
+	httpServer *server.HTTPServer,
 ) (*Module, error) {
 	domainContainer := domain.NewContainer(
 		postgres.NewProgressSummaryRepo(dbConn),
@@ -31,8 +41,19 @@ func New(
 		postgres.NewUOWFactory(dbConn),
 	)
 
+	dashboardBuilder := dashboard.NewBuilder(domainContainer, portalContainer)
+	usecaseContainer := usecase.NewContainer(
+		getoverview.New(dashboardBuilder),
+		getstats.New(dashboardBuilder),
+		getperformancetrend.New(dashboardBuilder),
+		gettopics.New(dashboardBuilder),
+		getrecentactivity.New(dashboardBuilder),
+		getrecommendations.New(dashboardBuilder),
+	)
+
 	return &Module{
-		portal: embassy.New(domainContainer),
+		httpCTRL: http.NewController(usecaseContainer, portalContainer.Auth(), httpServer),
+		portal:   embassy.New(domainContainer),
 	}, nil
 }
 
