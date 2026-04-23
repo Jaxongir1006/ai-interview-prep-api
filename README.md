@@ -10,7 +10,7 @@ The project is built as a modular Go backend with document-first development, st
 | --- | --- |
 | Authentication | Admin login, public login, email verification, OAuth login, refresh tokens, logout |
 | Authorization | RBAC with roles, role permissions, direct user permissions, and permission middleware |
-| Candidate profile | Registration-created profile, onboarding, target role, experience level, preferred topics |
+| Candidate profile | Registration-created profile, onboarding state, selected interview target role, experience level, and preferred topics |
 | Analytics | Database model for progress summaries, topic stats, and achievements |
 | File storage | Upload/download through Filevault with MinIO metadata and attachment support |
 | Audit | Action logs and status-change logs |
@@ -59,9 +59,9 @@ Implementation order is bottom-up:
 | Module | Responsibility |
 | --- | --- |
 | `auth` | Identity, sessions, OAuth accounts, email verification, RBAC |
-| `candidate` | Interview-prep profile data, onboarding, topic preferences |
+| `candidate` | Interview-prep profile data, onboarding state, selected interview catalog keys |
 | `analytics` | Derived candidate metrics, topic performance, achievements |
-| `interview` | Interview sessions, questions shown, answers, review outcomes |
+| `interview` | Interview option catalogs, sessions, questions shown, answers, review outcomes |
 | `filevault` | Object storage, file metadata, downloads, entity attachments |
 | `audit` | Centralized user action and status-change logs |
 | `platform` | Operational APIs for queues, schedules, task results, and errors |
@@ -211,14 +211,14 @@ If lint fails, run `make fmt` and then `make lint` again.
 
 ## AI Interview Engine Direction
 
-The current docs prepare the foundation for an AI interview product, but they do not yet define the interview/question modules.
+The current docs prepare the foundation for an AI interview product. The Interview module owns the first interview option catalogs plus persisted sessions, questions, answers, and reviews.
 
 Recommended next modules:
 
 | Module | Owns |
 | --- | --- |
-| `questionbank` | Reusable/manual question catalog, topic taxonomy, difficulty metadata |
-| `interview` | Interview sessions, selected questions, submitted answers, timing, completion state, raw review outcomes |
+| `questionbank` | Future reusable/manual question catalog and reusable question metadata |
+| `interview` | Interview target-role, experience-level, and topic catalogs; sessions; selected questions; submitted answers; timing; completion state; raw review outcomes |
 | `analytics` | Aggregated progress derived from completed interviews and reviews |
 
 Questions should be persisted. Even if AI generates them, the system should store the exact question shown to the user, its topic, difficulty, prompt/version metadata, and whether it is reusable or session-specific.

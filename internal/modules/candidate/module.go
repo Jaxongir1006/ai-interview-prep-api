@@ -36,7 +36,7 @@ func New(
 	)
 
 	usecaseContainer := usecase.NewContainer(
-		completeonboarding.New(domainContainer),
+		completeonboarding.New(domainContainer, portalContainer.Interview()),
 	)
 
 	m.portal = embassy.New(domainContainer)

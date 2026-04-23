@@ -2,6 +2,7 @@ package domain
 
 import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/interview/domain/answer"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/interview/domain/catalog"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/interview/domain/question"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/interview/domain/review"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/interview/domain/session"
@@ -13,6 +14,7 @@ type Container struct {
 	questionRepo question.Repo
 	answerRepo   answer.Repo
 	reviewRepo   review.Repo
+	catalogRepo  catalog.Repo
 	uowFactory   uow.Factory
 }
 
@@ -21,6 +23,7 @@ func NewContainer(
 	questionRepo question.Repo,
 	answerRepo answer.Repo,
 	reviewRepo review.Repo,
+	catalogRepo catalog.Repo,
 	uowFactory uow.Factory,
 ) *Container {
 	return &Container{
@@ -28,6 +31,7 @@ func NewContainer(
 		questionRepo: questionRepo,
 		answerRepo:   answerRepo,
 		reviewRepo:   reviewRepo,
+		catalogRepo:  catalogRepo,
 		uowFactory:   uowFactory,
 	}
 }
@@ -46,6 +50,10 @@ func (c *Container) AnswerRepo() answer.Repo {
 
 func (c *Container) ReviewRepo() review.Repo {
 	return c.reviewRepo
+}
+
+func (c *Container) CatalogRepo() catalog.Repo {
+	return c.catalogRepo
 }
 
 func (c *Container) UOWFactory() uow.Factory {

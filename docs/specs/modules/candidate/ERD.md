@@ -10,8 +10,8 @@ erDiagram
         VARCHAR full_name "nullable"
         TEXT bio "nullable"
         VARCHAR location "nullable"
-        VARCHAR target_role "nullable until onboarding is completed"
-        VARCHAR experience_level "nullable, junior, mid, senior"
+        VARCHAR target_role "nullable until onboarding is completed, references interview target-role key"
+        VARCHAR experience_level "nullable until onboarding is completed, references interview experience-level key"
         INT interview_goal_per_week "default 3"
         BOOLEAN onboarding_completed "default false"
         TIMESTAMPTZ onboarding_completed_at "nullable"
@@ -22,7 +22,7 @@ erDiagram
     candidate_topic_preferences {
         BIGSERIAL id PK
         BIGINT candidate_profile_id FK
-        VARCHAR topic_key "stable topic identifier, e.g. golang-concurrency"
+        VARCHAR topic_key "stable interview topic key, e.g. golang-concurrency"
         INT priority "default 0, lower means higher preference"
         TIMESTAMPTZ created_at
     }
@@ -36,8 +36,10 @@ The candidate tables reside in the `candidate` schema.
 
 - `candidate_profiles.user_id` references `auth.users(id)` and is unique, enforcing a one-to-one relationship
 - `candidate_topic_preferences` stores one row per preferred topic; do not store preferred topics as JSONB on the profile row
-- `candidate_topic_preferences.topic_key` is a stable topic identifier, allowing the candidate module to stay decoupled from future question-bank storage details
-- `experience_level` is constrained to `junior`, `mid`, or `senior` when present
+- `candidate_profiles.target_role` stores an Interview catalog target-role key selected by the user
+- `candidate_profiles.experience_level` stores an Interview catalog experience-level key selected by the user
+- `candidate_topic_preferences.topic_key` stores an Interview catalog topic key selected by the user
+- Candidate stores selected keys only; Interview owns the selectable catalog records and display labels
 - `interview_goal_per_week` is constrained to be non-negative
 - `priority` is constrained to be non-negative
 - Candidate profile data is intentionally limited to stable, user-editable fields

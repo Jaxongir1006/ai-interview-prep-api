@@ -7,10 +7,10 @@ The Candidate module manages public-user interview-preparation profile data. It 
 ## Responsibilities
 
 - Manage candidate profile data for public users
-- Store target role and experience level for interview preparation
+- Store selected interview target-role and experience-level keys for the candidate
 - Store user-editable presentation/profile fields such as full name, bio, and location
 - Store preparation preferences and goals that are part of the product domain
-- Store preferred topics as normalized preference records, not JSON blobs
+- Store selected preferred topic keys as normalized preference records, not JSON blobs
 - Track onboarding completion after the candidate selects role, experience level, and topics
 - Own candidate-facing profile concepts while delegating binary files to Filevault
 - Expose candidate data to other modules through a portal when needed
@@ -26,7 +26,8 @@ The Candidate module manages public-user interview-preparation profile data. It 
 ## Boundary
 
 - `auth` owns identity, credentials, sessions, and permissions
-- `candidate` owns stable interview-preparation profile data and preferences
+- `candidate` owns stable interview-preparation profile data, onboarding state, and selected catalog keys
+- `interview` owns the target-role, experience-level, and topic catalogs used by onboarding and interview generation
 - `analytics` owns derived metrics such as streaks, total interviews, average scores, achievements, and topic performance
 - `filevault` owns profile photo/avatar storage; `candidate` only defines the business association for those files
 

@@ -12,6 +12,48 @@ type Topic struct {
 	Name string `json:"name"`
 }
 
+type CatalogTargetRole struct {
+	Key          string
+	Name         string
+	Description  *string
+	DisplayOrder int
+}
+
+type CatalogExperienceLevel struct {
+	Key          string
+	Name         string
+	Description  *string
+	DisplayOrder int
+}
+
+type CatalogTopic struct {
+	Key            string
+	Name           string
+	Description    *string
+	Category       *string
+	TargetRoleKeys []string
+	DisplayOrder   int
+}
+
+type GetOnboardingOptionsResponse struct {
+	TargetRoles      []CatalogTargetRole
+	ExperienceLevels []CatalogExperienceLevel
+	Topics           []CatalogTopic
+}
+
+type ValidateOnboardingOptionsRequest struct {
+	TargetRole      string
+	ExperienceLevel string
+	PreferredTopics []string
+}
+
+type ValidateOnboardingOptionsResponse struct {
+	Valid                  bool
+	UnknownTargetRole      bool
+	UnknownExperienceLevel bool
+	UnknownTopics          []string
+}
+
 type DashboardSession struct {
 	ID                    string
 	Title                 string
@@ -42,6 +84,11 @@ type ListDashboardSessionsResponse struct {
 }
 
 type Portal interface {
+	GetOnboardingOptions(ctx context.Context) (*GetOnboardingOptionsResponse, error)
+	ValidateOnboardingOptions(
+		ctx context.Context,
+		req *ValidateOnboardingOptionsRequest,
+	) (*ValidateOnboardingOptionsResponse, error)
 	ListDashboardSessions(
 		ctx context.Context,
 		req *ListDashboardSessionsRequest,

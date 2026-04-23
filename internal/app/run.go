@@ -158,6 +158,14 @@ func (a *app) initModules() error {
 		return errx.Wrap(err)
 	}
 
+	a.interview, err = interview.New(
+		a.cfg.Interview, a.dbConn, portalContainer, a.httpServer,
+	)
+	if err != nil {
+		return errx.Wrap(err)
+	}
+	portalContainer.SetInterviewPortal(a.interview.Portal())
+
 	a.candidate, err = candidate.New(
 		a.cfg.Candidate, a.dbConn, portalContainer, a.httpServer,
 	)
@@ -168,14 +176,6 @@ func (a *app) initModules() error {
 	// Filevault Module
 	a.filevault, err = filevault.New(
 		a.cfg.Filevault, a.dbConn, portalContainer, a.httpServer,
-	)
-	if err != nil {
-		return errx.Wrap(err)
-	}
-
-	// Interview Module
-	a.interview, err = interview.New(
-		a.cfg.Interview, a.dbConn, portalContainer, a.httpServer,
 	)
 	if err != nil {
 		return errx.Wrap(err)
@@ -194,7 +194,6 @@ func (a *app) initModules() error {
 	portalContainer.SetAuditPortal(a.audit.Portal())
 	portalContainer.SetCandidatePortal(a.candidate.Portal())
 	portalContainer.SetFilevaultPortal(a.filevault.Portal())
-	portalContainer.SetInterviewPortal(a.interview.Portal())
 	portalContainer.SetPlatformPortal(a.platform.Portal())
 
 	return nil

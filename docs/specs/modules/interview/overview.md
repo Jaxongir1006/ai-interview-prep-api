@@ -2,13 +2,14 @@
 
 ## Purpose
 
-The Interview module owns interview practice sessions, the exact questions shown to candidates, submitted answers, and AI review results.
+The Interview module owns interview practice sessions, interview option catalogs, the exact questions shown to candidates, submitted answers, and AI review results.
 
 It stores raw interview activity that other modules can safely derive from. Analytics uses interview outcomes to build progress summaries, topic stats, dashboard data, recommendations, and achievements.
 
 ## Responsibilities
 
 - Store candidate interview sessions and lifecycle status
+- Store active interview target roles, experience levels, topics, and role-topic mappings
 - Store every question shown during a session, including AI-generated questions
 - Store submitted candidate answers exactly as entered
 - Store AI review results, scores, rubric breakdowns, feedback, and model metadata
@@ -20,6 +21,10 @@ It stores raw interview activity that other modules can safely derive from. Anal
 
 | Entity | Description |
 | --- | --- |
+| `InterviewTargetRole` | Active role/track options candidates can choose for interview preparation |
+| `InterviewExperienceLevel` | Active experience-level options used to tune interview difficulty and expectations |
+| `InterviewTopic` | Active topic taxonomy used by onboarding, interview generation, and analytics labels |
+| `InterviewTargetRoleTopic` | Mapping between target roles and topics available for that role |
 | `InterviewSession` | Candidate practice session with status, timing, target role, level, difficulty, and aggregate score |
 | `InterviewQuestion` | Question shown inside a session, including topic, order, source, prompt/model metadata, and exact text |
 | `InterviewAnswer` | Candidate answer submitted for one session question |
@@ -28,10 +33,22 @@ It stores raw interview activity that other modules can safely derive from. Anal
 ## Boundary
 
 - `auth` owns user identity and authentication.
-- `candidate` owns editable profile data, target role, experience level, onboarding, and preferences.
-- `interview` owns sessions, questions, answers, and raw review outcomes.
+- `candidate` owns editable profile data, onboarding state, and the user's selected interview catalog keys.
+- `interview` owns target-role, experience-level, and topic catalogs, plus sessions, questions, answers, and raw review outcomes.
 - `analytics` owns derived aggregates such as streaks, average scores, topic stats, and achievements.
 - `filevault` owns binary attachments if future interviews include audio, video, or file submissions.
+
+## Catalog Ownership
+
+The Interview module is the source of truth for selectable interview preparation options:
+
+- target roles such as `python`, `golang`, `javascript`, and `java`
+- experience levels such as `junior`, `mid`, and `senior`
+- topic keys such as `algorithms`, `system-design`, and `database-design`
+
+Candidate onboarding stores only the selected keys. It must validate those keys against active Interview catalog entries through a portal or application-level orchestration, without importing the Interview module directly.
+
+Target roles are product tracks, not authorization roles. Authorization roles remain owned by the Auth module.
 
 ## AI Question And Review Storage
 

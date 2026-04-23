@@ -16,7 +16,8 @@ Smaller endpoints for stats, performance trend, topics, recent activity, and rec
 ## Ownership
 
 - `auth` owns the authenticated user identity and email.
-- `candidate` owns full name, target role, experience level, onboarding state, and preferred topics.
+- `candidate` owns full name, onboarding state, and selected interview catalog keys for target role, experience level, and preferred topics.
+- `interview` owns the selectable target-role, experience-level, and topic catalogs.
 - `interview` owns interview sessions, selected questions, submitted answers, completion state, and raw outcomes.
 - `analytics` owns progress summaries, topic stats, achievements, dashboard aggregation, and recommendations derived from completed interview activity.
 - `filevault` owns avatar file metadata and downloads when avatars are attached.

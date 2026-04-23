@@ -10,6 +10,7 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/auth"
 	statecandidate "github.com/Jaxongir1006/ai-interview-prep-api/tests/state/candidate"
 	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/database"
+	stateinterview "github.com/Jaxongir1006/ai-interview-prep-api/tests/state/interview"
 	"github.com/Jaxongir1006/ai-interview-prep-api/tests/system/trigger"
 
 	"github.com/stretchr/testify/assert"
@@ -17,6 +18,7 @@ import (
 
 func TestCompleteOnboarding_Success(t *testing.T) {
 	database.Empty(t)
+	stateinterview.GivenDefaultCatalog(t)
 
 	userEntity := auth.GivenUsers(t, map[string]any{
 		"email":       "candidate@example.com",
@@ -31,7 +33,7 @@ func TestCompleteOnboarding_Success(t *testing.T) {
 	})[0]
 	statecandidate.GivenTopicPreferences(t, map[string]any{
 		"candidate_profile_id": profile.ID,
-		"topic_key":            "Old Topic",
+		"topic_key":            "old-topic",
 		"priority":             0,
 	})
 
@@ -41,9 +43,9 @@ func TestCompleteOnboarding_Success(t *testing.T) {
 			"target_role":      "python",
 			"experience_level": "junior",
 			"preferred_topics": []string{
-				"Algorithms",
-				"System Design",
-				"Database Design",
+				"algorithms",
+				"system-design",
+				"database-design",
 			},
 		}).
 		Expect()
@@ -70,16 +72,17 @@ func TestCompleteOnboarding_Success(t *testing.T) {
 		return preferences[i].Priority < preferences[j].Priority
 	})
 	assert.Len(t, preferences, 3)
-	assert.Equal(t, "Algorithms", preferences[0].TopicKey)
+	assert.Equal(t, "algorithms", preferences[0].TopicKey)
 	assert.Equal(t, 0, preferences[0].Priority)
-	assert.Equal(t, "System Design", preferences[1].TopicKey)
+	assert.Equal(t, "system-design", preferences[1].TopicKey)
 	assert.Equal(t, 1, preferences[1].Priority)
-	assert.Equal(t, "Database Design", preferences[2].TopicKey)
+	assert.Equal(t, "database-design", preferences[2].TopicKey)
 	assert.Equal(t, 2, preferences[2].Priority)
 }
 
 func TestCompleteOnboarding_ProfileNotFound(t *testing.T) {
 	database.Empty(t)
+	stateinterview.GivenDefaultCatalog(t)
 
 	userEntity := auth.GivenUsers(t, map[string]any{
 		"email":       "candidate@example.com",
@@ -133,7 +136,7 @@ func TestCompleteOnboarding_ValidationErrors(t *testing.T) {
 			payload: map[string]any{
 				"target_role":      "rust",
 				"experience_level": "junior",
-				"preferred_topics": []string{"Algorithms"},
+				"preferred_topics": []string{"algorithms"},
 			},
 		},
 		{
@@ -141,7 +144,7 @@ func TestCompleteOnboarding_ValidationErrors(t *testing.T) {
 			payload: map[string]any{
 				"target_role":      "python",
 				"experience_level": "junior",
-				"preferred_topics": []string{"Unknown Topic"},
+				"preferred_topics": []string{"unknown-topic"},
 			},
 		},
 		{
@@ -149,7 +152,7 @@ func TestCompleteOnboarding_ValidationErrors(t *testing.T) {
 			payload: map[string]any{
 				"target_role":      "python",
 				"experience_level": "junior",
-				"preferred_topics": []string{"Algorithms", "Algorithms"},
+				"preferred_topics": []string{"algorithms", "algorithms"},
 			},
 		},
 		{
@@ -164,7 +167,7 @@ func TestCompleteOnboarding_ValidationErrors(t *testing.T) {
 			payload: map[string]any{
 				"target_role":      "python",
 				"experience_level": "expert",
-				"preferred_topics": []string{"Algorithms"},
+				"preferred_topics": []string{"algorithms"},
 			},
 		},
 	}
@@ -172,6 +175,7 @@ func TestCompleteOnboarding_ValidationErrors(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			database.Empty(t)
+			stateinterview.GivenDefaultCatalog(t)
 
 			userEntity := auth.GivenUsers(t, map[string]any{
 				"email":       "candidate@example.com",
@@ -210,6 +214,6 @@ func validPayload() map[string]any {
 	return map[string]any{
 		"target_role":      "python",
 		"experience_level": "junior",
-		"preferred_topics": []string{"Algorithms"},
+		"preferred_topics": []string{"algorithms"},
 	}
 }
