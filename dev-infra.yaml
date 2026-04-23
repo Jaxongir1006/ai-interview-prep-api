@@ -19,7 +19,6 @@ services:
 
   redis:
     image: redis:8-alpine
-    profiles: [redis, full, test]
     ports:
       - "6379:6379"
 

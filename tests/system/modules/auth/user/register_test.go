@@ -60,11 +60,7 @@ func TestRegister_Success(t *testing.T) {
 	assert.True(t, hasher.Compare("SecurePassword_1", *u.PasswordHash))
 	assert.False(t, u.IsVerified)
 
-	verificationTokens := auth.GetEmailVerificationTokensByUserID(t, u.ID)
-	assert.Len(t, verificationTokens, 1)
-	assert.Equal(t, "candidate@example.com", verificationTokens[0].Email)
-	assert.NotEmpty(t, verificationTokens[0].TokenHash)
-	assert.Nil(t, verificationTokens[0].UsedAt)
+	assert.True(t, auth.EmailVerificationTokenPointerExists(t, u.ID, "candidate@example.com"))
 
 	profile := statecandidate.GetProfileByUserID(t, u.ID)
 	assert.NotNil(t, profile.FullName)
@@ -89,6 +85,7 @@ func TestRegister_ExistingUnverifiedUserResendsVerificationEmail(t *testing.T) {
 		"token_hash": "old-token-hash",
 		"expires_at": time.Now().Add(time.Hour),
 	})
+	oldTokenHash := auth.CurrentEmailVerificationTokenHash(t, users[0].ID, "candidate@example.com")
 
 	resp := trigger.UserAction(t).POST("/api/v1/auth/register").
 		WithJSON(map[string]string{
@@ -109,17 +106,9 @@ func TestRegister_ExistingUnverifiedUserResendsVerificationEmail(t *testing.T) {
 	assert.Equal(t, users[0].ID, u.ID)
 	assert.False(t, u.IsVerified)
 
-	verificationTokens := auth.GetEmailVerificationTokensByUserID(t, u.ID)
-	assert.Len(t, verificationTokens, 2)
-
-	var oldToken *time.Time
-	for i := range verificationTokens {
-		if verificationTokens[i].TokenHash == "old-token-hash" {
-			oldToken = &verificationTokens[i].ExpiresAt
-		}
-	}
-	assert.NotNil(t, oldToken)
-	assert.True(t, oldToken.Before(time.Now().Add(time.Second)))
+	newTokenHash := auth.CurrentEmailVerificationTokenHash(t, u.ID, "candidate@example.com")
+	assert.Equal(t, "old-token-hash", oldTokenHash)
+	assert.NotEqual(t, "old-token-hash", newTokenHash)
 }
 
 func TestRegister_VerifiedEmailConflict(t *testing.T) {

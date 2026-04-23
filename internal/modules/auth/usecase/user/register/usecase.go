@@ -125,13 +125,13 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 		return nil, errx.Wrap(err)
 	}
 
-	// Create one-time email verification token for the user's email
-	verificationToken, err := uc.emailVerificationService.CreateToken(ctx, uow, u, email)
+	err = uow.ApplyChanges()
 	if err != nil {
 		return nil, errx.Wrap(err)
 	}
 
-	err = uow.ApplyChanges()
+	// Create fresh Redis-backed one-time email verification token for the user's email
+	verificationToken, err := uc.emailVerificationService.CreateToken(ctx, u, email)
 	if err != nil {
 		return nil, errx.Wrap(err)
 	}
@@ -148,19 +148,8 @@ func (uc *usecase) handleExistingUser(
 		return nil, errEmailConflict
 	}
 
-	uow, err := uc.domainContainer.UOWFactory().NewUOW(ctx)
-	if err != nil {
-		return nil, errx.Wrap(err)
-	}
-	defer uow.DiscardUnapplied()
-
-	// Expire previous unused verification tokens and create a fresh one
-	verificationToken, err := uc.emailVerificationService.CreateToken(ctx, uow, u, email)
-	if err != nil {
-		return nil, errx.Wrap(err)
-	}
-
-	err = uow.ApplyChanges()
+	// Create a fresh Redis-backed email verification token
+	verificationToken, err := uc.emailVerificationService.CreateToken(ctx, u, email)
 	if err != nil {
 		return nil, errx.Wrap(err)
 	}

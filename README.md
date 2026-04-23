@@ -133,6 +133,7 @@ The default local services are:
 | --- | --- |
 | API | `http://localhost:9876` |
 | PostgreSQL | `localhost:5432` |
+| Redis | `localhost:6379` |
 | Mailpit UI | `http://localhost:8025` |
 | MinIO API | `http://localhost:9000` |
 | MinIO Console | `http://localhost:9001` |

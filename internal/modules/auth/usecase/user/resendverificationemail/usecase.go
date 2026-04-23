@@ -67,22 +67,9 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 		return &Response{}, nil
 	}
 
-	// Start UOW
-	uow, err := uc.domainContainer.UOWFactory().NewUOW(ctx)
-	if err != nil {
-		return nil, errx.Wrap(err)
-	}
-	defer uow.DiscardUnapplied()
-
-	// Expire previous unused email verification tokens for this user and email
-	// Create fresh one-time email verification token
-	verificationToken, err := uc.emailVerificationService.CreateToken(ctx, uow, u, email)
-	if err != nil {
-		return nil, errx.Wrap(err)
-	}
-
-	// Apply UOW
-	err = uow.ApplyChanges()
+	// Invalidate previous Redis-backed email verification token for this user and email
+	// Create fresh Redis-backed one-time email verification token
+	verificationToken, err := uc.emailVerificationService.CreateToken(ctx, u, email)
 	if err != nil {
 		return nil, errx.Wrap(err)
 	}

@@ -12,8 +12,6 @@ Returns the authenticated candidate's dashboard summary cards for the selected d
 
 > **permissions**: -
 
-> **implementation**: [usecase.go](../../../../../../internal/modules/analytics/usecase/dashboard/getstats/usecase.go)
-
 ## Input
 
 Query parameters:

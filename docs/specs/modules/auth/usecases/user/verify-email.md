@@ -43,17 +43,13 @@ Verifies ownership of a password-registered public user's email address using a 
 
 - Hash the raw token
 
-- Find unused email verification token by token hash
-
-- Check that token is not expired
+- Consume Redis-backed email verification token by token hash
 
 - Find user by token user ID
 
 - Check that token email matches the user's current email
 
 - Start UOW
-
-- Mark email verification token as used
 
 - Mark user as verified
 
@@ -69,6 +65,5 @@ Verifies ownership of a password-registered public user's email address using a 
 
 ## Errors
 
-- Return `EMAIL_VERIFICATION_TOKEN_INVALID` when token is not found or already used
-- Return `EMAIL_VERIFICATION_TOKEN_EXPIRED` when token is expired
+- Return `EMAIL_VERIFICATION_TOKEN_INVALID` when token is not found, already used, or expired from Redis
 - Return `EMAIL_VERIFICATION_EMAIL_MISMATCH` when token email does not match the user's current email

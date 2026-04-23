@@ -5,10 +5,12 @@ import (
 
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/emailverificationtoken"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/oauthaccount"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/passwordresettoken"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/rbac"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/user"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/infra/postgres"
+	redisinfra "github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/infra/redis"
 	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/database"
 
 	"github.com/rise-and-shine/pkg/sorter"
@@ -91,22 +93,44 @@ func UserExists(t *testing.T, username string) bool {
 
 func GetEmailVerificationTokensByUserID(
 	t *testing.T,
-	userID string,
+	_ string,
 ) []emailverificationtoken.EmailVerificationToken {
 	t.Helper()
 
-	db := database.GetTestDB(t)
-	repo := postgres.NewEmailVerificationTokenRepo(db)
+	t.Fatalf("GetEmailVerificationTokensByUserID: Redis-backed tokens cannot be listed by user ID")
+	return nil
+}
+
+func CurrentEmailVerificationTokenHash(t *testing.T, userID, email string) string {
+	t.Helper()
+
+	client := database.GetTestRedis(t)
 
 	ctx, cancel := database.QueryContext()
 	defer cancel()
 
-	tokens, err := repo.List(ctx, emailverificationtoken.Filter{UserID: &userID})
+	tokenHash, err := client.Get(ctx, "auth:email_verification:user:"+userID+":"+email).Result()
 	if err != nil {
-		t.Fatalf("GetEmailVerificationTokensByUserID: failed to get tokens for user %q: %v", userID, err)
+		t.Fatalf("CurrentEmailVerificationTokenHash: failed to get token pointer: %v", err)
 	}
 
-	return tokens
+	return tokenHash
+}
+
+func EmailVerificationTokenPointerExists(t *testing.T, userID, email string) bool {
+	t.Helper()
+
+	client := database.GetTestRedis(t)
+
+	ctx, cancel := database.QueryContext()
+	defer cancel()
+
+	count, err := client.Exists(ctx, "auth:email_verification:user:"+userID+":"+email).Result()
+	if err != nil {
+		t.Fatalf("EmailVerificationTokenPointerExists: failed to check token pointer: %v", err)
+	}
+
+	return count == 1
 }
 
 func GetEmailVerificationTokenByHash(
@@ -115,18 +139,38 @@ func GetEmailVerificationTokenByHash(
 ) *emailverificationtoken.EmailVerificationToken {
 	t.Helper()
 
-	db := database.GetTestDB(t)
-	repo := postgres.NewEmailVerificationTokenRepo(db)
+	client := database.GetTestRedis(t)
+	repo := redisinfra.NewEmailVerificationTokenRepo(client)
 
 	ctx, cancel := database.QueryContext()
 	defer cancel()
 
-	evt, err := repo.Get(ctx, emailverificationtoken.Filter{TokenHash: &tokenHash})
+	evt, err := repo.Consume(ctx, tokenHash)
 	if err != nil {
 		t.Fatalf("GetEmailVerificationTokenByHash: failed to get token: %v", err)
 	}
 
 	return evt
+}
+
+func ConsumePasswordResetTokenByHash(
+	t *testing.T,
+	tokenHash string,
+) *passwordresettoken.PasswordResetToken {
+	t.Helper()
+
+	client := database.GetTestRedis(t)
+	repo := redisinfra.NewPasswordResetTokenRepo(client)
+
+	ctx, cancel := database.QueryContext()
+	defer cancel()
+
+	resetToken, err := repo.Consume(ctx, tokenHash)
+	if err != nil {
+		t.Fatalf("ConsumePasswordResetTokenByHash: failed to consume token: %v", err)
+	}
+
+	return resetToken
 }
 
 // GetSessionsByUserID retrieves all sessions for a user, ordered by last_used_at ASC.

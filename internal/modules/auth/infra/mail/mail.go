@@ -56,6 +56,10 @@ func (noopSender) SendVerificationEmail(context.Context, domainmail.Verification
 	return nil
 }
 
+func (noopSender) SendPasswordResetEmail(context.Context, domainmail.PasswordResetEmail) error {
+	return nil
+}
+
 type smtpSender struct {
 	fromEmail string
 	fromName  string
@@ -84,11 +88,48 @@ func (s *smtpSender) SendVerificationEmail(
 	return nil
 }
 
+func (s *smtpSender) SendPasswordResetEmail(
+	_ context.Context,
+	msg domainmail.PasswordResetEmail,
+) error {
+	addr := net.JoinHostPort(s.host, strconv.Itoa(s.port))
+	auth := smtp.Auth(nil)
+	if s.username != "" || s.password != "" {
+		auth = smtp.PlainAuth("", s.username, s.password, s.host)
+	}
+
+	body := s.passwordResetMessage(msg)
+	err := smtp.SendMail(addr, auth, s.fromEmail, []string{msg.To}, []byte(body))
+	if err != nil {
+		return errx.Wrap(err)
+	}
+
+	return nil
+}
+
 func (s *smtpSender) message(msg domainmail.VerificationEmail) string {
 	subject := "Verify your HireReady email"
 	textBody := fmt.Sprintf(
 		"Verify your email address by opening this link:\r\n\r\n%s\r\n",
 		msg.VerificationURL,
+	)
+
+	headers := []string{
+		"From: " + s.fromHeader(),
+		"To: " + msg.To,
+		"Subject: " + subject,
+		"MIME-Version: 1.0",
+		"Content-Type: text/plain; charset=UTF-8",
+	}
+
+	return strings.Join(headers, "\r\n") + "\r\n\r\n" + textBody
+}
+
+func (s *smtpSender) passwordResetMessage(msg domainmail.PasswordResetEmail) string {
+	subject := "Reset your HireReady password"
+	textBody := fmt.Sprintf(
+		"Reset your password by opening this link:\r\n\r\n%s\r\n",
+		msg.ResetURL,
 	)
 
 	headers := []string{

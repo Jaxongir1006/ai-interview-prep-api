@@ -19,6 +19,8 @@ func appSchemas() []string {
 func Empty(t *testing.T) {
 	t.Helper()
 
+	EmptyRedis(t)
+
 	db := GetTestDB(t)
 
 	ctx, cancel := QueryContext()
@@ -37,6 +39,20 @@ func Empty(t *testing.T) {
 
 	if _, err = db.ExecContext(ctx, query); err != nil {
 		t.Fatalf("failed to truncate tables: %v", err)
+	}
+}
+
+func EmptyRedis(t *testing.T) {
+	t.Helper()
+
+	client := GetTestRedis(t)
+
+	ctx, cancel := QueryContext()
+	defer cancel()
+
+	err := client.FlushDB(ctx).Err()
+	if err != nil {
+		t.Fatalf("failed to flush Redis: %v", err)
 	}
 }
 

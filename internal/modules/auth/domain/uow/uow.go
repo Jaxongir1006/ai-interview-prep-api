@@ -1,7 +1,6 @@
 package uow
 
 import (
-	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/emailverificationtoken"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/oauthaccount"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/rbac"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
@@ -22,7 +21,6 @@ type UnitOfWork interface {
 	RolePermission() rbac.RolePermissionRepo
 	UserRole() rbac.UserRoleRepo
 	UserPermission() rbac.UserPermissionRepo
-	EmailVerificationToken() emailverificationtoken.Repo
 	OAuthAccount() oauthaccount.Repo
 	Session() session.Repo
 	User() user.Repo

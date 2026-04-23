@@ -60,26 +60,13 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 	// Hash the raw token
 	tokenHash := emailverification.HashToken(in.Token)
 
-	// Find unused email verification token by token hash
-	unused := true
-	evt, err := uc.domainContainer.EmailVerificationTokenRepo().Get(ctx, emailverificationtoken.Filter{
-		TokenHash: &tokenHash,
-		Unused:    &unused,
-	})
+	// Consume Redis-backed email verification token by token hash
+	evt, err := uc.domainContainer.EmailVerificationTokenRepo().Consume(ctx, tokenHash)
 	if errx.IsCodeIn(err, emailverificationtoken.CodeEmailVerificationTokenNotFound) {
 		return nil, invalidTokenErr()
 	}
 	if err != nil {
 		return nil, errx.Wrap(err)
-	}
-
-	// Check that token is not expired
-	if time.Now().After(evt.ExpiresAt) {
-		return nil, errx.New(
-			"email verification token is expired",
-			errx.WithType(errx.T_Validation),
-			errx.WithCode(emailverificationtoken.CodeEmailVerificationTokenExpired),
-		)
 	}
 
 	// Find user by token user ID
@@ -105,14 +92,6 @@ func (uc *usecase) Execute(ctx context.Context, in *Request) (*Response, error) 
 		return nil, errx.Wrap(err)
 	}
 	defer uow.DiscardUnapplied()
-
-	// Mark email verification token as used
-	now := time.Now()
-	evt.UsedAt = &now
-	_, err = uow.EmailVerificationToken().Update(ctx, evt)
-	if err != nil {
-		return nil, errx.Wrap(err)
-	}
 
 	// Mark user as verified
 	u.IsVerified = true

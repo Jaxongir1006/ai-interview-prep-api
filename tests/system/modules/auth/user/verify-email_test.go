@@ -55,9 +55,6 @@ func TestVerifyEmail_Success(t *testing.T) {
 	updatedUser := auth.GetUserByID(t, u.ID)
 	assert.True(t, updatedUser.IsVerified)
 	assert.Equal(t, 1, auth.SessionCount(t, u.ID))
-
-	usedToken := auth.GetEmailVerificationTokenByHash(t, tokenHash)
-	assert.NotNil(t, usedToken.UsedAt)
 }
 
 func TestVerifyEmail_OnboardingNotRequired(t *testing.T) {
@@ -106,7 +103,7 @@ func TestVerifyEmail_InvalidToken(t *testing.T) {
 		IsEqual(emailverificationdomain.CodeEmailVerificationTokenInvalid)
 }
 
-func TestVerifyEmail_ExpiredToken(t *testing.T) {
+func TestVerifyEmail_ExpiredTokenIsInvalid(t *testing.T) {
 	database.Empty(t)
 	u := auth.GivenUsers(t, map[string]any{
 		"email":       "candidate@example.com",
@@ -130,5 +127,5 @@ func TestVerifyEmail_ExpiredToken(t *testing.T) {
 
 	resp.Status(http.StatusBadRequest)
 	resp.JSON().Object().Value("error").Object().Value("code").String().
-		IsEqual(emailverificationdomain.CodeEmailVerificationTokenExpired)
+		IsEqual(emailverificationdomain.CodeEmailVerificationTokenInvalid)
 }

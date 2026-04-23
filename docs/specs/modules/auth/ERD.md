@@ -27,17 +27,6 @@ erDiagram
         TIMESTAMPTZ updated_at
     }
 
-    email_verification_tokens {
-        BIGSERIAL id PK
-        VARCHAR user_id FK
-        VARCHAR email "email address being verified"
-        VARCHAR token_hash "hash of the one-time verification token"
-        TIMESTAMPTZ expires_at
-        TIMESTAMPTZ used_at "nullable, set after successful verification"
-        TIMESTAMPTZ created_at
-        TIMESTAMPTZ updated_at
-    }
-
     roles {
         BIGSERIAL id PK
         VARCHAR name UK
@@ -84,7 +73,6 @@ erDiagram
     }
 
     users ||--o{ oauth_accounts : "linked to"
-    users ||--o{ email_verification_tokens : "verifies email through"
     users ||--o{ user_roles : "has"
     users ||--o{ user_permissions : "has"
     users ||--o{ sessions : "has"
@@ -98,8 +86,31 @@ erDiagram
 - Admin accounts authenticate with `username + password`; public users authenticate with `email + password`
 - Public users may alternatively authenticate through linked `oauth_accounts` for Google and GitHub
 - `oauth_accounts` should enforce uniqueness for `(provider, provider_user_id)`
-- `email_verification_tokens` stores only a hash of the raw token sent to the user's email
-- `email_verification_tokens` should enforce uniqueness for `token_hash`
-- Only the latest unused, unexpired token for a user/email should be accepted for verification
+- Email verification token state is stored in Redis, not PostgreSQL
+- Password reset token state is stored in Redis, not PostgreSQL
+- Successful password reset deletes all existing sessions for the user
 - Business-profile and interview-preparation data for public users should live in a separate module such as `candidate`
 - When implementing the migration, follow [Migration Guideline](../../../guidelines/13_db_migrations.md): create tables first, create indexes second, then add foreign keys and check constraints with `ALTER TABLE`
+
+## Redis Token State
+
+Email verification and password reset tokens are ephemeral auth state and are not part of the PostgreSQL ERD.
+
+Redis stores only token hashes and metadata needed to complete the flow:
+
+```json
+{
+  "user_id": "string",
+  "email": "user@example.com",
+  "expires_at": "2026-04-23T12:00:00Z"
+}
+```
+
+Expected key ownership:
+
+- `auth:email_verification:token:{token_hash}` stores email verification token metadata with `auth.email_verification_token_ttl`
+- `auth:email_verification:user:{user_id}:{email}` points to the current email verification token hash so older tokens can be invalidated
+- `auth:password_reset:token:{token_hash}` stores password reset token metadata with `auth.password_reset_token_ttl`
+- `auth:password_reset:user:{user_id}:{email}` points to the current password reset token hash so older tokens can be invalidated
+
+Token confirmation should consume token keys atomically so a token cannot be reused.

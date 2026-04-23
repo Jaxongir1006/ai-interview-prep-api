@@ -2,6 +2,7 @@
 package baseserver
 
 import (
+	"net/url"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -44,10 +45,13 @@ func New(
 }
 
 func newCORSMiddleware(cfg CORSConfig) server.Middleware {
+	allowOrigins, allowOriginFunc := corsAllowOrigins(cfg.AllowOrigins)
+
 	return server.Middleware{
 		Priority: 950,
 		Handler: fibercors.New(fibercors.Config{
-			AllowOrigins:     joinOrDefault(cfg.AllowOrigins, "*"),
+			AllowOrigins:     corsAllowOriginsValue(allowOrigins, allowOriginFunc),
+			AllowOriginsFunc: allowOriginFunc,
 			AllowMethods:     joinOrDefault(cfg.AllowMethods, strings.Join(defaultAllowMethods(), ",")),
 			AllowHeaders:     strings.Join(cfg.AllowHeaders, ","),
 			AllowCredentials: cfg.AllowCredentials,
@@ -55,6 +59,65 @@ func newCORSMiddleware(cfg CORSConfig) server.Middleware {
 			MaxAge:           cfg.MaxAge,
 		}),
 	}
+}
+
+func corsAllowOriginsValue(origins []string, allowOriginFunc func(string) bool) string {
+	if len(origins) == 0 && allowOriginFunc != nil {
+		return ""
+	}
+
+	return joinOrDefault(origins, "*")
+}
+
+func corsAllowOrigins(origins []string) ([]string, func(string) bool) {
+	staticOrigins := make([]string, 0, len(origins))
+	localhostWildcards := make([]string, 0)
+
+	for _, origin := range origins {
+		trimmed := strings.TrimSpace(origin)
+		if isLocalhostWildcardOrigin(trimmed) {
+			localhostWildcards = append(localhostWildcards, strings.TrimSuffix(trimmed, ":*"))
+			continue
+		}
+
+		staticOrigins = append(staticOrigins, trimmed)
+	}
+
+	if len(localhostWildcards) == 0 {
+		return staticOrigins, nil
+	}
+
+	return staticOrigins, func(origin string) bool {
+		u, err := url.Parse(strings.ToLower(origin))
+		if err != nil {
+			return false
+		}
+
+		if u.Scheme == "" || u.Hostname() == "" || u.Port() == "" {
+			return false
+		}
+
+		normalized := u.Scheme + "://" + u.Hostname()
+		for _, allowed := range localhostWildcards {
+			if normalized == allowed {
+				return true
+			}
+		}
+
+		return false
+	}
+}
+
+func isLocalhostWildcardOrigin(origin string) bool {
+	origin = strings.ToLower(strings.TrimSpace(origin))
+	if !strings.HasSuffix(origin, ":*") {
+		return false
+	}
+
+	return strings.TrimSuffix(origin, ":*") == "http://localhost" ||
+		strings.TrimSuffix(origin, ":*") == "https://localhost" ||
+		strings.TrimSuffix(origin, ":*") == "http://127.0.0.1" ||
+		strings.TrimSuffix(origin, ":*") == "https://127.0.0.1"
 }
 
 func defaultAllowMethods() []string {

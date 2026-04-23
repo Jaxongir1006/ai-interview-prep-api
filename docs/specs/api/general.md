@@ -14,12 +14,16 @@ Local development allows these origins by default:
 
 ```json
 [
+  "http://localhost:*",
+  "http://127.0.0.1:*",
   "http://localhost:3000",
   "http://localhost:5173",
   "http://127.0.0.1:3000",
   "http://127.0.0.1:5173"
 ]
 ```
+
+Local-only wildcard entries allow browser dev servers on any port for `localhost` and `127.0.0.1`.
 
 Preflight requests use `OPTIONS` and return `204 No Content` when the origin and requested method are allowed. The default local policy allows `GET`, `POST`, and `OPTIONS`, accepts `Origin`, `Content-Type`, `Accept`, `Authorization`, and `X-Requested-With`, exposes `X-Trace-ID`, and supports credentials for explicit allowed origins.
 

@@ -13,7 +13,9 @@ import (
 	mailinfra "github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/infra/mail"
 	oauthinfra "github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/infra/oauth"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/infra/postgres"
+	redisinfra "github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/infra/redis"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/pblc/emailverification"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/pblc/passwordreset"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/pblc/sessionmanager"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/rbac/createrole"
@@ -34,6 +36,7 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/session/getusersessions"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/adminlogin"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/changemypassword"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/confirmpasswordreset"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/createsuperadmin"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/createuser"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/disableuser"
@@ -47,6 +50,7 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/logout"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/refreshtoken"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/register"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/requestpasswordreset"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/resendverificationemail"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/updateuser"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/verifyemail"
@@ -54,6 +58,7 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/auth"
 
 	"github.com/code19m/errx"
+	goredis "github.com/redis/go-redis/v9"
 	"github.com/rise-and-shine/pkg/http/server"
 	"github.com/rise-and-shine/pkg/kafka"
 	"github.com/uptrace/bun"
@@ -73,6 +78,8 @@ type Config struct {
 
 	EmailVerificationTokenTTL time.Duration `yaml:"email_verification_token_ttl" default:"24h"`
 	FrontendVerifyEmailURL    string        `yaml:"frontend_verify_email_url"    default:"http://localhost:3000/verify-email"`
+	PasswordResetTokenTTL     time.Duration `yaml:"password_reset_token_ttl"     default:"30m"`
+	FrontendPasswordResetURL  string        `yaml:"frontend_password_reset_url"`
 
 	WorkerPollInterval time.Duration `yaml:"worker_poll_interval" default:"1s"`
 
@@ -92,10 +99,11 @@ func (m *Module) name() string {
 	return "auth"
 }
 
-func New(
+func New( //nolint:funlen // module wiring is intentionally explicit.
 	cfg Config,
 	brokerConfig kafka.BrokerConfig,
 	dbConn *bun.DB,
+	redisClient goredis.Cmdable,
 	portalContainer *portal.Container,
 	httpServer *server.HTTPServer,
 ) (*Module, error) {
@@ -107,7 +115,8 @@ func New(
 	// Init repositories
 	domainContainer := domain.NewContainer(
 		postgres.NewUserRepo(dbConn),
-		postgres.NewEmailVerificationTokenRepo(dbConn),
+		redisinfra.NewEmailVerificationTokenRepo(redisClient),
+		redisinfra.NewPasswordResetTokenRepo(redisClient),
 		mailinfra.NewSender(cfg.Mail),
 		postgres.NewOAuthAccountRepo(dbConn),
 		postgres.NewSessionRepo(dbConn),
@@ -126,6 +135,13 @@ func New(
 	emailVerificationService := emailverification.New(
 		cfg.EmailVerificationTokenTTL,
 		cfg.FrontendVerifyEmailURL,
+		domainContainer.EmailVerificationTokenRepo(),
+		domainContainer.MailSender(),
+	)
+	passwordResetService := passwordreset.New(
+		cfg.PasswordResetTokenTTL,
+		cfg.FrontendPasswordResetURL,
+		domainContainer.PasswordResetTokenRepo(),
 		domainContainer.MailSender(),
 	)
 	googleProvider := oauthinfra.NewGoogleProvider(cfg.GoogleOAuth)
@@ -149,6 +165,8 @@ func New(
 		changemypassword.New(domainContainer, portalContainer, cfg.HashingCost),
 		verifyemail.New(domainContainer, portalContainer, sessionManager),
 		resendverificationemail.New(domainContainer, emailVerificationService),
+		requestpasswordreset.New(domainContainer, passwordResetService),
+		confirmpasswordreset.New(domainContainer, cfg.HashingCost),
 
 		// User management
 		createsuperadmin.New(domainContainer, cfg.HashingCost),

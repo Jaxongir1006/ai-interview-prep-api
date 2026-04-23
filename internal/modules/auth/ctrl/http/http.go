@@ -44,6 +44,8 @@ func (c *Controller) initRoutes(r fiber.Router) {
 	v1.Post("/refresh-token", forward.ToUserAction(c.usecaseContainer.RefreshToken()))
 	v1.Post("/verify-email", forward.ToUserAction(c.usecaseContainer.VerifyEmail()))
 	v1.Post("/resend-verification-email", forward.ToUserAction(c.usecaseContainer.ResendVerificationEmail()))
+	v1.Post("/request-password-reset", forward.ToUserAction(c.usecaseContainer.RequestPasswordReset()))
+	v1.Post("/confirm-password-reset", forward.ToUserAction(c.usecaseContainer.ConfirmPasswordReset()))
 
 	// Authenticated (no specific permission required)
 	v1Auth := v1.Group("", auth.NewAuthMiddleware(c.authPortal))

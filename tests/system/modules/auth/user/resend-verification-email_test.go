@@ -29,10 +29,7 @@ func TestResendVerificationEmail_Success(t *testing.T) {
 
 	resp.Status(http.StatusOK)
 
-	verificationTokens := auth.GetEmailVerificationTokensByUserID(t, u.ID)
-	assert.Len(t, verificationTokens, 1)
-	assert.Equal(t, "candidate@example.com", verificationTokens[0].Email)
-	assert.Nil(t, verificationTokens[0].UsedAt)
+	assert.True(t, auth.EmailVerificationTokenPointerExists(t, u.ID, "candidate@example.com"))
 }
 
 func TestResendVerificationEmail_MissingUserDoesNotLeak(t *testing.T) {
@@ -62,5 +59,5 @@ func TestResendVerificationEmail_VerifiedUserDoesNotSend(t *testing.T) {
 		Expect()
 
 	resp.Status(http.StatusOK)
-	assert.Empty(t, auth.GetEmailVerificationTokensByUserID(t, u.ID))
+	assert.False(t, auth.EmailVerificationTokenPointerExists(t, u.ID, "candidate@example.com"))
 }

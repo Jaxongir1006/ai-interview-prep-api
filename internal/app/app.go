@@ -10,6 +10,7 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/platform"
 	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/baseserver"
 
+	"github.com/redis/go-redis/v9"
 	"github.com/rise-and-shine/pkg/cfgloader"
 	"github.com/rise-and-shine/pkg/http/server"
 	"github.com/rise-and-shine/pkg/kafka"
@@ -17,6 +18,7 @@ import (
 	"github.com/rise-and-shine/pkg/observability/logger"
 	"github.com/rise-and-shine/pkg/observability/tracing"
 	"github.com/rise-and-shine/pkg/pg"
+	"github.com/rise-and-shine/pkg/rediswr"
 	"github.com/uptrace/bun"
 )
 
@@ -34,6 +36,8 @@ type Config struct {
 	Postgres pg.Config `yaml:"postgres" validate:"required"`
 
 	KafkaBroker kafka.BrokerConfig `yaml:"kafka_broker" validate:"required"`
+
+	Redis rediswr.Config `yaml:"redis" validate:"required"`
 
 	HTTPServer server.Config `yaml:"http_server" validate:"required"`
 
@@ -60,6 +64,7 @@ type app struct {
 	cfg Config
 
 	dbConn             *bun.DB
+	redisClient        redis.Cmdable
 	tracerShutdownFunc func() error
 
 	httpServer *server.HTTPServer

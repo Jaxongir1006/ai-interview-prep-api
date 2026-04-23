@@ -26,12 +26,17 @@ var (
 	}
 
 	validEmailVerificationTokenKeys = map[string]bool{
-		"id":         true,
 		"user_id":    true,
 		"email":      true,
 		"token_hash": true,
 		"expires_at": true,
-		"used_at":    true,
+	}
+
+	validPasswordResetTokenKeys = map[string]bool{
+		"user_id":    true,
+		"email":      true,
+		"token_hash": true,
+		"expires_at": true,
 	}
 
 	// validSessionKeys defines the allowed keys for session test data.

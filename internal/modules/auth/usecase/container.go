@@ -19,6 +19,7 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/session/getusersessions"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/adminlogin"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/changemypassword"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/confirmpasswordreset"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/createsuperadmin"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/createuser"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/disableuser"
@@ -32,6 +33,7 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/logout"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/refreshtoken"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/register"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/requestpasswordreset"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/resendverificationemail"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/updateuser"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/usecase/user/verifyemail"
@@ -51,6 +53,8 @@ type Container struct {
 	changeMyPassword        changemypassword.UseCase
 	verifyEmail             verifyemail.UseCase
 	resendVerificationEmail resendverificationemail.UseCase
+	requestPasswordReset    requestpasswordreset.UseCase
+	confirmPasswordReset    confirmpasswordreset.UseCase
 
 	// User management
 	createSuperadmin createsuperadmin.UseCase
@@ -97,6 +101,8 @@ func NewContainer(
 	changeMyPassword changemypassword.UseCase,
 	verifyEmail verifyemail.UseCase,
 	resendVerificationEmail resendverificationemail.UseCase,
+	requestPasswordReset requestpasswordreset.UseCase,
+	confirmPasswordReset confirmpasswordreset.UseCase,
 	createSuperadmin createsuperadmin.UseCase,
 	getUsers getusers.UseCase,
 	getAuthStats getauthstats.UseCase,
@@ -133,6 +139,8 @@ func NewContainer(
 		changeMyPassword:        changeMyPassword,
 		verifyEmail:             verifyEmail,
 		resendVerificationEmail: resendVerificationEmail,
+		requestPasswordReset:    requestPasswordReset,
+		confirmPasswordReset:    confirmPasswordReset,
 		createSuperadmin:        createSuperadmin,
 		getUsers:                getUsers,
 		getAuthStats:            getAuthStats,
@@ -173,6 +181,12 @@ func (c *Container) ChangeMyPassword() changemypassword.UseCase { return c.chang
 func (c *Container) VerifyEmail() verifyemail.UseCase           { return c.verifyEmail }
 func (c *Container) ResendVerificationEmail() resendverificationemail.UseCase {
 	return c.resendVerificationEmail
+}
+func (c *Container) RequestPasswordReset() requestpasswordreset.UseCase {
+	return c.requestPasswordReset
+}
+func (c *Container) ConfirmPasswordReset() confirmpasswordreset.UseCase {
+	return c.confirmPasswordReset
 }
 
 // --- User management ---

@@ -6,10 +6,12 @@ import (
 
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/emailverificationtoken"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/oauthaccount"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/passwordresettoken"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/rbac"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/user"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/infra/postgres"
+	redisinfra "github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/infra/redis"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/portal/auth"
 	"github.com/Jaxongir1006/ai-interview-prep-api/pkg/anymap"
 	"github.com/Jaxongir1006/ai-interview-prep-api/tests/state/database"
@@ -91,7 +93,7 @@ func GivenUsers(t *testing.T, data ...map[string]any) []user.User {
 	return users
 }
 
-func GivenEmailVerificationTokens(
+func GivenEmailVerificationTokens( //nolint:dupl // token helpers intentionally mirror separate domain types.
 	t *testing.T,
 	data ...map[string]any,
 ) []emailverificationtoken.EmailVerificationToken {
@@ -101,8 +103,8 @@ func GivenEmailVerificationTokens(
 		t.Fatal("GivenEmailVerificationTokens: at least one token data map is required")
 	}
 
-	db := database.GetTestDB(t)
-	repo := postgres.NewEmailVerificationTokenRepo(db)
+	client := database.GetTestRedis(t)
+	repo := redisinfra.NewEmailVerificationTokenRepo(client)
 
 	ctx, cancel := database.QueryContext()
 	defer cancel()
@@ -120,20 +122,76 @@ func GivenEmailVerificationTokens(
 			t.Fatalf("GivenEmailVerificationTokens[%d]: user_id, email, and token_hash are required", i)
 		}
 
+		expiresAt := anymap.Time(d, "expires_at", now.Add(24*time.Hour))
 		evt := &emailverificationtoken.EmailVerificationToken{
 			UserID:    userID,
 			Email:     email,
-			TokenHash: tokenHash,
-			ExpiresAt: anymap.Time(d, "expires_at", now.Add(24*time.Hour)),
-			UsedAt:    anymap.TimePtr(d, "used_at", nil),
+			ExpiresAt: expiresAt,
+		}
+		ttl := time.Until(expiresAt)
+		if ttl <= 0 {
+			tokens = append(tokens, *evt)
+			continue
 		}
 
-		created, err := repo.Create(ctx, evt)
+		err := repo.Create(ctx, tokenHash, evt, ttl)
 		if err != nil {
 			t.Fatalf("GivenEmailVerificationTokens[%d]: failed to create token: %v", i, err)
 		}
 
-		tokens = append(tokens, *created)
+		tokens = append(tokens, *evt)
+	}
+
+	return tokens
+}
+
+func GivenPasswordResetTokens( //nolint:dupl // token helpers intentionally mirror separate domain types.
+	t *testing.T,
+	data ...map[string]any,
+) []passwordresettoken.PasswordResetToken {
+	t.Helper()
+
+	if len(data) == 0 {
+		t.Fatal("GivenPasswordResetTokens: at least one token data map is required")
+	}
+
+	client := database.GetTestRedis(t)
+	repo := redisinfra.NewPasswordResetTokenRepo(client)
+
+	ctx, cancel := database.QueryContext()
+	defer cancel()
+
+	tokens := make([]passwordresettoken.PasswordResetToken, 0, len(data))
+	now := time.Now()
+
+	for i, d := range data {
+		anymap.ValidateKeys(t, "GivenPasswordResetTokens", validPasswordResetTokenKeys, d)
+
+		userID := anymap.String(d, "user_id", "")
+		email := anymap.String(d, "email", "")
+		tokenHash := anymap.String(d, "token_hash", "")
+		if userID == "" || email == "" || tokenHash == "" {
+			t.Fatalf("GivenPasswordResetTokens[%d]: user_id, email, and token_hash are required", i)
+		}
+
+		expiresAt := anymap.Time(d, "expires_at", now.Add(30*time.Minute))
+		resetToken := &passwordresettoken.PasswordResetToken{
+			UserID:    userID,
+			Email:     email,
+			ExpiresAt: expiresAt,
+		}
+		ttl := time.Until(expiresAt)
+		if ttl <= 0 {
+			tokens = append(tokens, *resetToken)
+			continue
+		}
+
+		err := repo.Create(ctx, tokenHash, resetToken, ttl)
+		if err != nil {
+			t.Fatalf("GivenPasswordResetTokens[%d]: failed to create token: %v", i, err)
+		}
+
+		tokens = append(tokens, *resetToken)
 	}
 
 	return tokens

@@ -23,6 +23,7 @@ import (
 	"github.com/rise-and-shine/pkg/observability/logger"
 	"github.com/rise-and-shine/pkg/observability/tracing"
 	"github.com/rise-and-shine/pkg/pg"
+	"github.com/rise-and-shine/pkg/rediswr"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -103,6 +104,8 @@ func (a *app) initSharedComponents() error {
 		return errx.Wrap(err)
 	}
 
+	a.redisClient = rediswr.New(a.cfg.Redis)
+
 	// init metrics
 	// Metrics provider not implemented yet...
 
@@ -134,7 +137,7 @@ func (a *app) initModules() error {
 
 	// Init all your modules here...
 	a.auth, err = auth.New(
-		a.cfg.Auth, a.cfg.KafkaBroker, a.dbConn, portalContainer, a.httpServer,
+		a.cfg.Auth, a.cfg.KafkaBroker, a.dbConn, a.redisClient, portalContainer, a.httpServer,
 	)
 	if err != nil {
 		return errx.Wrap(err)

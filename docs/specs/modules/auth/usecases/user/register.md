@@ -38,7 +38,7 @@ Registers a public platform user with email and password, initializes a minimal 
 - Validate input
 
 - Check whether a user already exists with the same email
-  - If the existing user is active, password-based, and not verified, create a fresh email verification token, send a new verification email, and return the normal success response
+  - If the existing user is active, password-based, and not verified, create a fresh Redis-backed email verification token, send a new verification email, and return the normal success response
   - If the existing user is already verified, inactive, or OAuth-only, return `EMAIL_CONFLICT`
 
 - Start UOW
@@ -49,11 +49,11 @@ Registers a public platform user with email and password, initializes a minimal 
 
 - Create minimal candidate profile for the new user using the provided full name
 
-- Create one-time email verification token for the user's email
-
 - Record audit log
 
 - Apply UOW
+
+- Create fresh Redis-backed one-time email verification token for the user's email with `auth.email_verification_token_ttl`
 
 - Send verification email with frontend verification URL and raw token
 
@@ -63,7 +63,7 @@ Registers a public platform user with email and password, initializes a minimal 
 
 - Email/password registration requires the user to verify email ownership before password login succeeds
 - The verification email links to the frontend verification page with a raw one-time token
-- The raw token is never stored directly; only its hash is stored
+- The raw token is never stored directly; only its hash and verification metadata are stored in Redis
 - Verification is completed by `verify-email`
 - OAuth login use cases do not send this email
 - If email delivery fails after registration is committed, the user can request a fresh link through `resend-verification-email`

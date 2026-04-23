@@ -25,6 +25,9 @@ postgres:
 kafka_broker:
   brokers: localhost:9092
 
+redis:
+  addrs: 127.0.0.1:6379
+
 http_server:
   host: localhost
   port: 9876
@@ -54,7 +57,9 @@ auth:
   mail:
     provider: noop
   frontend_verify_email_url: http://localhost:3000/verify-email
+  frontend_password_reset_url: http://localhost:3000/password-reset
   email_verification_token_ttl: 24h
+  password_reset_token_ttl: 30m
   google_oauth:
     enabled: false
   github_oauth:

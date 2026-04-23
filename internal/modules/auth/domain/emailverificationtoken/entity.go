@@ -1,9 +1,8 @@
 package emailverificationtoken
 
 import (
+	"context"
 	"time"
-
-	"github.com/rise-and-shine/pkg/pg"
 )
 
 const (
@@ -15,14 +14,13 @@ const (
 )
 
 type EmailVerificationToken struct {
-	pg.BaseModel
+	UserID    string    `json:"user_id"`
+	Email     string    `json:"email"`
+	ExpiresAt time.Time `json:"expires_at"`
+}
 
-	ID int64 `json:"id" bun:"id,pk,autoincrement"`
-
-	UserID string `json:"user_id"`
-	Email  string `json:"email"`
-
-	TokenHash string     `json:"-"`
-	ExpiresAt time.Time  `json:"expires_at"`
-	UsedAt    *time.Time `json:"used_at"`
+type Repo interface {
+	Create(ctx context.Context, tokenHash string, token *EmailVerificationToken, ttl time.Duration) error
+	Consume(ctx context.Context, tokenHash string) (*EmailVerificationToken, error)
+	InvalidateUserEmail(ctx context.Context, userID, email string) error
 }

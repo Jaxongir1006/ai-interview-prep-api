@@ -1,4 +1,4 @@
-package emailverification
+package passwordreset
 
 import (
 	"context"
@@ -7,8 +7,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/emailverificationtoken"
 	domainmail "github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/mail"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/passwordresettoken"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/user"
 
 	"github.com/code19m/errx"
@@ -16,23 +16,23 @@ import (
 )
 
 type Service struct {
-	tokenTTL          time.Duration
-	frontendVerifyURL string
-	tokenRepo         emailverificationtoken.Repo
-	mailSender        domainmail.Sender
+	tokenTTL         time.Duration
+	frontendResetURL string
+	tokenRepo        passwordresettoken.Repo
+	mailSender       domainmail.Sender
 }
 
 func New(
 	tokenTTL time.Duration,
-	frontendVerifyURL string,
-	tokenRepo emailverificationtoken.Repo,
+	frontendResetURL string,
+	tokenRepo passwordresettoken.Repo,
 	mailSender domainmail.Sender,
 ) *Service {
 	return &Service{
-		tokenTTL:          tokenTTL,
-		frontendVerifyURL: frontendVerifyURL,
-		tokenRepo:         tokenRepo,
-		mailSender:        mailSender,
+		tokenTTL:         tokenTTL,
+		frontendResetURL: frontendResetURL,
+		tokenRepo:        tokenRepo,
+		mailSender:       mailSender,
 	}
 }
 
@@ -56,7 +56,7 @@ func (s *Service) CreateToken(
 	rawToken := token.NewOpaqueToken()
 	tokenHash := HashToken(rawToken)
 
-	err = s.tokenRepo.Create(ctx, tokenHash, &emailverificationtoken.EmailVerificationToken{
+	err = s.tokenRepo.Create(ctx, tokenHash, &passwordresettoken.PasswordResetToken{
 		UserID:    u.ID,
 		Email:     email,
 		ExpiresAt: now.Add(s.tokenTTL),
@@ -67,18 +67,18 @@ func (s *Service) CreateToken(
 
 	return &CreatedToken{
 		RawToken: rawToken,
-		URL:      s.VerificationURL(rawToken),
+		URL:      s.ResetURL(rawToken),
 	}, nil
 }
 
-func (s *Service) SendVerificationEmail(
+func (s *Service) SendPasswordResetEmail(
 	ctx context.Context,
 	email string,
 	createdToken *CreatedToken,
 ) error {
-	err := s.mailSender.SendVerificationEmail(ctx, domainmail.VerificationEmail{
-		To:              email,
-		VerificationURL: createdToken.URL,
+	err := s.mailSender.SendPasswordResetEmail(ctx, domainmail.PasswordResetEmail{
+		To:       email,
+		ResetURL: createdToken.URL,
 	})
 	if err != nil {
 		return errx.Wrap(err)
@@ -87,10 +87,10 @@ func (s *Service) SendVerificationEmail(
 	return nil
 }
 
-func (s *Service) VerificationURL(rawToken string) string {
-	u, err := url.Parse(s.frontendVerifyURL)
+func (s *Service) ResetURL(rawToken string) string {
+	u, err := url.Parse(s.frontendResetURL)
 	if err != nil {
-		return s.frontendVerifyURL
+		return s.frontendResetURL
 	}
 
 	q := u.Query()

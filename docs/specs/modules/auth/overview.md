@@ -9,6 +9,7 @@ The Auth module handles authentication, authorization, and user identity managem
 - User identity management for both admin and public users
 - Authentication (admin login, public user login, Google OAuth login, GitHub OAuth login, token refresh, logout)
 - Session management (create, revoke, cleanup)
+- Password reset for public email/password users
 - Role-Based Access Control (RBAC)
 - Permission management (role permissions, direct user permissions)
 - Verification and auth contact data management (`username`, `email`, `phone_number`, `is_verified`)
@@ -22,7 +23,6 @@ The Auth module handles authentication, authorization, and user identity managem
 | `User`           | Shared auth identity for admins and public users                            |
 | `OAuthAccount`   | External OAuth identity linked to a user account                            |
 | `Session`        | Active authentication session with tokens                                   |
-| `EmailVerificationToken` | One-time token used to verify a password-registered public user's email |
 | `Role`           | Named collection of permissions                                             |
 | `RolePermission` | Permission assigned to a role                                               |
 | `UserRole`       | Role assigned to a user                                                     |
@@ -44,5 +44,14 @@ The Auth module handles authentication, authorization, and user identity managem
 - Local development should use SMTP capture tooling such as Mailpit
 - Staging and production should use a configured transactional email provider through SMTP or provider-specific infrastructure
 - Verification links should point to the frontend verification page and include the raw one-time token as a query parameter
+- Password reset links should point to the frontend password reset page and include the raw one-time token as a query parameter
+
+## Configuration
+
+- `auth.frontend_verify_email_url` defines the frontend email verification URL
+- `auth.frontend_password_reset_url` defines the frontend password reset URL
+- `auth.email_verification_token_ttl` defines email verification token lifetime
+- `auth.password_reset_token_ttl` defines password reset token lifetime
+- Auth requires Redis for ephemeral email verification and password reset token state
 
 See ERD.md for entity relationships.

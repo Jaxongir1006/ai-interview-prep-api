@@ -93,6 +93,7 @@ sequenceDiagram
     actor Client
     participant API
     participant DB
+    participant Redis
     participant Mail
 
     Client->>API: POST /auth/register {email, password, full_name}
@@ -100,10 +101,10 @@ sequenceDiagram
     alt User does not exist
         API->>DB: Create user with is_verified=false
         API->>DB: Create candidate profile
-        API->>DB: Store hashed email verification token
+        API->>Redis: Store hashed email verification token
     else Active unverified password user exists
-        API->>DB: Expire previous unused verification tokens
-        API->>DB: Store fresh hashed email verification token
+        API->>Redis: Invalidate previous verification token
+        API->>Redis: Store fresh hashed email verification token
     else Verified, inactive, or OAuth-only user exists
         API-->>Client: EMAIL_CONFLICT
     end
@@ -119,13 +120,12 @@ sequenceDiagram
     actor User
     participant Frontend
     participant API
+    participant Redis
     participant DB
 
     User->>Frontend: Open /verify-email?token=...
     Frontend->>API: POST /auth/verify-email {token}
-    API->>DB: Find unused token by hash
-    API->>API: Verify token is not expired
-    API->>DB: Mark token used
+    API->>Redis: Consume token by hash
     API->>DB: Set user.is_verified=true
     API-->>Frontend: {user_id, email, is_verified:true}
 ```
@@ -134,6 +134,7 @@ sequenceDiagram
 - `resend-verification-email` sends a new verification link for active password users who are not verified yet
 - Calling `register` again with an active unverified password user's email also sends a new verification link
 - Raw verification tokens are sent only to the user's email and are not stored directly
+- Email verification token hashes and metadata are stored in Redis with `auth.email_verification_token_ttl`
 - Development environments should use SMTP capture tooling such as Mailpit so verification emails can be inspected at a local web UI before configuring a real provider
 
 ### Public User Login
@@ -142,6 +143,48 @@ sequenceDiagram
 - Public users must have `is_verified = true` before password login succeeds
 - On successful login, the system creates a session and updates both `last_login_at` and `last_active_at`
 - Public users may exist without any administrative permissions; authorization remains permission-based where applicable
+
+### Password Reset
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Frontend
+    participant API
+    participant DB
+    participant Redis
+    participant Mail
+
+    User->>Frontend: Open /password-reset
+    Frontend->>API: POST /auth/request-password-reset {email}
+    API->>DB: Find user by normalized email
+    alt Active email/password user exists
+        API->>Redis: Invalidate previous reset token
+        API->>Redis: Store fresh hashed password reset token
+        API->>Mail: Send reset link to user's email
+    else Unknown, inactive, or OAuth-only account
+        API->>API: Do not send email
+    end
+    API-->>Frontend: Generic success response
+    User->>Frontend: Open /password-reset?token=...
+    Frontend->>API: POST /auth/confirm-password-reset {token, password}
+    API->>Redis: Consume reset token by hash
+    API->>DB: Update password_hash
+    API->>DB: Mark user as verified
+    API->>DB: Delete all sessions for user
+    API-->>Frontend: Success response
+    Frontend->>Frontend: Redirect to login
+```
+
+- `request-password-reset` always returns the same success response for syntactically valid email requests to avoid account enumeration
+- Password reset emails are sent only for active users with local password credentials
+- OAuth-only users must sign in through their OAuth provider and do not receive password reset emails
+- Raw reset tokens are sent only to the user's email and are not stored directly
+- Password reset token hashes and metadata are stored in Redis with `auth.password_reset_token_ttl`
+- Reset tokens are single-use and expire after `auth.password_reset_token_ttl`
+- Confirming a password reset marks the user's current email as verified because the reset token was delivered to that email address
+- Confirming a password reset deletes all active sessions for the user so previous access and refresh tokens stop working
+- Password reset request attempts are rate limited by normalized email and client IP
 
 ### Google OAuth Login
 

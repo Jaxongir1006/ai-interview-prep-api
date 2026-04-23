@@ -4,6 +4,7 @@ import (
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/emailverificationtoken"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/mail"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/oauthaccount"
+	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/passwordresettoken"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/rbac"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/session"
 	"github.com/Jaxongir1006/ai-interview-prep-api/internal/modules/auth/domain/uow"
@@ -15,6 +16,7 @@ import (
 type Container struct {
 	userRepo                   user.Repo
 	emailVerificationTokenRepo emailverificationtoken.Repo
+	passwordResetTokenRepo     passwordresettoken.Repo
 	mailSender                 mail.Sender
 	oauthAccountRepo           oauthaccount.Repo
 	sessionRepo                session.Repo
@@ -28,6 +30,7 @@ type Container struct {
 func NewContainer(
 	userRepo user.Repo,
 	emailVerificationTokenRepo emailverificationtoken.Repo,
+	passwordResetTokenRepo passwordresettoken.Repo,
 	mailSender mail.Sender,
 	oauthAccountRepo oauthaccount.Repo,
 	sessionRepo session.Repo,
@@ -40,6 +43,7 @@ func NewContainer(
 	return &Container{
 		userRepo,
 		emailVerificationTokenRepo,
+		passwordResetTokenRepo,
 		mailSender,
 		oauthAccountRepo,
 		sessionRepo,
@@ -57,6 +61,10 @@ func (c *Container) UserRepo() user.Repo {
 
 func (c *Container) EmailVerificationTokenRepo() emailverificationtoken.Repo {
 	return c.emailVerificationTokenRepo
+}
+
+func (c *Container) PasswordResetTokenRepo() passwordresettoken.Repo {
+	return c.passwordResetTokenRepo
 }
 
 func (c *Container) MailSender() mail.Sender {

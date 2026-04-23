@@ -48,13 +48,9 @@ Empty response.
 
 - Return empty response when user is already verified
 
-- Start UOW
+- Invalidate previous Redis-backed email verification token for this user and email
 
-- Expire previous unused email verification tokens for this user and email
-
-- Create fresh one-time email verification token
-
-- Apply UOW
+- Create fresh Redis-backed one-time email verification token with `auth.email_verification_token_ttl`
 
 - Send verification email with frontend verification URL and raw token
 
@@ -64,4 +60,4 @@ Empty response.
 
 - Return empty success response when no email is sent to avoid account enumeration
 - Apply rate limiting by email and client IP before sending the message
-- The raw token is never stored directly; only its hash is stored
+- The raw token is never stored directly; only its hash and verification metadata are stored in Redis
